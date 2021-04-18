@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A03_projectDao">
+
+	<!-- 회원별 프로젝트 -->
+	<resultMap type="project" id="proListMap"/>
+	<select id="getProList" resultMap="proListMap" parameterType="schProject">
+		SELECT *
+		  FROM (
+			SELECT ROWNUM num, p.*
+			  FROM (
+				 	SELECT *
+					  FROM Z_PROJECT
+					 WHERE p_no IN (
+							SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
+					 )			AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+						 ORDER BY p_no DESC
+				) p
+			)
+		WHERE num BETWEEN #{startNum} AND #{endNum}
+	</select>
+	
+	<!-- 회원별 프로젝트 총 합계 -->
+	<select id="getProListCnt" resultType="int" parameterType="schProject">
+		SELECT count(*) cnt
+		  FROM (
+			SELECT ROWNUM num, p.*
+			  FROM (
+				 	SELECT *
+					  FROM Z_PROJECT
+					 WHERE p_no IN (
+							SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
+					 )			AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+						 ORDER BY p_no DESC
+				) p
+			)
+	</select>
+
+	<!-- 마지막 프로젝트 번호 -->
+	<select id="get_LastPno" resultType="int">
+		SELECT max(p_no) p_no
+		  FROM Z_PROJECT
+	</select>
+	
+	<!-- 유저 아이디를 통한 유저 번호 -->
+	<select id="get_u_no" resultType="int" parameterType="String">
+		SELECT u_no
+		  FROM Z_USER
+		 WHERE u_id = #{p_pm}
+	</select>
+	
+	<!-- 프로젝트 별 참여인원 -->
+	<resultMap type="resourcename" id="resourceMap"></resultMap>
+	<select id="getResource" resultMap="resourceMap" parameterType="int">
+		SELECT u.u_name, ra.r_name, pos.pos_name, u.u_no
+		  FROM Z_RESOURCE r, Z_USER u, Z_RANK ra, Z_POSITION pos
+		 WHERE r.u_no = u.u_no
+		   AND u.r_no = ra.r_no
+		   AND u.pos_no = pos.pos_no
+		   AND r.p_no = #{p_no}
+	</select>
+	
+	<!-- 프로젝트 기본 정보 -->
+	<select id="getProInfo" resultType="project" parameterType="int">
+		SELECT *
+		  FROM Z_PROJECT
+		 WHERE p_no = #{p_no}
+	</select>
+	
+	<!-- 해당 인원 참여 시키기 -->
+	<insert id="addUser" parameterType="addResource"> 
+		INSERT INTO Z_RESOURCE 
+	  		  VALUES (#{p_no},(SELECT u_no
+					   				FROM Z_USER
+ 					  		  		  WHERE u_name = #{u_name}))
+	</insert>
+	
+	<!-- 해당 인원 프로젝트에서 제외 -->
+	<delete id="delUser" parameterType="addResource">
+		DELETE Z_RESOURCE
+		 WHERE p_no = #{p_no}
+		   AND u_no = (SELECT u_no
+							  FROM Z_USER
+		 					 WHERE u_name = #{u_name})	
+	</delete>
+	
+	<!-- 참여 가능한 부서별 전체인원 -->
+	<resultMap type="resourcename" id="deptResourceMap"></resultMap>
+	<select id="getDeptResource" resultMap="deptResourceMap" parameterType="hashmap">
+		SELECT u.u_name, ra.r_name, pos.pos_name
+		  FROM Z_USER u, Z_RANK ra, Z_POSITION pos
+		 WHERE u.r_no = ra.r_no
+		 	AND u.pos_no = pos.pos_no
+		   AND u.d_no = #{d_no}
+		   AND NOT u.u_no IN (SELECT u_no
+										FROM Z_RESOURCE r
+										WHERE r.p_no = #{p_no})
+	</select>
+	
+	<!-- 개인 작업 리스트 -->
+	<resultMap type="job2" id="jobListMap"/>
+	<select id="getJobList" resultMap="jobListMap" parameterType="hashmap">
+		SELECT *
+		  FROM Z_JOB
+		 WHERE p_no = #{p_no}
+		   AND u_no = #{u_no}
+	</select>
+	
+	<!-- PM이름 -->
+	<select id="getPM" resultType="String" parameterType="int">
+		SELECT u_name
+		  FROM Z_PROJECT p, Z_USER u
+		 WHERE p.p_pm = u.u_id
+		   AND p_no = #{p_no}
+	</select>
+	
+	<!-- 프로젝트 별 작업상태 카운트 -->
+	<select id="getJobState" resultType="jobStateCnt" parameterType="int">
+		SELECT c1.cnt1, c2.cnt2, c3.cnt3
+		  FROM (
+		  	SELECT count(*) cnt1
+			  FROM Z_JOB
+		 	 WHERE p_no = #{p_no}
+				AND j_completer = 0
+		  ) c1, (
+		 	SELECT count(*) cnt2
+		 	  FROM Z_JOB
+			 WHERE p_no = #{p_no}
+				AND j_completer &gt; 0 
+				AND j_completer &lt; 1  
+		  ) c2, (
+			SELECT count(*) cnt3
+			  FROM Z_JOB
+			 WHERE p_no = #{p_no}
+			   AND j_completer = 1
+		  ) c3
+	</select>
+	
+	<!-- 프로젝트 별 리스크 카운트 -->
+	<select id="getRiskState" resultType="riskStateCnt" parameterType="int">
+		SELECT c1.cnt1, c2.cnt2, c3.cnt3
+		  FROM (
+			SELECT count(*) cnt1
+			  FROM Z_RISK r
+			 WHERE j_no IN (
+				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
+			 ) AND rs_name = '오픈'
+			)c1 ,(
+			SELECT count(*) cnt2
+			  FROM Z_RISK r
+			 WHERE j_no IN (
+				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
+			 ) AND rs_name = '진행'
+			)c2 ,(
+			SELECT count(*) cnt3
+			  FROM Z_RISK r
+			 WHERE j_no IN (
+				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
+			 ) AND rs_name = '조치완료'
+			)c3
+	</select>
+	
+	<!-- 프로젝트 등록 -->
+	<insert id="projectReg" parameterType="project">
+		INSERT INTO Z_PROJECT
+	   VALUES(Z_PROJECT_NO_SEQ.NEXTVAL,
+	   		#{p_name}, 
+	         to_date(#{p_startD_s},'YYYY-MM-DD'),
+	         to_date(#{p_endD_s},'YYYY-MM-DD'),
+	         #{p_content}, #{p_pm}, #{d_no})
+	</insert>
+	
+	<!-- 프로젝트 참여 -->
+	<insert id="projectInvite" parameterType="hashmap">
+		INSERT INTO Z_RESOURCE
+		VALUES (#{p_no}, #{u_no})
+	</insert>
+	
+	<!-- 특정 회원의 참여한 작업 카운트 -->
+	<select id="getJobCnt" resultType="int" parameterType="hashmap">
+		SELECT count(*) cnt
+		  FROM Z_JOB
+		 WHERE u_no = #{u_no}
+		   AND p_no = #{p_no}
+	</select>
+	
+	<!-- 작업의 담당자가 없어질 경우, 담당자 PM으로 변경 -->
+	<update id="updateManager" parameterType="hashmap">
+		UPDATE Z_JOB
+		   SET u_no = (
+		   	SELECT u_no
+				  FROM Z_USER
+				 WHERE u_id = (
+				 	SELECT p_pm FROM Z_PROJECT WHERE p_no = #{p_no}
+				 )
+		   )
+		 WHERE j_no IN (
+		 	SELECT j_no
+			  FROM Z_JOB
+			 WHERE u_no = #{u_no}
+			   AND p_no = #{p_no}
+		 )
+	</update>
+	
+</mapper>

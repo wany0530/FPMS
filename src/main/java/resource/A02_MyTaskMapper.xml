@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A02_MyTaskDao">
+
+<!-- public int totCnt(MyTaskSch sch); -->
+	<select id="totCnt" resultType="int" parameterType="mytasksch">
+		SELECT count(*)
+		FROM (
+			SELECT rownum AS cnt, a.*
+			FROM (
+				SELECT zj.*, zp.P_NAME AS p_name, zu.U_NAME AS pm_name,
+					CASE 
+						WHEN to_char(sysdate, 'yyyy-mm-dd') > zj.J_ENDD THEN '지연'
+						WHEN to_char(sysdate, 'yyyy-mm-dd') &lt; zj.J_STARTD THEN '시작전'
+						ELSE '정상진행'
+					END AS ingstate
+				FROM Z_JOB zj, Z_PROJECT zp, Z_USER zu
+				WHERE zj.P_NO = zp.P_NO
+				AND zp.P_PM = zu.U_ID
+				AND zj.J_COMPLETER &lt; 1
+				AND j_name LIKE '%'||#{j_name}||'%'
+				AND zp.p_name LIKE '%'||#{p_name}||'%'
+				AND zj.u_no = #{u_no}
+				AND NOT zj.j_no IN (SELECT J_NO 
+									FROM Z_AUTH za
+									WHERE A_NAME = '승인중')
+				ORDER BY zj.J_ENDD
+			) a
+			WHERE INGSTATE LIKE '%'||#{ingstate}||'%'
+		)
+	</select>
+
+<!-- public ArrayList<JobInfo> myTaskList(JobInfo sch); -->
+	<select id="myTaskList" resultType="jobInfo" parameterType="mytasksch">
+		SELECT *
+		FROM (
+			SELECT rownum AS cnt, a.*
+			FROM (
+				SELECT zj.*, zp.P_NAME AS p_name, zu.U_NAME AS pm_name,
+					CASE 
+						WHEN to_char(sysdate, 'yyyy-mm-dd') > zj.J_ENDD THEN '지연'
+						WHEN to_char(sysdate, 'yyyy-mm-dd') &lt; zj.J_STARTD THEN '시작전'
+						ELSE '정상진행'
+					END AS ingstate
+				FROM Z_JOB zj, Z_PROJECT zp, Z_USER zu
+				WHERE zj.P_NO = zp.P_NO
+				AND zp.P_PM = zu.U_ID
+				AND zj.J_COMPLETER &lt; 1
+				AND j_name LIKE '%'||#{j_name}||'%'
+				AND zp.p_name LIKE '%'||#{p_name}||'%'
+				AND zj.u_no = #{u_no}
+				AND NOT zj.j_no IN (SELECT J_NO 
+									FROM Z_AUTH za
+									WHERE A_NAME = '승인중')
+				ORDER BY zj.J_ENDD
+			) a
+			WHERE INGSTATE LIKE '%'||#{ingstate}||'%'
+		)
+		WHERE cnt BETWEEN #{start} AND #{end}
+	</select>
+<!-- public ArrayList<String> myPros(int u_no); -->
+	<select id="myPros" resultType="String" parameterType="int">
+		SELECT zp.P_NAME
+		FROM Z_RESOURCE zr, Z_PROJECT zp
+		WHERE zr.P_NO = zp.P_NO
+		AND zr.U_NO = #{u_no}
+	</select>
+<!-- public void insertAuth(Auth ins);
+INSERT INTO Z_AUTH VALUES (Z_AUTH_NO_SEQ.NEXTVAL, sysdate, NULL, '요청합니다', 80, 1, '승인중');
+ -->
+ 	<insert id="insertAuth" parameterType="auth">
+ 		INSERT INTO Z_AUTH VALUES (Z_AUTH_NO_SEQ.NEXTVAL, sysdate, NULL,
+ 		#{a_requestN}, #{a_requestP}, #{j_no}, '승인중') 	
+ 	</insert>
+</mapper>

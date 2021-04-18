@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A04_AuthDao">
+<!-- public int totCnt(AuthSch sch); -->
+	<select id="totCnt" resultType="int" parameterType="authsch">
+		SELECT count(*)
+		FROM (
+			SELECT za.*, zj.J_NAME AS job_name, zj.p_no AS p_no, zp.P_NAME AS pro_name, zu.u_no AS req_no, zu.U_NAME AS req_name, zu2.u_no AS res_no, zu2.U_NAME AS res_name
+			FROM Z_AUTH za, Z_JOB zj, Z_USER zu, Z_PROJECT zp, z_user zu2
+			WHERE za.J_NO=zj.J_NO
+			AND zj.U_NO=zu.U_NO
+			AND zj.P_NO=zp.P_NO
+			AND zp.P_PM = zu2.U_ID
+			AND zp.P_NAME like '%'||#{pro_name}||'%'
+			AND zj.J_NAME like '%'||#{job_name}||'%'
+			AND za.A_NAME like '%'||#{a_name}||'%'
+			ORDER BY za.A_DATE DESC) a
+		WHERE res_no=#{res_no}
+		OR req_no=#{req_no}
+	</select>
+<!-- public ArrayList<AuthInfo> authListPm(AuthInfo sch); -->
+	<select id="authListPm" resultType="authinfo" parameterType="authsch">
+		SELECT *
+		FROM (
+			SELECT rownum as cnt, a.*
+			FROM (
+				SELECT za.*, zj.J_NAME AS job_name, zj.p_no AS p_no, zp.P_NAME AS pro_name, zu.u_no AS req_no, zu.U_NAME AS req_name, zu2.u_no AS res_no, zu2.U_NAME AS res_name
+				FROM Z_AUTH za, Z_JOB zj, Z_USER zu, Z_PROJECT zp, z_user zu2
+				WHERE za.J_NO=zj.J_NO
+				AND zj.U_NO=zu.U_NO
+				AND zj.P_NO=zp.P_NO
+				AND zp.P_PM = zu2.U_ID
+				AND zp.P_NAME like '%'||#{pro_name}||'%'
+				AND zj.J_NAME like '%'||#{job_name}||'%'
+				AND za.A_NAME like '%'||#{a_name}||'%'
+				AND zu2.u_no=#{res_no}
+				ORDER BY za.A_DATE desc
+			) a
+		)
+		WHERE cnt BETWEEN #{start} AND #{end}
+	</select>
+<!-- public ArrayList<AuthInfo> authList(AuthInfo sch); -->
+	<select id="authList" resultType="authinfo" parameterType="authsch">
+		SELECT *
+		FROM (
+			SELECT rownum as cnt, a.*
+			FROM (
+				SELECT za.*, zj.J_NAME AS job_name, zj.p_no AS p_no, zp.P_NAME AS pro_name, zu.u_no AS req_no, zu.U_NAME AS req_name, zu2.u_no AS res_no, zu2.U_NAME AS res_name
+				FROM Z_AUTH za, Z_JOB zj, Z_USER zu, Z_PROJECT zp, z_user zu2
+				WHERE za.J_NO=zj.J_NO
+				AND zj.U_NO=zu.U_NO
+				AND zj.P_NO=zp.P_NO
+				AND zp.P_PM = zu2.U_ID
+				AND zp.P_NAME like '%'||#{pro_name}||'%'
+				AND zj.J_NAME like '%'||#{job_name}||'%'
+				AND za.A_NAME like '%'||#{a_name}||'%'
+				AND zu.u_no=#{req_no}
+				ORDER BY za.A_DATE desc
+			) a
+		)
+		WHERE cnt BETWEEN #{start} AND #{end}
+	</select>
+<!-- public ArrayList<String> getPmPros(int u_no); parameterType="int" -->
+	<select id="getPmPros" resultType="String" parameterType="int">
+		SELECT p_name
+		FROM Z_PROJECT zp, Z_USER zu
+		WHERE zp.P_PM = zu.U_ID
+		AND zu.u_no=#{u_no}
+		ORDER BY p_name
+	</select>
+<!-- public ArrayList<String> getPros(int u_no); parameterType="int" -->
+	<select id="getPros" resultType="String" parameterType="int">
+		SELECT zp.P_NAME
+		FROM Z_RESOURCE zr, Z_PROJECT zp
+		WHERE zr.P_NO = zp.P_NO
+		AND zr.U_NO = #{u_no}
+		ORDER BY p_name
+	</select>
+<!-- public Job getJobInfo(int j_no); -->
+	<select id="getJobInfo" resultType="job" parameterType="int">
+		SELECT * 
+		FROM Z_JOB
+		WHERE j_no=#{j_no}
+	</select>
+<!-- public void chRetire(int a_no); -->
+	<update id="chRetire" parameterType="int">
+		UPDATE Z_AUTH
+			SET a_name='회수'
+		WHERE A_NO=#{a_no}
+	</update>
+<!-- 	public void chAppRej(int a_no); -->
+	<update id="chAppRej" parameterType="authinfo">
+		UPDATE Z_AUTH
+			SET a_name=#{a_name},
+				a_resultn=#{a_resultN}
+		WHERE A_NO=#{a_no}
+	</update>
+<!-- public void chJobComple(double j_completer); -->
+	<update id="chJobComple" parameterType="job">
+		UPDATE z_job
+		SET J_COMPLETER = #{j_completeR}
+		WHERE j_no = #{j_no}
+	</update>
+<!-- public AuthInfo getAuthInfo(int a_no); -->
+	<select id="getAuthInfo" resultType="authinfo" parameterType="int">
+		SELECT za.*, zj.J_NAME AS job_name, zj.p_no AS p_no, zp.P_NAME AS pro_name, zu.u_no AS req_no, zu.U_NAME AS req_name, zu2.u_no AS res_no, zu2.U_NAME AS res_name
+		FROM Z_AUTH za, Z_JOB zj, Z_USER zu, Z_PROJECT zp, z_user zu2
+		WHERE za.J_NO=zj.J_NO
+		AND zj.U_NO=zu.U_NO
+		AND zj.P_NO=zp.P_NO
+		AND zp.P_PM = zu2.U_ID
+		AND za.a_no=#{a_no}
+	</select>
+<!-- public ArrayList<Output> getOutputInfo(int j_no) -->
+	<select id="getOutputInfo" resultType="output" parameterType="int">
+		SELECT * 
+		FROM Z_OUTPUTS 
+		WHERE j_no=#{j_no}
+	</select>
+</mapper>

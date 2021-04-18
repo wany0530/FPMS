@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+.input-group .auth-search-input {
+	height:40.67px;
+}
+
+.btn-sm.auth-search-btn {
+	height:40.67px;
+	margin-top:0;
+}
+
+.col-md-5 .auth-align-right {
+	position:absolute;
+	right:0;
+}
+
+.auth-align-right .btn-sm {
+	margin-top:0;
+	height:40.67px;
+}
+
+#auth-table th {
+	text-align:center;
+	border:1px solid rgba(255, 255, 255, 0.1);
+}
+
+#auth-table tr td:nth-child(4) {
+	text-align:center;
+}
+
+#auth-table {
+	border:1px solid rgba(255, 255, 255, 0.1);
+}
+
+#auth_content {
+	color:#222a42;
+	border:1px solid #2b3553;
+	max-height:150px;
+}
+
+button.authClose {
+	width: 0px;
+    height: 0px;
+    border: none;
+    appearance: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.modal-content .form-control {
+	border-color:#e2e5ec;
+	color:#222a42;
+}
+
+.modal-body .form-group {
+	margin-bottom:23px;
+}
+
+.modal-body>.tab-pane {
+	display:none;
+}
+
+.modal-body>.active {
+	display:block;
+}
+
+#tab_1_2 .grid-row .col-md-7 {
+	padding-left:30px;	
+}
+
+#tab_1_2 .grid-row {
+	margin-bottom:20px;
+}
+#tab_1_2 .btn-label-brand {
+	margin-top:15px;
+}
+.text-muted {
+    color: #74788d !important;
+}
+.forum-list-title {
+    margin-top: 3px !important;
+    margin-bottom: 2px !important;
+    font-weight: 500 !important;
+    text-align: left;
+    font-size: 14px;
+}
+.font-s13 {
+    font-size: 13px;
+}
+.task_info_nav.active {
+	color:#FF00DD;
+}
+#modal_resName, #modal_reqName {
+	margin-left:10px;
+}
+#no_task_tr {
+	height:300px;
+}

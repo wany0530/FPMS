@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="zenkit.web.dao.A01_ProjDashDao">
+<!-- projDash -->
+<!-- 프로젝트 대시보드 셀렉트박스 프로젝트이름 -->
+<!-- public ArrayList<ProjDashBoard> getProjList(int u_no); -->
+<resultMap type="projDash" id="projNameMap"></resultMap>
+<select id="getProjList" resultMap="projNameMap" parameterType="int">
+	SELECT zp.* , zp.P_NAME AS proj_name
+	FROM Z_PROJECT zp, Z_USER zu, Z_RESOURCE zr
+	WHERE zu.U_NO = zr.u_no
+	AND zp.P_NO = zr.P_NO 
+	AND zr.U_NO = #{U_NO}
+</select>
+
+<!-- 프로젝트 대시보드 p_no별 프로젝트정보 -->
+<!-- public ArrayList<ProjDashBoard> projDashList(int p_no); -->
+<!-- <resultMap type="projDash" id="projDashMap"></resultMap> -->
+<select id="projDashList" resultType="projDash" parameterType="int"> 
+<![CDATA[
+	SELECT DISTINCT zp.* , 
+	(CASE WHEN (sysdate < zp.P_STARTD) THEN 0
+	  WHEN (sysdate > zp.P_ENDD) THEN 100
+	  ELSE ROUND(MOD((trunc(sysdate-zp.P_STARTD))/(trunc(zp.P_ENDD-zp.P_STARTD)),1)*100,0) END) percent 
+	FROM Z_PROJECT zp, Z_USER zu , Z_RESOURCE zr 
+	WHERE zu.U_NO = zr.U_NO 
+	AND zr.P_NO = zp.P_NO 
+	AND zr.P_NO = #{P_NO}
+	]]>	
+</select>
+
+<!-- 프로젝트 주요작업 현황 6개 -->
+<!-- public ArrayList<ProjDashBoard> projJobList(int p_no); -->
+<select id="projJobList" resultType="projDash" parameterType="int">
+	<![CDATA[
+	SELECT zj.J_NAME, zj.J_COMPLETER*100 AS J_COMPLETER 
+	FROM Z_JOB zj, Z_PROJECT zp , Z_RESOURCE zr , Z_USER zu 
+	WHERE zu.U_NO = zr.U_NO 
+	AND zr.P_NO = zp.P_NO 
+	AND zr.P_NO = zj.P_NO 
+	AND zr.U_NO = zj.U_NO
+	AND zj.J_ENDD > SYSDATE
+	AND rownum <= 6
+	AND zj.J_REFNO != 0
+	AND zp.P_NO = #{P_NO}
+	ORDER BY j_ENDD DESC
+	]]>
+</select>
+
+<!-- 프로젝트 대시보드 p_no별 참여인력(리소스) -->
+<!-- public ArrayList<ProjDashBoard> projDashResList(int p_no); -->
+<resultMap type="projDash" id="projResdashMap"/>
+<select  id="projDashResList" resultMap="projResdashMap" parameterType="int">
+	SELECT u.u_name, ra.r_name, pos.pos_name
+	FROM Z_RESOURCE r, Z_USER u, Z_RANK ra, Z_POSITION pos
+	WHERE r.u_no = u.u_no
+	AND u.r_no = ra.r_no
+	AND u.pos_no = pos.pos_no
+	AND r.p_no = #{p_no} 
+</select>
+
+
+</mapper>

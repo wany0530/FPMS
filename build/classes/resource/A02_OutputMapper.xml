@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A02_OutputDao">
+	
+	<!-- 회원이 참여한 프로젝트의 작업에 산출물 조회 -->
+	<resultMap type="upOutput" id="outputMap"/>
+	<select id="getOutputs" resultMap="outputMap" parameterType="outputSch">
+		SELECT p.p_no, p.p_name, j.j_name, o.*
+		  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
+		 WHERE o.j_no = j.j_no
+		   AND j.p_no = p.p_no
+			AND j.j_no IN (
+			SELECT j_no FROM Z_JOB WHERE p_no IN (
+				SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
+			 )
+		 )
+		ORDER BY o_no DESC
+	</select>
+	
+	<!-- 산출물 o_no 확인 -->
+	<select id="getMaxNo" resultType="int">
+		SELECT max(o_no) AS o_no
+  		  FROM Z_OUTPUTS
+	</select>
+	
+	<!-- 산출물 등록 -->
+	<insert id="regOutput" parameterType="upOutput">
+		INSERT INTO Z_OUTPUTS
+		VALUES(Z_OUTPUTS_NO_SEQ.NEXTVAL,
+			#{o_name},
+			#{o_path},
+			#{o_content},
+			#{j_no})
+	</insert>
+	
+	<!-- 산출물 삭제 -->
+	<delete id="delOutput" parameterType="upOutput">
+		DELETE Z_OUTPUTS
+		 WHERE o_no = #{o_no}
+	</delete>
+	
+</mapper>

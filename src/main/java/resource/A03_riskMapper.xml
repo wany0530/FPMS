@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A03_riskDao">
+ <!-- 리스크 테이블 -->
+ <resultMap type="risk" id="riskMap"/>
+ <select id="riskList" resultMap="riskMap">
+    
+    SELECT r_no, j_name, r_name, rs_name, r_send, r_receive, r_regdate
+    FROM z_job zj, z_risk zr
+    WHERE zj.j_no = zr.j_no
+     
+ </select>
+<!-- 리스크 상세화면 --> 
+  <select id="getRisk" resultType="risk" parameterType="int">
+    
+    select * from z_risk
+    where r_no=#{r_no}
+     
+ </select>
+ <!-- 리스크 상세 수정 -->
+ <update id="updateRisk" parameterType="risk">
+ 
+ update z_risk
+  set  r_receive = #{r_receive},
+       r_rcontent = #{r_rcontent},
+       rs_name = #{rs_name}
+       where r_no = #{r_no}
+ 
+ </update>
+ 
+ <!-- 조회 변경사항 등록 -->
+ 
+<!-- 리스크 등록 -->
+ <insert id="riskInsert" parameterType="risk">
+ insert into z_risk values(z_risk_no_seq.nextval,#{r_name},#{r_content}, 
+ sysdate, #{r_send}, 0, 0, 0,#{j_no},#{rs_name})
+ </insert>
+
+<!-- 리스크 삭제 -->
+<delete id="deleteRisk" parameterType="int">
+        delete
+		from z_risk
+		where r_no = #{r_no}
+</delete>
+</mapper>

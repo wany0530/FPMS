@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A03_JobDao">
+	<!-- // Gantt에 표시할 내용.2
+	public ArrayList<Job> jobList3(JobSch sch); -->
+	
+	<resultMap type="job" id="job2Map"/>
+	<select id="jobList2" resultMap="job2Map" parameterType="jobsch">
+	select *
+	from(
+	SELECT rownum cnt, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
+		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no AND j_name LIKE '%'||#{j_name}||'%' AND a.u_no LIKE '%'||#{u_no}||'%'
+		START WITH j_refno = 0
+		CONNECT BY PRIOR j_no = j_refno
+		ORDER siblings BY j_no DESC
+	)
+	where cnt between #{start} and #{end}
+	</select>
+	
+	<!-- public ArrayList<Job2> jobList3(); -->
+	<resultMap type="job2" id="jobMap3"/>
+	<select id="jobList3" resultMap="jobMap3" parameterType="int">
+		SELECT rownum rn, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
+		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no
+		START WITH j_refno = 0
+		CONNECT BY PRIOR j_no = j_refno
+		ORDER siblings BY j_no DESC
+	</select>
+	
+	<!-- // 특정 작업 총 갯수2
+	public int totcount(JobSch sch); -->
+	<select id="totcount" resultType="int" parameterType="jobsch">
+		SELECT count(*) FROM z_job WHERE j_name LIKE '%'||#{j_name}||'%' AND u_no LIKE '%'||#{u_no}||'%' and p_no = #{p_no}
+	</select>
+	
+	<!-- Gantt 차트에 사용할 작업데이터 가져오기 -->
+	<!-- public ArrayList<Job> jobList(); -->
+	<resultMap type="job" id="jobMap"/>
+	<select id="jobList" resultMap="jobMap" parameterType="int">
+		SELECT rownum rn, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
+		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no
+		START WITH j_refno = 0
+		CONNECT BY PRIOR j_no = j_refno
+		ORDER siblings BY j_no DESC
+	</select>
+	
+	<!-- 프로젝트 데이터 가져오기 -->
+	<!-- public Project projectGet(int p_no); -->
+	<select id="projectGet" resultType="project" parameterType="int">
+		SELECT * FROM Z_PROJECT WHERE p_no = #{p_no}
+	</select>
+	
+	<!-- 프로젝트 참여인원 데이터 가져오기 -->
+	<!-- public ArrayList<Job> jobPeople(int p_no); -->
+	<resultMap type="job" id="jobpMap"></resultMap>
+	<select id="jobPeople" resultMap="jobpMap" parameterType="int">
+		SELECT a.U_NO, b.U_NAME 
+		FROM Z_RESOURCE a, Z_USER b
+		WHERE a.U_NO = b.U_NO AND a.P_NO = #{p_no}
+	</select>
+	
+	
+	<!-- 작업데이터 삽입 -->
+	<!-- public void jobInsert(Job ins);-->
+	<insert id="jobInsert" parameterType="job">
+		INSERT INTO Z_JOB VALUES
+		(z_job_no_seq.nextval, #{j_refno}, #{j_name},#{j_content},to_date(#{j_startD_s},'yyyy/mm/dd'), to_date(#{j_endD_s},'yyyy/mm/dd'), sysdate, sysdate, #{j_completeR}, #{p_no}, #{u_no})
+	</insert>
+	
+	<!-- 특정 작업 데이터 가져오기 -->
+	<!-- public Job jobDetail(int j_no); -->
+	<select id="jobDetail" resultType="Job" parameterType="int">
+		SELECT j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
+		WHERE a.j_no = #{j_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no
+	</select>
+	
+	<!-- 상위작업 데이터 -->
+	<!-- public Job parentjob(int j_no); -->
+	<select id="parentjob" resultType="Job" parameterType="int">
+		SELECT j_name
+			FROM Z_JOB
+			WHERE j_no = (
+				SELECT J_REFNO FROM Z_JOB WHERE j_no = #{j_no}
+				)
+	</select>
+	
+	<!-- 특정 작업 데이터 업데이트 
+	public Job jobUpdate(Job upt); -->
+	<update id="jobUpdate" parameterType="job">
+		UPDATE Z_JOB
+			SET j_name = #{j_name},
+				j_content = #{j_content},
+				u_no = #{u_no},
+				j_startD = #{j_startD_s},
+				j_endD = #{j_endD_s},
+				j_uptD = sysdate,
+				J_completeR = #{j_completeR}
+			WHERE j_no = #{j_no}
+	</update>
+	<!-- // 특정 작업 삭제
+	public Job jobDelete(int j_no); -->
+	<delete id="jobDelete" parameterType="int">
+		delete from Z_JOB
+	 	where j_no in(
+	 	select j_no
+	 	from z_job
+	 	start with j_no = #{j_no} 
+	 	connect by prior j_no = j_refno
+	 	)
+	</delete>
+	
+	<!-- // 특정 작업 완료율 수정시 -> 상위 작업 완료율 업데이트
+	public void TopjobcomR(int p_no, int j_refno); -->
+	<update id="TopjobcomR" parameterType="int">
+		UPDATE z_job
+			SET j_completeR = (SELECT trunc(avg(J_COMPLETER),2) AS J_COMPLETER FROM z_job WHERE J_REFNO = #{j_refno})
+		WHERE j_no = #{j_refno}
+	</update>
+	
+	<!--
+		특정 프로젝트 총 작업갯수 
+		public int jobcount(int p_no); 
+	-->
+	<select id="jobcount" resultType="int" parameterType="int">
+		SELECT count(*) FROM z_job WHERE p_no = #{p_no}
+	</select>
+	
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="zenkit.web.dao.A01_deptDao">
+
+	<!-- 등록된 부서 리스트 -->
+	<resultMap type="department" id="deptMap"/>
+	<select id="getDeptList" resultMap="deptMap">
+		SELECT * FROM Z_DEPARTMENT
+		ORDER BY d_no
+	</select>
+	
+	<!-- 부서 추가 -->
+	<insert id="insertDept" parameterType="department">
+		INSERT INTO Z_DEPARTMENT VALUES (Z_DEPARTMENT_NO_SEQ.NEXTVAL, #{d_name})
+	</insert>
+	
+	<!-- 부서 삭제 -->
+	<delete id="deleteDept" parameterType="String">
+		DELETE Z_DEPARTMENT
+		 WHERE d_name = #{d_name}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="zenkit.web.dao.A02_CalenDao">
+
+	<resultMap type="calen" id="calMap">
+   		<result property="start" column="start1"/>
+   		<result property="end" column="end1"/>
+   	</resultMap>
+   <select id="calenList" resultMap="calMap" parameterType="int">
+    	SELECT * FROM z_calendar where u_no=#{u_no}
+    </select>
+    
+    <insert id="insertCalendar" parameterType="calen">
+     INSERT INTO z_calendar values(Z_CALENDAR_NO_SEQ.NEXTVAL,
+     #{title},#{start},#{end},#{allDay},#{content},
+     #{textColor},#{backgroundColor},#{borderColor},#{u_no})
+    </insert>
+    
+    <update id="updateCalen" parameterType="calen">
+     update z_calendar
+         set title=#{title},
+             start1=#{start},
+             end1=#{end},
+             allDay=#{allDay},
+             content=#{content},
+             textColor=#{textColor},
+             backgroundColor=#{backgroundColor},
+             borderColor=#{borderColor}
+         where id=#{id}
+    </update>
+    
+    <delete id="deleteCalen" parameterType="int">
+             delete
+             from z_calendar
+             where id=#{id}
+    </delete>
+</mapper>
