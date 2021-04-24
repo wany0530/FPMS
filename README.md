@@ -18,7 +18,9 @@
 ## 사용기술
 
 > Spring Framwork 사용
+> 
 > DHTMLX Gantt API 사용
+> 
 > JSON데이터를 이용한 AJAX 비동기식 처리
 
 
