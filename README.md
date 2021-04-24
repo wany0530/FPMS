@@ -34,7 +34,7 @@
 
 ## 어려웠던 점
 
-#### 1. ajax내에서 반복/조건 처리 및 
+#### 1. ajax내에서 반복/조건 처리 난항
 
 * 기존 jsp에서 사용한 <c:foreach>태그를 ajax로 작성시 적용되지 않았다.
 
@@ -44,6 +44,7 @@
   
 ![zenkit_question_solution2](https://user-images.githubusercontent.com/77144929/115964814-28367380-a561-11eb-9318-767eb0c62da9.PNG)
 
+#### 2. Gantt Edit 박스 내 Propertis 추가 난항
 
 * Gantt에서 수정/등록을 위한 lightbox 내부 속성 영역 추가 작업 난항.
   
@@ -64,8 +65,23 @@
 > 
 > div를 비롯하여 다양한 태그와 연관이 있었고, 부트스트랩이 적용되기 전에 Ajax로 데이터를 구성함으로써 해결할 수 있었다.
 
-![image](https://user-images.githubusercontent.com/77144929/115965697-47370480-a565-11eb-85c3-bfdfe81105b2.png)
+<br>
 
+#### 데이터 베이스 설계
+> 총 14개의 테이블로 구성
+![image](https://user-images.githubusercontent.com/77144929/115965820-e22fde80-a565-11eb-9d52-882e4bb4ce5c.png)
+
+<br>
+
+#### 프로젝트 작업 관리(Gantt 차트)
+
+* 해당 프로젝트 작업물 수정/등록/삭제
+* 차트 그래프 Drag를 통한 날짜 수정
+* DB에 저장된 작업을 JSON데이터로 가져와 Ajax처리
+* button Box를 만들어 수정/등록/삭제 아이콘을 생성하고 해당 기능을 제공할수있는 lightBox내 section들 정의.
+* 계정(직책)별 접근 권한 제한 (PM -> 가능 / 개발자 -> 기능권한X)
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/77144929/115966485-b82beb80-a568-11eb-9dd4-dec8213b6dde.gif)
 
 
 
