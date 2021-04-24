@@ -48,6 +48,14 @@
 	        				<i class="tim-icons icon-badge"></i> 배정현황
 	      			</a>
 	        		</li>
+	        		
+					<!-- 채팅 정보 -->
+					<li class="nav-item mr-1">
+						<a class="btn ${(fileName=='/WEB-INF/views/a03_project/a04_chatt.jsp')?'btn-primary':''}"
+							href="${path}/chatt.do?method=chatt">
+	        				<i class="tim-icons icon-badge"></i> 채팅
+	      			</a>
+	        		</li>
 
 	      </ul>
 	    </div>

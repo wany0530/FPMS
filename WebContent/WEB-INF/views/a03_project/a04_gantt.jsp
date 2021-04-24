@@ -56,6 +56,7 @@ html, body {
 
 	<script>
 	document.addEventListener("DOMContentLoaded",function(){
+		// json데이터를 받아 ajax처리로 차트 출력
 		$.ajax({
 			type:"post",
 			url:"${path}/job.do?method=data",
@@ -74,15 +75,21 @@ html, body {
 				console.log(err);
 			}
 		});
+		gantt.config.scales = [
+		    {unit: "month", step: 1, format: "%F, %Y"},
+		    {unit: "day", step: 1, format: "%j, %D"}
+		];
 		
+
+		// Gantt차트 속성 정의
 		var colHeader = '<div class="gantt_grid_head_cell gantt_grid_head_add" onclick="gantt.createTask()"></div>';
 		gantt.config.columns = [
-			{ name: "text", tree: true, width: 250, resize: true },
-            { name: "start_date", align: "center", resize: true ,width: 100},
-            { name: "end_date", align: "center", resize: true ,width: 100},
-            { name: "charger", align: "center" ,width: 100},
-            { name: "progress", align: "center" ,width: 100},
-	        { name: "buttons", label:colHeader, width: 75, template: function(task) {
+			{ name: "text", tree: true, width: 250, resize: true }, // 작업명
+            { name: "start_date", align: "center", resize: true ,width: 100}, // 시작일
+            { name: "end_date", align: "center", resize: true ,width: 100}, // 종료일
+            { name: "charger", align: "center" ,width: 100}, // 담당자
+            { name: "progress", align: "center" ,width: 100}, // 완료율
+	        { name: "buttons", label:colHeader, width: 75, template: function(task) { // CRUD 
 	            return (
 	               '<i class="fa fa-pencil" align="center" data-action="edit"></i>' +
 	               '<i class="fa fa-plus" align="center" data-action="add"></i>' +
@@ -90,10 +97,11 @@ html, body {
 	               );
 	         }}
 	      ];
+		/* 간트영역 작업 더블클릭시 상세정보 막아둠 */
 		gantt.attachEvent("onTaskDblClick", function(id,e){
 		    return false;
 		});
-		
+		/* 간트영역 수정/생성/삭제 클릭시 기능별 정의 */
 		gantt.attachEvent("onTaskClick", function(id, e){
 	        var button = e.target.closest("[data-action]")
 	        if(button){
@@ -257,13 +265,8 @@ html, body {
 		  sch.progress = gantt.progress;  
 	  }
 	};
+	/* 삭제 처리 기능 */
 	function getFormatDate(date){
-	    //var year = date.getFullYear();              //yyyy
-	    //var month = (1 + date.getMonth());          //M
-	    //month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-	    //var day = date.getDate();                   //d
-	    //day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-	    //return  year + '' + month + '' + day;       //'-' 추가하여 yyyy-mm-dd 형태 생성 가능
 	    var year2 = date.substring(0,4);
 	    var month2 = date.substring(5,7);
 	    var day2 = date.substring(8,10);        

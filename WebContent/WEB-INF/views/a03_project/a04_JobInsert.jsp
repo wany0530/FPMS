@@ -102,6 +102,8 @@
 		if(proc == "insert"){
 			if(!confirm("등록 완료!! \n 계속 등록하시겠습니까??")){
 				location.href="${path}/job.do?method=list";	
+			}else{
+				location.href="${path}/job.do?method=insertForm";
 			}
 		};
 		
@@ -137,7 +139,7 @@
 							<div class="card-body">
 								<form method="post" class="form-horizontal" action="${path}/job.do?method=insert">
 									<c:forEach var="job" items="${joblist}">
-										<input type="hidden" class="a" value="${job.j_startD}"/> 
+										<input type="hidden" value="${job.j_startD}"/> 
 									</c:forEach>
 									<div class="row">
 										<label class="col-sm-2 col-form-label"> 

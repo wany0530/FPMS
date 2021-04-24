@@ -3,16 +3,19 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="zenkit.web.dao.A03_JobDao">
-	<!-- // Gantt에 표시할 내용.2
-	public ArrayList<Job> jobList3(JobSch sch); -->
-	
+
+	<!-- 작업 리스트 -->
+	<!--  public ArrayList<Job> jobList2(JobSch sch)-->
 	<resultMap type="job" id="job2Map"/>
 	<select id="jobList2" resultMap="job2Map" parameterType="jobsch">
 	select *
 	from(
-	SELECT rownum cnt, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+	SELECT rownum cnt, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content,
+					 j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
 		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
-		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no AND j_name LIKE '%'||#{j_name}||'%' AND a.u_no LIKE '%'||#{u_no}||'%'
+		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no 
+		  		AND a.p_no = b.p_no AND b.p_no =d.p_no AND j_name LIKE '%'||#{j_name}||'%' 
+		  		AND a.u_no LIKE '%'||#{u_no}||'%'
 		START WITH j_refno = 0
 		CONNECT BY PRIOR j_no = j_refno
 		ORDER siblings BY j_no DESC
@@ -20,7 +23,7 @@
 	where cnt between #{start} and #{end}
 	</select>
 	
-	<!-- public ArrayList<Job2> jobList3(); -->
+	<!-- public ArrayList<Job> jobList3(int p_no) -->
 	<resultMap type="job2" id="jobMap3"/>
 	<select id="jobList3" resultMap="jobMap3" parameterType="int">
 		SELECT rownum rn, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
@@ -41,9 +44,12 @@
 	<!-- public ArrayList<Job> jobList(); -->
 	<resultMap type="job" id="jobMap"/>
 	<select id="jobList" resultMap="jobMap" parameterType="int">
-		SELECT rownum rn, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name, j_content, j_startD, j_endD, j_regD, j_uptD, c.u_name j_charger, j_completeR, d.p_no, b.u_no
+		SELECT rownum rn, LEVEL, j_no, j_refno, d.P_NAME AS j_pname, j_name,
+				j_content, j_startD, j_endD, j_regD, j_uptD,
+				 c.u_name j_charger, j_completeR, d.p_no, b.u_no
 		  FROM z_job a, z_resource b, z_user c, Z_PROJECT d
-		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no
+		  WHERE d.p_no = #{p_no} AND a.u_no = b.u_no AND
+		  		 b.u_no = c.u_no AND a.p_no = b.p_no AND b.p_no =d.p_no
 		START WITH j_refno = 0
 		CONNECT BY PRIOR j_no = j_refno
 		ORDER siblings BY j_no DESC
@@ -64,14 +70,6 @@
 		WHERE a.U_NO = b.U_NO AND a.P_NO = #{p_no}
 	</select>
 	
-	
-	<!-- 작업데이터 삽입 -->
-	<!-- public void jobInsert(Job ins);-->
-	<insert id="jobInsert" parameterType="job">
-		INSERT INTO Z_JOB VALUES
-		(z_job_no_seq.nextval, #{j_refno}, #{j_name},#{j_content},to_date(#{j_startD_s},'yyyy/mm/dd'), to_date(#{j_endD_s},'yyyy/mm/dd'), sysdate, sysdate, #{j_completeR}, #{p_no}, #{u_no})
-	</insert>
-	
 	<!-- 특정 작업 데이터 가져오기 -->
 	<!-- public Job jobDetail(int j_no); -->
 	<select id="jobDetail" resultType="Job" parameterType="int">
@@ -89,6 +87,16 @@
 				SELECT J_REFNO FROM Z_JOB WHERE j_no = #{j_no}
 				)
 	</select>
+	
+	<!-- 작업데이터 삽입 -->
+	<!-- public void jobInsert(Job ins);-->
+	<insert id="jobInsert" parameterType="job">
+		INSERT INTO Z_JOB VALUES
+		(z_job_no_seq.nextval, #{j_refno}, #{j_name},
+			#{j_content},to_date(#{j_startD_s},'yyyy/mm/dd'),
+			 to_date(#{j_endD_s},'yyyy/mm/dd'), sysdate, sysdate,
+			  #{j_completeR}, #{p_no}, #{u_no})
+	</insert>
 	
 	<!-- 특정 작업 데이터 업데이트 
 	public Job jobUpdate(Job upt); -->
