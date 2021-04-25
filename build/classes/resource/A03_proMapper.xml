@@ -5,18 +5,17 @@
 <mapper namespace="zenkit.web.dao.A03_projectDao">
 
 	<!-- 회원별 프로젝트 -->
-	<resultMap type="project" id="proListMap"/>
+	<resultMap type="upproject" id="proListMap"/>
 	<select id="getProList" resultMap="proListMap" parameterType="schProject">
 		SELECT *
 		  FROM (
 			SELECT ROWNUM num, p.*
 			  FROM (
-				 	SELECT *
+					SELECT *
 					  FROM Z_PROJECT
-					 WHERE p_no IN (
-							SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
-					 )			AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
-						 ORDER BY p_no DESC
+					 WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no})
+					   AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+					ORDER BY p_no DESC
 				) p
 			)
 		WHERE num BETWEEN #{startNum} AND #{endNum}
@@ -25,17 +24,28 @@
 	<!-- 회원별 프로젝트 총 합계 -->
 	<select id="getProListCnt" resultType="int" parameterType="schProject">
 		SELECT count(*) cnt
-		  FROM (
-			SELECT ROWNUM num, p.*
-			  FROM (
-				 	SELECT *
-					  FROM Z_PROJECT
-					 WHERE p_no IN (
-							SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
-					 )			AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
-						 ORDER BY p_no DESC
-				) p
-			)
+		  FROM Z_PROJECT
+		 WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no})
+			AND p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+	</select>
+	
+	<!--프로젝트별 리스트 갯수 -->
+	<resultMap type="upproject" id="proRiskCntMap"/>
+	<select id="getProRiskCnt" resultMap="proRiskCntMap" parameterType="int">
+		SELECT p_no, count(*) riskCnt
+		  FROM Z_RISK
+		 WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no})
+		GROUP BY p_no
+	</select>
+	
+	<!--프로젝트별 산출물 갯수 -->
+	<resultMap type="upproject" id="proOutCntMap"/>
+	<select id="getProOutCnt" resultMap="proOutCntMap" parameterType="int">
+		SELECT j.p_no, count(o.o_no) outputCnt
+		  FROM Z_JOB j, Z_OUTPUTS o
+		 WHERE j.j_no = o.j_no
+		   AND j.p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no})
+		GROUP BY j.p_no
 	</select>
 
 	<!-- 마지막 프로젝트 번호 -->
@@ -116,6 +126,16 @@
 		   AND p_no = #{p_no}
 	</select>
 	
+	<!-- 개인이 조치해야할 리스크 목록-->
+	<resultMap type="risk" id="myRiskMap"></resultMap>
+	<select id="getMyRisk" resultMap="myRiskMap" parameterType="myRisk">
+		SELECT *
+		  FROM Z_RISK
+		 WHERE p_no = #{p_no}
+		   AND r_receive = #{u_id}
+		   AND rs_name != '조치완료'
+	</select>
+	
 	<!-- 프로젝트 별 작업상태 카운트 -->
 	<select id="getJobState" resultType="jobStateCnt" parameterType="int">
 		SELECT c1.cnt1, c2.cnt2, c3.cnt3
@@ -144,21 +164,18 @@
 		  FROM (
 			SELECT count(*) cnt1
 			  FROM Z_RISK r
-			 WHERE j_no IN (
-				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
-			 ) AND rs_name = '오픈'
+			 WHERE p_no = #{p_no}
+			   AND rs_name = '오픈'
 			)c1 ,(
 			SELECT count(*) cnt2
 			  FROM Z_RISK r
-			 WHERE j_no IN (
-				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
-			 ) AND rs_name = '진행'
+			 WHERE p_no = #{p_no}
+			   AND rs_name = '진행'
 			)c2 ,(
 			SELECT count(*) cnt3
 			  FROM Z_RISK r
-			 WHERE j_no IN (
-				SELECT j_no FROM Z_JOB WHERE p_no = #{p_no}
-			 ) AND rs_name = '조치완료'
+			 WHERE p_no = #{p_no}
+			   AND rs_name = '조치완료'
 			)c3
 	</select>
 	
@@ -171,6 +188,18 @@
 	         to_date(#{p_endD_s},'YYYY-MM-DD'),
 	         #{p_content}, #{p_pm}, #{d_no})
 	</insert>
+	
+	<insert id="firstJobInsert" parameterType="upproject">
+		INSERT INTO Z_JOB VALUES (z_job_no_seq.nextval, 0, #{p_name},'최상위',
+			to_date(#{p_startD_s},'yyyy/mm/dd'),
+			to_date(#{p_endD_s},'yyyy/mm/dd'),
+			sysdate,
+			sysdate,
+			0,
+			#{p_no},
+			#{u_no})
+	</insert>
+	
 	
 	<!-- 프로젝트 참여 -->
 	<insert id="projectInvite" parameterType="hashmap">

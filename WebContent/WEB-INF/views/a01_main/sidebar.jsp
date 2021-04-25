@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="sidebar">
    <div class="sidebar-wrapper" style="overflow: hidden;">
       <div class="logo">
@@ -13,50 +13,27 @@
           </a>
         </div>
         <ul class="nav">
-        
-          <li>
-            <a data-toggle="collapse" href="#pagesExamples">
-              <i class="tim-icons icon-chart-pie-36"></i>
-              <p class="title">
-                대시보드
-                <b class="caret"></b>
-              </p>
-            </a>
-            <div class="collapse" id="pagesExamples">
-              <ul class="nav">
-         	    <c:if test="${sesMem.pos_no > 2}">
-                <li>
-                  <a href="${path}/dashboard.do?method=personalList">
-                    <span class="sidebar-mini-icon">PE</span>
-                    <span class="sidebar-normal title"> 개인 대시보드 </span>
-                  </a>
-                </li>
-                <li>
-                  <a href="${path}/dashboard.do?method=projectList">
-                    <span class="sidebar-mini-icon">PJ</span>
-                    <span class="sidebar-normal title"> 프로젝트 대시보드 </span>
-                  </a>
-                </li>    
-                </c:if>
-                <c:if test="${sesMem.pos_no <= 2}">
-	                <li>
-	                  <a href="${path}/dashboard.do?method=personalList">
-	                    <span class="sidebar-mini-icon">CS</span>
-	                    <span class="sidebar-normal title"> 종합 대시보드 </span>
-	                  </a>
-	                </li>
-	                <li>
-	                  <a href="${path}/dashboard.do?method=departList">
-	                    <span class="sidebar-mini-icon">DP</span>
-	                    <span class="sidebar-normal title"> 부서 대시보드 </span>
-	                  </a>
-	                </li>   
-                </c:if>
-              </ul>
-            </div>
-          </li>
-          
-          <c:if test="${sesMem.pos_no == 4}">
+           <c:if test="${sesMem.pos_no > 2}">
+	          <li>
+	            <a href="${path}/dashboard.do?method=personalList">
+	              <i class="tim-icons icon-chart-pie-36"></i>
+	              <p class="title">
+	                개인 대시보드
+	              </p>
+	            </a>                      
+	          </li>
+          </c:if>
+           <c:if test="${sesMem.pos_no <= 2}">
+	          <li>
+	            <a href="${path}/dashboard.do?method=personalList">
+	              <i class="tim-icons icon-chart-pie-36"></i>
+	              <p class="title">
+	                종합 대시보드
+	              </p>
+	            </a>                      
+	          </li>
+          </c:if>
+		  <c:if test="${sesMem.pos_no == 4}">
           <li>
             <a href="${path}/mytask.do?method=task">
               <i class="tim-icons icon-single-02"></i>

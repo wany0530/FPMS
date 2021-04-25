@@ -84,7 +84,7 @@
          							</c:choose>
          						</td>
         						<td class="text-center">${auth.req_name}</td>
-        						<td class="text-center"><fmt:formatDate value="${auth.a_date}"/></td>
+        						<td class="text-center"><fmt:formatDate value="${auth.a_date}" pattern="yyyy-MM-dd"/></td>
         					</tr>
         					</c:forEach>
         					</c:if>
@@ -142,11 +142,11 @@
 			      		<div class="form-group row">
 			      			<label class="col-lg-2 col-form-label text-right">시작</label>
 			      			<div class="col-lg-3">
-			      				<span id="task_start" class="form-control">2020-04-01</span>
+			      				<span id="task_start" class="form-control"></span>
 			      			</div>
 			      			<label class="col-lg-2 col-form-label text-right">완료</label>
 			      			<div class="col-lg-3">
-			      				<span id="task_finish" class="form-control">2020-04-03</span>
+			      				<span id="task_finish" class="form-control"></span>
 			      			</div>
 			      		</div>
 			      		<div class="form-group row">

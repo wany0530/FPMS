@@ -2,93 +2,201 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-
+	
 <mapper namespace="zenkit.web.dao.A01_DashboardDao">
 
 	<!-- 개인 대시보드 작업물 개수 -->
 	<!-- public int jobCnt(int u_no) -->
 	<select id="jobCnt" resultType="int" parameterType="int">
 		SELECT count(*)
-		FROM Z_USER zu , Z_JOB zj, Z_RESOURCE zr
-		WHERE zu.U_NO = zr.U_NO
+		FROM Z_USER zu , Z_JOB zj, Z_RESOURCE zr 
+		WHERE zu.U_NO = zr.U_NO 
 		AND zr.P_NO = zj.P_NO
-		AND zr.U_NO = zj.U_NO
+		AND zr.U_NO = zj.U_NO 
 		AND zr.U_NO = #{U_NO}
-		<!-- AND zr.U_NO = #{U_NO} -->
 	</select>
-
+	
 	<!-- 개인 대시보드 프로젝트 개수 -->
 	<!-- public int projectCnt(int u_no) -->
 	<select id="projectCnt" resultType="int" parameterType="int">
-		SELECT
-		count(*)
-		FROM Z_USER zu, Z_RESOURCE zr, Z_PROJECT zp
-		WHERE zu.U_NO = zr.U_NO
-		AND zr.P_NO = zp.P_NO
+		SELECT count(*)
+		FROM Z_USER zu, Z_RESOURCE zr, Z_PROJECT zp 
+		WHERE zu.U_NO = zr.U_NO 
+		AND zr.P_NO = zp.P_NO 
 		AND zu.U_NO = #{U_NO}
 	</select>
-
-
+	
+	
 	<!-- 개인 대시보드 산출물 개수 -->
 	<!-- public int outputCnt(int u_no) -->
 	<select id="outputCnt" resultType="int" parameterType="int">
-		SELECT
-		count(*)
-		FROM Z_USER zu, Z_RESOURCE zr, Z_JOB zj, Z_PROJECT zp,
-		Z_OUTPUTS zo
-		WHERE zu.U_NO = zr.U_NO
-		AND zr.U_NO = zj.U_NO
+		SELECT count(*)
+		FROM Z_USER zu, Z_RESOURCE zr, Z_JOB zj, Z_PROJECT zp, Z_OUTPUTS zo 
+		WHERE zu.U_NO = zr.U_NO 
+		AND zr.U_NO = zj.U_NO 
 		AND zr.P_NO = zp.P_NO
-		AND zr.P_NO = zj.P_NO
-		AND zj.J_NO = zo.J_NO
+		AND zr.P_NO = zj.P_NO 
+		AND zj.J_NO = zo.J_NO 
 		AND zu.U_NO = #{U_NO}
 	</select>
-
-
-	<!-- 개인 대시보드 프로젝트 별 기간 -->
+	
+	<!-- 개인 대시보드 리스크 개수 -->
+	<!-- public int liskCnt(int u_no); -->
+	<select id="liskCnt" resultType="int" parameterType="int">
+		SELECT count(*)
+		FROM Z_USER zu, Z_RESOURCE zr, Z_PROJECT zp, Z_RISK zr2 
+		WHERE zu.U_NO = zr.U_NO 
+		AND zr.P_NO = zp.P_NO 
+		AND zp.P_NO = zr2.P_NO 
+		AND zu.U_ID = zr2.R_RECEIVE 
+		AND zu.U_NO =#{U_NO}
+	</select>	
+	
+	<!-- 개인 대시보드 진행중인 프로젝트 별 기간 -->
 	<!-- public ArrayList<DashBoard> projectDate(int u_no); -->
 	<resultMap type="dashboard" id="projDateList"></resultMap>
-	<select id="projectDate" resultMap="projDateList"
-		parameterType="int">
-		SELECT zp.P_NAME ,
-		trunc(zp.P_ENDD)-trunc(sysdate) dDay,
-		ROUND(MOD((trunc(sysdate-P_STARTD))/(trunc(zp.P_ENDD-zp.P_STARTD)),1)*100,0)
-		percent
+	<select id="projectDate" resultMap="projDateList" parameterType="int">	
+		SELECT DISTINCT zp.P_NAME  
+			,trunc(zp.P_ENDD)-trunc(sysdate) dDay
+			,zj.J_COMPLETER * 100 AS percent
 		FROM Z_PROJECT zp, Z_USER zu , Z_RESOURCE zr
-		WHERE sysdate
-		BETWEEN zp.P_STARTD AND zp.P_ENDD
-		AND zu.U_NO = zr.U_NO
+			, (SELECT J_COMPLETER, P_NO 
+				FROM Z_JOB zj 
+				WHERE J_REFNO = 0
+				) zj
+		WHERE zu.U_NO = zr.U_NO 
 		AND zr.P_NO = zp.P_NO
-		AND zu.U_NO = #{U_NO}
+		AND zj.P_NO = zp.P_NO
+		AND zj.J_COMPLETER != 1
+		AND zu.U_NO = #{U_NO}	
+		ORDER BY dDay		
 	</select>
 
-
-	<!-- 개인 대시보드 프로젝트 테이블 -->
-	<!-- public ArrayList<DashBoard> projectList(int u_no); -->
-	<resultMap type="dashboard" id="projList"></resultMap>
-	<select id="projectList" resultMap="projList"
-		parameterType="int">
+	
+	<!-- 개인 대시보드 프로젝트 작업상태 카운트 - pieChart -->
+	<!-- public DashBoard projCntList(int u_no); -->
+	<select id="projCntList" resultType="dashboard" parameterType="int">
 	<![CDATA[
-		SELECT DISTINCT P_NAME, zp.P_NO , p_pm, zd.D_NAME, 
-			P_STARTD, P_ENDD, count(zo.O_NO) AS poCnt, 
-			trunc(zp.P_ENDD)-trunc(sysdate) dDay,
-			ROUND(MOD((trunc(sysdate-P_STARTD))/(trunc(zp.P_ENDD-zp.P_STARTD)),1)*100,0) percent,
-			(CASE WHEN (sysdate < zp.P_STARTD) THEN '시작전'
-		 	 WHEN (sysdate > zp.P_ENDD) THEN '완료'
-			 ELSE '진행' END) progress 	
-		FROM Z_PROJECT zp, Z_USER zu, Z_OUTPUTS zo, Z_RESOURCE zr, Z_JOB zj, Z_DEPARTMENT zd
-		WHERE zu.U_NO = zr.U_NO
-			AND zp.P_NO = zr.P_NO
-			AND zr.U_NO = zj.U_NO(+)
-			AND zj.J_NO = zo.J_NO(+)
-			AND zd.D_NO = zp.D_NO
-			AND zr.P_NO = zj.P_NO(+)
-
-		AND zr.U_NO = #{U_NO}
-		GROUP BY P_NAME, zp.P_NO , p_pm, zd.D_NAME, 
-				P_STARTD, P_ENDD
-		ORDER BY zp.p_no
+		SELECT DISTINCT beforeCnt, ongoingCnt, doneCnt
+		  FROM (
+		  	SELECT count(*) beforeCnt 
+		  	FROM Z_JOB 
+		  	WHERE u_no = #{U_NO} 
+		  	AND j_completer = 0
+		  ), (
+		  	SELECT count(*) ongoingCnt
+		 	  FROM Z_JOB
+			 WHERE u_no = #{U_NO}	
+				AND j_completer > 0 
+				AND j_completer < 1  
+		  ), (
+			SELECT count(*) doneCnt
+			  FROM Z_JOB
+			 WHERE u_no = #{U_NO}	
+			 AND j_completer = 1
+		  ), Z_JOB 
+		WHERE J_REFNO!=0
 	]]>
 	</select>
-
+	
+	<!-- 개인 대시보드 리스크 카운트 - pieChart -->
+	<!-- public DashBoard riskCntList(int u_no); -->
+	<select id="riskCntList" resultType="dashboard" parameterType="int">
+		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c4.rCancelCnt, c5.rHoldCnt
+		  FROM (
+			SELECT count(*) rOpenCnt
+			  FROM Z_RISK r
+			 WHERE r.R_RECEIVE IN (
+				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
+			 ) AND rs_name = '오픈'
+			) c1 ,(
+			SELECT count(*) rDoneCnt
+			  FROM Z_RISK r
+			WHERE r.R_RECEIVE IN (
+				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
+			 ) AND rs_name = '조치완료'
+			) c2 ,(
+			SELECT count(*) rOngoingCnt
+			  FROM Z_RISK r
+			 WHERE r.R_RECEIVE IN (
+				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
+			 ) AND rs_name = '진행'
+			) c3 ,(
+			SELECT count(*) rCancelCnt
+			  FROM Z_RISK r
+			 WHERE r.R_RECEIVE IN (
+				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
+			 ) AND rs_name = '취소'
+			) c4 ,(
+			SELECT count(*) rHoldCnt
+			  FROM Z_RISK r
+			 WHERE r.R_RECEIVE IN (
+				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
+			 ) AND rs_name = '홀드'
+			) c5	
+	</select>
+	
+	<!-- 개인 대시보드 참여 프로젝트 현황 -->
+	<!-- public DashBoard persProjList(int u_no); -->
+	<select id="persProjList" resultType="dashboard" parameterType="int">
+	<![CDATA[
+		SELECT DISTINCT 
+		   zp.P_NAME, zp.P_NO, pm.pm_name, zd.D_NAME 
+		   , (CASE WHEN sysdate < zp.P_STARTD THEN '시작전'
+		           WHEN zj.J_COMPLETER = 1 THEN '완료'
+		           WHEN zj.J_COMPLETER != 1 AND SYSDATE > zp.P_ENDD THEN '지연'
+		           ELSE '진행' END) progress_state
+		   , zp.P_STARTD, zp.P_ENDD 
+		   , nvl(zj.j_completer,0) * 100 AS progress_rt
+		   , nvl(zj2.job_cnt,0) AS job_cnt, nvl(zr.risk_cnt,0) AS risk_cnt
+		FROM Z_PROJECT zp 
+		LEFT OUTER JOIN 
+		(
+		   SELECT DISTINCT 
+		      a.P_NO, a.U_NO 
+		   FROM Z_RESOURCE a
+		) zr ON zp.P_NO  = zr.P_NO
+		LEFT OUTER JOIN 
+		(
+		   SELECT distinct
+		      a.U_NO, a.U_NAME 
+		   FROM z_user a
+		)zu ON zr.U_NO = zu.U_NO 
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      a.U_ID, a.U_NAME AS pm_name
+		   FROM Z_USER a
+		) pm ON zp.p_pm = pm.U_ID
+		LEFT OUTER JOIN Z_DEPARTMENT zd ON zp.D_NO = zd.D_NO 
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      distinct
+		      c.P_NO, a.J_COMPLETER
+		   FROM Z_JOB a
+		   LEFT OUTER JOIN Z_PROJECT c ON a.p_no = c.p_no
+		   WHERE a.J_REFNO = 0
+		) zj ON zp.p_no = zj.p_no
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      c.P_NO, COUNT(A.J_NO) AS job_cnt
+		   FROM Z_JOB A
+		   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
+		   GROUP BY c.p_no
+		) zj2 on zp.p_no = zj2.p_no
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      A.P_NO
+		      , COUNT(A.R_NO) AS risk_cnt
+		   FROM Z_RISK A
+		   GROUP BY A.P_NO
+		) zr on zp.p_no = zr.p_no
+		WHERE zu.U_NO = #{U_NO}
+		order by zp.P_STARTD
+	]]>
+	</select>
+	
 </mapper>

@@ -2,6 +2,12 @@
 
 INSERT INTO Z_DEPARTMENT VALUES (Z_DEPARTMENT_NO_SEQ.NEXTVAL,'IT팀');
 
+-- 비밀번호 변경
+UPDATE Z_USER
+   SET u_pass = #{u_pass}
+ WHERE u_no = #{u_no};
+SELECT * FROM Z_USER zu ;
+
 DELETE Z_DEPARTMENT
  WHERE d_name = '테스트';
 
@@ -179,4 +185,162 @@ UPDATE Z_USER
  WHERE u_id = '02MA064';
  
  SELECT * FROM Z_USER;
+
+SELECT *
+  FROM (
+	SELECT ROWNUM num, p.*, count(r_no)
+	  FROM (
+		 	SELECT *
+			  FROM Z_PROJECT p, Z_RISK r
+			 WHERE p.p_no = r.r_no(+)
+			   AND p_no IN (
+					SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+			 )			AND p_name LIKE '%'||''||'%'
+			 	 GROUP BY p.*
+				 ORDER BY p_no DESC
+		) p
+	)
+WHERE num BETWEEN 1 AND 10;
+
+SELECT *,
+  FROM Z_PROJECT p
+ WHERE p_no IN (
+	SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+ )
+   AND p_name LIKE '%'||''||'%'
+ORDER BY p_no DESC;
+
+SELECT p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no,
+		 count(r_no) AS riskCnt,
+		 count(o_no) AS outputCnt
+  FROM Z_RISK r, Z_PROJECT p, Z_OUTPUTS o, Z_JOB j
+ WHERE r.p_no(+) = p.p_no
+   AND p.p_no = j.p_no(+)
+   AND j.j_no = o.j_no(+)
+   AND p.p_no IN (
+	SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+ )
+GROUP BY p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no;
+
+
+SELECT *, (SELECT count(*) FROM Z_RISK WHERE p_no IN (		SELECT p_no
+		  FROM Z_RESOURCE
+		 WHERE u_no = 3)
+  FROM Z_PROJECT
+ WHERE p_no IN (
+		SELECT p_no
+		  FROM Z_RESOURCE
+		 WHERE u_no = 3
+ );
+
+SELECT *
+  FROM (
+	SELECT ROWNUM num,upproject.*
+	  FROM (
+		SELECT p.*, pr.riskCnt, po.outputCnt
+		  FROM Z_PROJECT p, (
+				SELECT p.p_no, count(r.p_no) AS riskCnt
+			   FROM Z_RISK r, Z_PROJECT p
+			   WHERE r.p_no(+) = p.p_no
+				AND p.p_no IN (
+					SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = 3
+				)
+				GROUP BY p.p_no
+		  ) pr, (
+				SELECT p.p_no, count(o.o_no) outputCnt
+				FROM Z_JOB j, Z_OUTPUTS o, Z_PROJECT p
+				WHERE j.j_no = o.j_no(+)
+				AND p.p_no = j.p_no(+)
+			 	AND p.p_no IN (
+			 		SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = 3
+				)
+				GROUP BY p.p_no
+		  ) po
+		WHERE p.p_no = pr.p_no
+		  AND p.p_no = po.p_no
+		  AND p.p_name LIKE '%'||''||'%'
+		ORDER BY p.p_no DESC
+	) upproject
+)
+WHERE num BETWEEN 0 AND 99;
+SELECT * FROM Z_USER zu ;
+
+SELECT p.p_no, count(o.o_no) outputCnt
+  FROM Z_JOB j, Z_OUTPUTS o, Z_PROJECT p
+ WHERE j.j_no = o.j_no(+)
+	AND p.p_no = j.p_no(+)
+ 	AND p.p_no IN (
+ 		SELECT p_no
+		FROM Z_RESOURCE
+		WHERE u_no = 3
+)
+GROUP BY p.p_no;
+
+
+SELECT p_no
+		FROM Z_RESOURCE
+		WHERE u_no = 3;
+SELECT * FROM Z_OUTPUTS zo ;
+SELECT * FROM Z_JOb;
+
+SELECT p.p_no, count(r.p_no) AS riskCnt
+  FROM Z_RISK r, Z_PROJECT p
+ WHERE r.p_no(+) = p.p_no
+   AND p.p_no IN (
+ 		SELECT p_no
+		FROM Z_RESOURCE
+		WHERE u_no = 3
+	 	)
+GROUP BY p.p_no;
+	
+
+
+SELECT pr.
+  FROM (
+	SELECT p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no,
+		 count(r_no) AS riskCnt
+  	  FROM Z_RISK r, Z_PROJECT p
+ 	 WHERE r.p_no(+) = p.p_no
+   	AND p.p_no IN (
+	SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+ 	) GROUP BY p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no  
+) pr ;
+
+
+SELECT p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no,
+		 count(r_no) AS riskCnt
+  FROM Z_RISK r, Z_PROJECT p
+ WHERE r.p_no(+) = p.p_no
+   AND p.p_no IN (
+	SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+ )
+GROUP BY p.p_no, p.p_name, p.p_startD, p.p_endD, p.p_content, p.p_pm, p.d_no;
+
+SELECT p.p_no, p.p_name, count(o_no)
+  FROM Z_PROJECT p, Z_OUTPUTS o, Z_JOB j
+ WHERE p.p_no = j.p_no(+)
+   AND j.j_no = o.j_no(+)
+ GROUP BY p.p_no, p.p_name;
+
+SELECT * FROM Z_OUTPUTS zo ;
+SELECT * FROM Z_JOB;
+SELECT * FROM Z_RISK zr ;
+
+SELECT *
+  FROM Z_OUTPUTS
+ WHERE j_no IN (
+	 SELECT j_no
+	  FROM Z_JOB
+	 WHERE p_no IN (
+		SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+	 )
+ );
+
+SELECT * FROM z_user;
+
+
 

@@ -12,8 +12,6 @@
 <script>
 	$(document).ready(function(){
 		var session = "${sesMem.u_no}";
-		
-		
 	})
 </script>
 <head>
@@ -53,7 +51,7 @@
               <div class="card-footer">
                 <hr>
                 <div class="stats">
-                   <a href="${path}/mytask.do?method=task" style="color:#a9a9b1; font-weight:500;">
+                   <a href="mytask.do?method=task" style="color:#a9a9b1; font-weight:500;">
 	                 View More <i class="tim-icons icon-minimal-right"></i> 
 	               </a>
                 </div>
@@ -81,7 +79,7 @@
               <div class="card-footer">
                 <hr>
                 <div class="stats">
-	                <a href="project.do?method=detail_1" style="color:#a9a9b1; font-weight:500;">
+	                <a href="project.do?method=form" style="color:#a9a9b1; font-weight:500;">
 	                 View More <i class="tim-icons icon-minimal-right"></i> 
 	                 </a>
                 </div>
@@ -90,7 +88,7 @@
           </div>
           <div class="col-lg-3 col-md-6">
             <div class="card card-stats">
-              <div class="card-body" OnClick="location.href ='${path}/mytask.do?method=output'">
+              <div class="card-body" OnClick="location.href ='${path}/mytask.do?method=outputs'">
                 <div class="row">
                   <div class="col-5">
                     <div class="info-icon text-center icon-danger">
@@ -108,16 +106,43 @@
               <div class="card-footer">
                 <hr>
                 <div class="stats">
-	                <a href="${path}/mytask.do?method=output" style="color:#a9a9b1; font-weight:500;">
+	                <a href="mytask.do?method=outputs" style="color:#a9a9b1; font-weight:500;">
 	                  View More <i class="tim-icons icon-minimal-right"></i>
 	                </a> 
                 </div>
               </div>
             </div>
-          </div>               
+          </div> 
+          <div class="col-lg-3 col-md-6">
+            <div class="card card-stats">
+              <div class="card-body" OnClick="location.href ='${path}/zenkit.do?method=riskList'">
+                <div class="row">
+                  <div class="col-5">
+                    <div class="info-icon text-center icon-info">
+                      <i class="tim-icons icon-alert-circle-exc"></i>
+                    </div>
+                  </div>
+                  <div class="col-7">
+                    <div class="numbers">
+                      <p class="card-category" style="font-weight:550;">리스크</p>
+                      <h3 class="card-title">${riskCnt}</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <hr>
+                <div class="stats">
+	                <a href="zenkit.do?method=riskList" style="color:#a9a9b1; font-weight:500;">
+	                  View More <i class="tim-icons icon-minimal-right"></i>
+	                </a> 
+                </div>
+              </div>
+            </div>
+          </div>                     
         </div>
   
-        <h4 class="title pl-3">참여 프로젝트</h4>
+        <h4 class="title pl-3">프로젝트 진행율</h4>
         <div class="row">
 	        <c:forEach var="proj" items="${projectDate}">
 	          <div class="col-sm-6 col-lg-3">
@@ -138,65 +163,79 @@
 	        </c:forEach>  
         </div>
 
-				<div class="row">					
-					<div class="col-md-6">
-						<div class="card card-chart card-chart-pie">
-							<div class="card-header">
-								<h4 class="title">리스크 현황</h4>
-							</div>
-							<div class="card-body">
-								<div class="row">
-									<div class="col-6">
-										<div class="chart-area">
-											<canvas id="PieChartGradient2"></canvas>
-										</div>
-									</div>
-									<div class="col-6">
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 고객변심 - 5 건
-										</h4>
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 일정지연 - 3 건
-										</h4>
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 기타 - 2 건
-										</h4>
-									</div>
+		<div class="row">					
+			<!-- 작업 진행 상태 -->
+			<div class="col-md-6">
+				<div class="card card-chart card-chart-pie">
+					<div class="card-header">
+						<h4 class="title">작업 진행 현황</h4>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-6">
+								<div class="chart-area">
+									<canvas id="jobChart"></canvas>
 								</div>
+							</div>
+							<div class="col-6">
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-danger "></i>
+									<span class="title text-danger">시작전 - ${projJobCnt.beforeCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-warning "></i>
+									<span class="title text-warning">진행중 - ${projJobCnt.ongoingCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-info "></i>
+									<span class="title text-info">완료 - ${projJobCnt.doneCnt} 건</span>
+								</h4>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="card card-chart card-chart-pie">
-							<div class="card-header">
-								<h4 class="title">프로젝트 태스크 진행상태</h4>
-							</div>
-							<div class="card-body">
-								<div class="row">
-									<div class="col-6">
-										<div class="chart-area">
-											<canvas id="PieChartGradient"></canvas>
-										</div>
-									</div>
-									<div class="col-6">
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 시작전 - 5 건
-										</h4>
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 진행중 - 5 건
-										</h4>
-										<h4 class="card-title">
-											<i class="tim-icons  icon-tag text-warning "></i> 완료 - 5 건
-										</h4>
-										
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
 				</div>
-				<!-- End of row -->        
+			</div>				
+			<!-- 리스크 상태 -->
+			<div class="col-md-6">
+				<div class="card card-chart card-chart-pie">
+					<div class="card-header">
+						<h4 class="title">리스크 현황</h4>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-6">
+								<div class="chart-area">
+									<canvas id="riskChart"></canvas>
+								</div>
+							</div>
+							<div class="col-6">
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-danger "></i>
+									<span class="title text-danger">오픈 - ${riskCntList.rOpenCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-warning "></i>
+									<span class="title text-warning">조치완료 - ${riskCntList.rDoneCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag text-info "></i>
+									<span class="title text-info">진행 - ${riskCntList.rOngoingCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag" style="color:#FCEB28;"></i>
+									<span class="title" style="color:#FCEB28;">취소 - ${riskCntList.rCancelCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons  icon-tag" style="color:#4FFF4C;"></i>
+									<span class="title" style="color:#4FFF4C;">홀드 - ${riskCntList.rHoldCnt} 건</span>
+								</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>				
+		</div>
+		<!-- End of row -->        
         
         <div class="row">
           <div class="col-md-12">
@@ -234,7 +273,7 @@
                           진행률(%)
                         </th>
                         <th class="text-center">
-                          산출물
+                          작업물
                         </th>
                         <th class="text-center">
                           리스크
@@ -242,7 +281,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="project" items="${projectList}">
+                    <c:forEach var="project" items="${persProjList}">
                       <tr>
                         <td class="text-center">
                           ${project.p_name}
@@ -251,29 +290,28 @@
                          ${project.p_no}
                         </td>
                         <td class="text-center">
-                          ${project.p_pm}
+                          ${project.pm_name}
                         </td>
                         <td class="text-center">
                           ${project.d_name}
                         </td>
                         <td class="text-center">
-                          ${project.progress}
+                          ${project.progress_state}
                         </td>
                         <td class="text-center">
-                        <!-- <fmt:formatDate value="${project.p_endD}"/> -->
                          <fmt:formatDate value="${project.p_startD}"/>
                         </td>
                         <td class="text-center">
                          <fmt:formatDate value="${project.p_endD}"/>
                         </td>
                         <td class="text-center">
-                          ${project.percent}%
+                          ${project.progress_rt}%
                         </td>
                         <td class="text-center">
-                          ${project.poCnt}
+                          ${project.job_cnt}
                         </td>
                         <td class="text-center">
-                          2
+                          ${project.risk_cnt}
                         </td>
                       </tr>
                      </c:forEach>                     
@@ -286,10 +324,8 @@
         </div>
       </div>
 	</c:if>
+	
 	<c:if test="${sesMem.pos_no < 3}">
-	
-	
-	<!-- selectProgress	selectDname	year1	year2 -->
 	<div class="content">
 		<div class="row" style="margin-bottom:30px;">
               <div class="col-md-3 " style="float:right;">
@@ -304,28 +340,20 @@
         </div>     	             
         <div class="row">
           <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
+            <div class="card">            
+			<%--               
+			<div class="card-header">
                 <h4 class="title"  style="margin-bottom:-30px;">주요프로젝트 현황</h4>
                   <div class="col-md-3 " style="float:right;">
-                  		<input type="hidden" name="progress" value=""/>
+                  		<input type="hidden" name="progress_state" value=""/>
                         <select class="selectpicker" data-size="5" data-style="btn btn-primary" 
                         	title="진행상태 선택" id="proSelect">
 	                          <c:forEach var="sp" items="${selectProgress}">
-					             <option>${sp.progress}</option>
+					             <option value="">${sp.progress_state}</option>
 					          </c:forEach>
                         </select>
                   </div>
-                  <div class="col-md-3 " style="float:right;">
-                  		<input type="hidden" name="pYear1" value=""/>
-                        <select class="selectpicker" data-size="5" data-style="btn btn-primary"
-                        	title="연도 선택" id="year1Select">
-                         	  <c:forEach var="year" items="${year1}">
-					             <option value="${year.pYear1}">${year.pYear1}</option>
-					      	 </c:forEach>
-                        </select>
-                 </div>
-              </div>
+              </div> --%>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table">
@@ -356,16 +384,16 @@
                           진행률(%)
                         </th>
                         <th class="text-center">
-                          산출물
+                          작업물
                         </th>
                         <th class="text-center">
                           리스크
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
-                    <!-- 모델명 : allProjInfo -->
-                    <c:forEach var="info" items="${allProjInfo}">
+                    <tbody id="allProjAjax">
+                    <!-- 모델명 : allProjList -->
+                    <c:forEach var="info" items="${allProjList}">
                       <tr>
                         <td class="text-center">
                           ${info.p_name}
@@ -374,13 +402,13 @@
                          ${info.p_no}
                         </td>
                         <td class="text-center">
-                          ${info.pmName}
+                          ${info.pm_name}
                         </td>
                         <td class="text-center">
                           ${info.d_name}
                         </td>
                         <td class="text-center">
-                          ${info.progress}
+                          ${info.progress_state}
                         </td>
                         <td class="text-center">
                          <fmt:formatDate value="${info.p_startD}"/>
@@ -389,13 +417,13 @@
                          <fmt:formatDate value="${info.p_endD}"/>
                         </td>
                         <td class="text-center">
-                          ${info.percent}%
+                          ${info.progress_rt}%
                         </td>
                         <td class="text-center">
-                          ${info.poCnt}
+                          ${info.job_cnt}
                         </td>
                         <td class="text-center">
-                          2
+                          ${info.risk_cnt}
                         </td>
                       </tr>
                       </c:forEach>
@@ -418,10 +446,10 @@
                   <table class="table">
                     <thead class="text-primary">
                       <tr>
-                      	<th class="text-left">
+                      	<th class="text-center">
                           부서번호
                         </th>
-                      	<th class="text-left">
+                      	<th class="text-center">
                           부서
                         </th>
                         <th class="text-center">
@@ -447,10 +475,10 @@
                     <c:forEach var="ac" items="${allCnts}">
                     <input type="hidden" name="d_no" value="${ac.d_no}" id="selectDno" />
                       <tr>                     
-                      	<td class="text-left">
+                      	<td class="text-center">
                           ${ac.d_no}
                         </td>
-                        <td class="text-left">
+                        <td class="text-center">
                           ${ac.d_name}
                           
                         </td>
@@ -472,8 +500,7 @@
                       </tr>
                       <tr id="projDtlList">
                       </tr>
-                      </c:forEach>
-                     
+                      </c:forEach>                     
                     </tbody>
                   </table>
                 </div>
@@ -481,33 +508,45 @@
             </div>
           </div>
           
-           <div class="col-md-6">
-            <div class="card card-chart card-chart-pie"> 
-              <div class="card-header">
-                <h4 class="title">리스크 현황</h4>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="chart-area">
-                      <canvas id="PieChartGradient"></canvas>
-                    </div>
-                  </div>
-                  <div class="col-6">
-					<h4 class="card-title">
-						<i class="tim-icons  icon-tag text-warning "></i> 고객변심 - 5 건
-					</h4>
-					<h4 class="card-title">
-						<i class="tim-icons  icon-tag text-warning "></i> 일정지연 - 3 건
-					</h4>
-					<h4 class="card-title">
-						<i class="tim-icons  icon-tag text-warning "></i> 기타 - 2 건
-					</h4>
-				   </div>
-                </div>
-              </div>
-            </div>
-          </div>         
+          <!-- 리스크 상태 -->
+			<div class="col-md-6">
+				<div class="card card-chart card-chart-pie">
+					<div class="card-header">
+						<h4 class="title">리스크 현황</h4>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-6">
+								<div class="chart-area">
+									<canvas id="allRiskChart"></canvas>
+								</div>
+							</div>
+							<div class="col-6">
+								<h4 class="card-title">
+									<i class="tim-icons icon-tag text-danger "></i>
+									<span class="title text-danger">오픈 - ${allRiskCnt.rOpenCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons icon-tag text-warning "></i>
+									<span class="title text-warning">조치완료 - ${allRiskCnt.rDoneCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons icon-tag text-info "></i>
+									<span class="title text-info">진행 - ${allRiskCnt.rOngoingCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons icon-tag" style="color:#FCEB28;"></i>
+									<span class="title" style="color:#FCEB28;">취소 - ${allRiskCnt.rCancelCnt} 건</span>
+								</h4>
+								<h4 class="card-title">
+									<i class="tim-icons icon-tag" style="color:#4FFF4C;"></i>
+									<span class="title" style="color:#4FFF4C;">홀드 - ${allRiskCnt.rHoldCnt} 건</span>
+								</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>		    
         </div>       
       </div>
 	</c:if>
@@ -522,53 +561,268 @@
   <script>
     $(document).ready(function() {
     	
-    	// 수행지표 tr 클릭 시 해당부서의 프로젝트 리스트 뜨게
-    	// 모델명 deptProjCnt
-    	/*
-         $("#dInfo").on("click", "tr", function(){
-        	 alert("부서번호 : "+ $(this).find("td:eq(0)").text() );
-		 });
-		*/
-      /*
-      $('#dInfo').click(function(){			
-			$.ajax({
-				type:"post",
-				url:"${path}/jsonAlist.do?d_no="+$(this).attr("option","selected").val(),
-				dataType:"json",
-				success:function(data){
-					
-					
-					// 종합 대시보드 프로젝트 수행지표 리스트 (부서 내 프로젝트별)
-					// 모델명 deptProjList
-					var list = data.deptProjList;	
-					console.log(list);
-					$.each(list, function(idx, pro, arry){
-						var pName = $("#pName").text(pro.p_name);
-						var pmName = $("#pmName").text(pro.p_pm);
-						var startD = $("#startD").text(pro.p_startD_s);
-						var endD = $("#endD").text(pro.p_endD_s);				
-						var progress = $("#progress").text(pro.percent+"%");
-						var progressbar = $("#progressbar").css("width",pro.percent+"%");
-						var p_name = $("#p_name").text();
-					});		
-										 
+		 // 종합 대시보드 부서 선택 ajax
+	      $('#deptSelect').change(function(){	
+				$.ajax({
+					type:"post",
+					url:"${path}/jsonAlist.do?d_no="+$(this).attr("option","selected").val(),
+					dataType:"json",
+					success:function(data){
+						// 종합 대시보드 주요프로젝트 현황 (부서별)
+						// 모델명 deptProjList
+						var list = data.deptProjList;	
+						var show = "";
+						$.each(list, function(idx, ad, arry){
+							show += '<tr><td class="text-center">'+ad.p_name+'</td>';
+							show += '<td class="text-center">'+ad.p_no+'</td>';
+							show += '<td class="text-center">'+ad.pm_name+'</td>';
+							show += '<td class="text-center">'+ad.d_name+'</td>';
+							show += '<td class="text-center">'+ad.progress_state+'</td>';
+							show += '<td class="text-center">'+ad.p_startD_s+'</td>';
+							show += '<td class="text-center">'+ad.p_endD_s+'</td>';
+							show += '<td class="text-center">'+ad.progress_rt+'</td>';
+							show += '<td class="text-center">'+ad.job_cnt+'</td>';
+							show += '<td class="text-center">'+ad.risk_cnt+'</td></tr>';
+						});	
+						$('#allProjAjax').html(show);				 
+					},					
+					error:function(err){
+						alert("에러발생");
+						console.log(err);
+					}					 
+				});						
+						
+			});
 
-				},					
-				error:function(err){
-					alert("에러발생");
-					console.log(err);
-				}					 
-			});						
-					
-		});
-       */
-         
-         
-      // Javascript method's body can be found in assets/js/demos.js
-      demo.initChartPageCharts();
+			 // 종합 대시보드 진행상태 선택 ajax
+/* 			 
+	      $('#proSelect').change(function(){	
+			
+	    	 var pg = document.getElementById('proSelect');
+	    	 var progress_state = pg.options[pg.selectedIndex].text;
+	    	 //var progress_state = $(this).attr("option","selected").text();
+	    	  alert(progress_state);
+	    	  
+	    	  $.ajax({
+					type:"post",
+					url:"${path}/jsonAlist.do?progress_state="+progress_state,
+					dataType:"json",
+					success:function(data){
+						// 종합 대시보드 주요프로젝트 현황 (진행상태별)
+						// pgProjList
+						var list = data.pgProjList;	
+						var show = "";
+						$.each(list, function(idx, ad, arry){
+							show += '<tr><td class="text-center">'+ad.p_name+'</td>';
+							show += '<td class="text-center">'+ad.p_no+'</td>';
+							show += '<td class="text-center">'+ad.pm_name+'</td>';
+							show += '<td class="text-center">'+ad.d_name+'</td>';
+							show += '<td class="text-center">'+ad.progress_state+'</td>';
+							show += '<td class="text-center">'+ad.p_startD_s+'</td>';
+							show += '<td class="text-center">'+ad.p_endD_s+'</td>';
+							show += '<td class="text-center">'+ad.progress_rt+'</td>';
+							show += '<td class="text-center">'+ad.job_cnt+'</td>';
+							show += '<td class="text-center">'+ad.risk_cnt+'</td></tr>';
+						});	
+						$('#allProjAjax').html(show);
+					},					
+					error:function(err){
+						alert("에러발생");
+						console.log(err);
+					}					 
+				});						
+	    	  
+			});
+ */
+		if(${sesMem.pos_no}<2){
+			
+			// 종합 대시보드
+			// 리스크 현황    	allRiskCnt			
+			var ctx = document.getElementById("allRiskChart").getContext("2d");
 
-     
-      
+			var myChart = new Chart(ctx, {
+				type: 'pie',
+				data: {
+					labels: [1, 2, 3, 4, 5],
+					datasets: [{
+						label: "Emails",
+						pointRadius: 0,
+						pointHoverRadius: 0,
+						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#FCEB28','#4FFF4C'],
+						borderWidth: 0,
+						data: ['${allRiskCnt.rOpenCnt}', '${allRiskCnt.rDoneCnt}'
+							, '${allRiskCnt.rOngoingCnt}', '${allRiskCnt.rCancelCnt}', '${allRiskCnt.rHoldCnt}']
+					}]
+				},
+				options: {
+					cutoutPercentage: 70,
+					legend: {
+					display: false
+				},
+				tooltips: {
+					backgroundColor: '#f5f5f5',
+					titleFontColor: '#333',
+					bodyFontColor: '#666',
+					bodySpacing: 4,
+					xPadding: 12,
+					mode: "nearest",
+					intersect: 0,
+					position: "nearest"
+				},
+				scales: {
+					yAxes: [{
+						display: 0,
+						ticks: {
+							display: false
+		            },
+		            gridLines: {
+							drawBorder: false,
+							zeroLineColor: "transparent",
+							color: 'rgba(255,255,255,0.05)'
+		            }
+					}],
+
+					xAxes: [{
+						display: 0,
+		            barPercentage: 1.6,
+		            gridLines: {
+							drawBorder: false,
+							color: 'rgba(255,255,255,0.1)',
+							zeroLineColor: "transparent"
+		            },
+		            ticks: {
+							display: false,
+		            }
+					}]
+				},
+		      }
+			});
+			 			
+		} else{
+			// 개인 대시보드
+			// 리스크 현황  			
+			var ctx = document.getElementById("riskChart").getContext("2d");
+
+			var myChart = new Chart(ctx, {
+				type: 'pie',
+				data: {
+					labels: [1, 2, 3, 4, 5],
+					datasets: [{
+						label: "Emails",
+						pointRadius: 0,
+						pointHoverRadius: 0,
+						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#FCEB28','#4FFF4C'],
+						borderWidth: 0,
+						data: ['${riskCntList.rOpenCnt}', '${riskCntList.rDoneCnt}'
+							, '${riskCntList.rOngoingCnt}', '${riskCntList.rCancelCnt}', '${riskCntList.rHoldCnt}']
+					}]
+				},
+				options: {
+					cutoutPercentage: 70,
+					legend: {
+					display: false
+				},
+				tooltips: {
+					backgroundColor: '#f5f5f5',
+					titleFontColor: '#333',
+					bodyFontColor: '#666',
+					bodySpacing: 4,
+					xPadding: 12,
+					mode: "nearest",
+					intersect: 0,
+					position: "nearest"
+				},
+				scales: {
+					yAxes: [{
+						display: 0,
+						ticks: {
+							display: false
+		            },
+		            gridLines: {
+							drawBorder: false,
+							zeroLineColor: "transparent",
+							color: 'rgba(255,255,255,0.05)'
+		            }
+					}],
+
+					xAxes: [{
+						display: 0,
+		            barPercentage: 1.6,
+		            gridLines: {
+							drawBorder: false,
+							color: 'rgba(255,255,255,0.1)',
+							zeroLineColor: "transparent"
+		            },
+		            ticks: {
+							display: false,
+		            }
+					}]
+				},
+		      }
+			});
+
+
+    	// 개인 대시보드
+    	// 작업 차트    	
+		var ctx = document.getElementById("jobChart").getContext("2d");
+
+		var myChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: [1, 2, 3],
+				datasets: [{
+					label: "Emails",
+					pointRadius: 0,
+					pointHoverRadius: 0,
+					backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA'],
+					borderWidth: 0,
+					data: ['${projJobCnt.beforeCnt}', '${projJobCnt.ongoingCnt}', '${projJobCnt.doneCnt}']
+				}]
+			},
+			options: {
+				cutoutPercentage: 70,
+				legend: {
+				display: false
+			},
+			tooltips: {
+				backgroundColor: '#f5f5f5',
+				titleFontColor: '#333',
+				bodyFontColor: '#666',
+				bodySpacing: 4,
+				xPadding: 12,
+				mode: "nearest",
+				intersect: 0,
+				position: "nearest"
+			},
+			scales: {
+				yAxes: [{
+					display: 0,
+					ticks: {
+						display: false
+	            },
+	            gridLines: {
+						drawBorder: false,
+						zeroLineColor: "transparent",
+						color: 'rgba(255,255,255,0.05)'
+	            }
+				}],
+
+				xAxes: [{
+					display: 0,
+	            barPercentage: 1.6,
+	            gridLines: {
+						drawBorder: false,
+						color: 'rgba(255,255,255,0.1)',
+						zeroLineColor: "transparent"
+	            },
+	            ticks: {
+						display: false
+	            }
+				}]
+			},
+	      }
+		});		
+	}
 
     });
   </script>

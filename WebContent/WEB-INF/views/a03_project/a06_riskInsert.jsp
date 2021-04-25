@@ -10,7 +10,7 @@
    String path = request.getContextPath();
 %>  
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
  <%@ include file="../a01_main/bootstrapTop.jsp" %>
 </head>
@@ -29,6 +29,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
+             <input type="hidden" name="proc"/>
               <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <i class="tim-icons icon-simple-remove"></i>
@@ -53,20 +54,27 @@
                   <h4 class="card-title">리스크 등록</h4>
                 </div>
                 <div class="card-body">
-               
-                    <div class="row">
-                    <label class="col-sm-2 col-form-label">작업번호</label>
+                     
+                   
+                      <div class="row">
+                    <label class="col-sm-2 col-form-label">프로젝트 명</label>
                     <div class="col-sm-7">
                       <div class="form-group">
-                       <form:input path="j_no" class="form-control mr-sm-2" />
-                      
+                       <select name="p_no" class="selectpicker">
+                        <option value="0">프로젝트 명 선택</option>
+                        <c:forEach var="risk" items="${risks }">
+                        <option value="${risk.p_no }">${risk.p_name }</option>
+                        </c:forEach>
+                       
+                       </select>
                       </div>
                     </div>
                     <label class="col-sm-3 label-on-right">
-                      <code></code>
+                      <code>*필수</code>
                     </label>
                   </div>
-                     
+           
+                  
                    
                     <div class="row">
                     <label class="col-sm-2 col-form-label">리스크명</label>
@@ -77,34 +85,21 @@
                       </div>
                     </div>
                     <label class="col-sm-3 label-on-right">
-                      <code></code>
-                    </label>
-                  </div>
-          
-                     <div class="row">
-                    <label class="col-sm-2 col-form-label">프로젝트 명</label>
-                    <div class="col-sm-7">
-                      <div class="form-group">
-                        
-                      <input type="text" class="form-control mr-sm-2"/>
-                     
-                      </div>
-                    </div>
-                    <label class="col-sm-3 label-on-right">
                       <code>*필수</code>
                     </label>
                   </div>
-                 
+          
+                         
                    <div class="row">
                     <label class="col-sm-2 col-form-label">리스크 내용</label>
                     <div class="col-sm-7">
                       <div class="form-group">
-                        <form:input path="r_content" class="form-control" 
-                        />
+                        <form:textarea path="r_content" class="form-control" 
+                        placeholder="내용을 입력하세요" style="color:#D4D4D8; border:1px solid #2b3553; max-height:200px;"></form:textarea>
                       </div>
                     </div>
                     <label class="col-sm-3 label-on-right">
-                      <code></code>
+                      <code>*필수</code>
                     </label>
                   </div>
                 
@@ -114,38 +109,23 @@
                     <label class="col-sm-2 col-form-label">등록자</label>
                     <div class="col-sm-7">
                       <div class="form-group">
-                   <form:input path="r_send" class="form-control" />
+                   <form:input path="r_send" class="form-control" value="${sesMem.u_id}" readonly="true"
+                   />
                      
                       </div>
                     </div>
                     <label class="col-sm-3 label-on-right">
-                      <code>*필수</code>
-                    </label>
-                  </div>
-                  
-                  
-                
-                  <div class="row">
-                    <label class="col-sm-2 col-form-label">리스크 상태</label>
-                    <div class="col-sm-3">
-                      <div class="form-group">
-                       <form:input path="rs_name"  class="form-control"/>
-                      </div>
-                    </div>
-                    
-                    <label class="col-sm-4 label-on-right">
                       <code></code>
+          
                     </label>
-                    
                   </div>
-                 
+                  
+             
                 </div>
                 <div class="card-footer text-center">
                   
-                  <button type="submit" id="saveBtn" class="btn btn-primary">저장</button>
-                  &nbsp; &nbsp;    
-                
-                   <button type="button" class="btn btn-primary">취소</button>
+                  <button class="btn btn-info btn-sm btn-simple" id="saveBtn" >저장</button>
+                 
                 </div>
                 
               </div>   
@@ -166,16 +146,14 @@
   <script type="text/javascript">
  
   $(document).ready(function(){
-
-     var isInsert="${param.r_name}";
-     if(isInsert!=""){
-    	 alert("등록 완료!!\n리스크 목록 화면으로 이동합니다.");
-    		 $(location).attr("href","${path}/zenkit.do?method=riskList");
-    	 }
+	  var isInsert="${param.r_name}";
+	  if(isInsert!=""){
+	 	 if(confirm("등록 완료!!\n리스크 목록 화면으로 이동하시겠습니까?")){
+	 		 $(location).attr("href","${path}/zenkit.do?method=riskList");
+	 	 }
+	
+	  };	 
   });
-  
- 
- 
   </script>
 </body>
 </html>

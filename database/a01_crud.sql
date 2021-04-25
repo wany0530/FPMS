@@ -1,3 +1,45 @@
+DROP TABLE Z_RANK;
+DROP TABLE z_position;
+DROP TABLE z_department;
+DROP TABLE z_user;
+DROP TABLE z_calendar;
+DROP TABLE Z_PROJECT;
+DROP TABLE Z_RESOURCE;
+DROP TABLE Z_JOB;
+DROP TABLE Z_AUTH_STATE;
+DROP TABLE Z_AUTH;
+DROP TABLE Z_RISK_STATE;
+DROP TABLE z_risk;
+DROP TABLE Z_RISK_ACTION;
+DROP TABLE Z_OUTPUTS;
+
+DROP SEQUENCE Z_OUTPUTS_NO_SEQ;
+DROP SEQUENCE Z_RISK_NO_SEQ;
+DROP SEQUENCE Z_AUTH_NO_SEQ;
+DROP SEQUENCE Z_JOB_NO_SEQ;
+DROP SEQUENCE Z_PROJECT_NO_SEQ;
+DROP SEQUENCE Z_CALENDAR_NO_SEQ;
+DROP SEQUENCE Z_DEPARTMENT_NO_SEQ;
+DROP SEQUENCE Z_POSITION_NO_SEQ;
+DROP SEQUENCE Z_RANK_NO_SEQ;
+
+SELECT * FROM Z_RANK;
+SELECT * FROM z_position;
+SELECT * FROM z_department;
+SELECT * FROM z_user;
+SELECT * FROM z_calendar;
+SELECT * FROM Z_PROJECT;
+SELECT * FROM Z_RESOURCE;
+SELECT * FROM Z_JOB;
+SELECT * FROM Z_AUTH_STATE;
+SELECT * FROM Z_AUTH;
+SELECT * FROM Z_RISK_STATE;
+SELECT * FROM z_risk;
+SELECT * FROM Z_RISK_ACTION;
+SELECT * FROM Z_OUTPUTS;
+
+
+
 -- 직급 테이블 ##########
 -- 생성
 CREATE TABLE z_rank(
@@ -21,7 +63,7 @@ SELECT * FROM z_rank;
 SELECT Z_RANK_NO_SEQ.CURRVAL FROM DUAL;
 
 -- 삭제
-DROP TABLE Z_RANK CASCADE CONSTRAINTS ;
+DROP TABLE Z_RANK CASCADE CONSTRAINTS;
 DROP SEQUENCE Z_RANK_NO_SEQ;
 
 ----------------------------------------------------------------
@@ -31,13 +73,15 @@ CREATE TABLE z_position(
 	pos_no NUMBER CONSTRAINT z_position_no_pk PRIMARY KEY,
 	pos_name VARCHAR2(50) CONSTRAINT z_position_name_nn NOT NULL
 );
-
+CREATE SEQUENCE Z_POSITION_NO_SEQ
+	START WITH 1
+	INCREMENT BY 1;
 
 -- 데이터
-INSERT INTO Z_POSITION VALUES (1,'CEO');
-INSERT INTO Z_POSITION VALUES (2,'인사담당자');
-INSERT INTO Z_POSITION VALUES (3,'PM');
-INSERT INTO Z_POSITION VALUES (4,'임직원');
+INSERT INTO Z_POSITION VALUES (Z_POSITION_NO_SEQ.NEXTVAL,'CEO');
+INSERT INTO Z_POSITION VALUES (Z_POSITION_NO_SEQ.NEXTVAL,'인사담당자');
+INSERT INTO Z_POSITION VALUES (Z_POSITION_NO_SEQ.NEXTVAL,'PM');
+INSERT INTO Z_POSITION VALUES (Z_POSITION_NO_SEQ.NEXTVAL,'임직원');
 
 -- 조회
 SELECT * FROM z_position;
@@ -45,6 +89,8 @@ SELECT Z_POSITION_NO_SEQ.CURRVAL FROM DUAL;
 
 -- 삭제
 DROP TABLE Z_POSITION CASCADE CONSTRAINTS ;
+DROP SEQUENCE Z_POSITION_NO_SEQ;
+
 
 ----------------------------------------------------------------
 -- 부서 테이블 ##########
@@ -89,39 +135,9 @@ CREATE TABLE z_user(
 	r_no NUMBER CONSTRAINT z_user_r_no_fk REFERENCES z_rank(r_no) ON DELETE CASCADE
 );
 
-CREATE SEQUENCE Z_USER_NO_SEQ
-	START WITH 1
-	INCREMENT BY 1;
-	
 -- 데이터
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '75CE001','king777','김경일',
-							'ceo@google.com','01012549836','img/user/75CE001_김경일.jpg',01,01,01);
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '85CE002','dladnjs12','임한원',
-							'dlsdnjs@google.com','01011354562','img/user/85CE002_임한원.jpg',05,02,02);						
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '02MA064','kangny56','김나영',
-							'nayonee@google.com','01031292712','img/user/02MA064_김나영.jpg',02,03,03);	
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '15MA486','haha1253','하성찬',
-							'hahaha@google.com','01031927121','img/user/15MA486_하성찬.jpg',02,04,05);							
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '82HR012','passhr00','이강식',
-							'hjhj@google.com','01012349876','img/user/82HR012_이강식.jpg',03,03,03);
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '17HR095','wonhk123','차원혁',
-							'wkyuk@google.com','01007051220','img/user/17HR095_차원혁.jpg',03,04,06);			
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '05PL125','jonejj','정하나',
-							'jj11@google.com','01007751389','img/user/05PL125_정하나.jpg',04,04,04);
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '99PL614','zoooo555','강주희',
-							'zzzooo@google.com','01057513645','img/user/99PL614_강주희.jpg',04,04,03);							
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '94IT757','psma9854','한지혜',
-							'ks9854@google.com','01012135976','img/user/94IT757_한지혜.jpg',05,04,03);						
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '15IT536','jaekkk','이재관',
-							'jaekk@google.com','01054621568','img/user/15IT536_이재관.jpg',05,04,05);
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '09IT801','jjean159','정택진',
-							'jjean@google.com','01057513645','img/user/09IT801_정택진.jpg',05,04,04);							
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '20IT254','doood987','도경아',
-							'dodok@google.com','01065125014','img/user/20IT254_도경아.jpg',05,04,06);						
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '18IT279','mingee31','이민지',
-							'minjee@google.com','01028915267','img/user/18IT279_이민지.jpg',05,04,06);	
-INSERT INTO Z_USER VALUES (Z_USER_NO_SEQ.NEXTVAL, '19IT574','you55','유성환',
-							'hwan@google.com','01055198510','img/user/19IT574_유성환.jpg',05,04,06);		
+INSERT INTO Z_USER VALUES (1, 'admin','admin','양현수',
+							'gun235448@gmail.com','01050326881','img/user/02MA064_김나영.jpg',02,02,02);	
 							
 -- 조회
 SELECT * FROM Z_USER;
@@ -166,8 +182,8 @@ CREATE TABLE Z_PROJECT(
    p_no NUMBER CONSTRAINT z_project_no_pk PRIMARY KEY,
    p_name varchar2(100) CONSTRAINT z_project_name_nn NOT NULL,
    p_startD DATE CONSTRAINT z_project_startD_nn NOT NULL,
-   p_endD DATE CONSTRAINT z_project_endD_nn NULL,
-   p_content varchar2(1000) CONSTRAINT z_project_content_nn NOT NULL,
+   p_endD DATE,
+   p_content varchar2(1000),
    p_pm varchar2(50) CONSTRAINT z_project_pm_nn NOT NULL,
    d_no NUMBER CONSTRAINT z_d_no_fk REFERENCES Z_DEPARTMENT(d_no) ON DELETE CASCADE
 );
@@ -350,113 +366,63 @@ SELECT * FROM Z_RISK_STATE;
 DROP TABLE Z_RISK_STATE CASCADE CONSTRAINTS;
 
 ----------------------------------------------------------------
-SELECT * FROM Z_RISK;
-
---건드리면 큰일나는 테이블 드랍더비트...
-
-DROP TABLE z_risk CASCADE CONSTRAINTS;
-DROP SEQUENCE z_risk_no_seq;
-
---기존 테이블
-SELECT * FROM Z_RISK;
+--리스크 생성
 CREATE TABLE z_risk (
-	r_no NUMBER CONSTRAINT z_risk_no_pk PRIMARY KEY, --리스크 번호
-	r_name VARCHAR2(100) CONSTRAINT z_risk_name_nn NOT NULL, --리스크명
-	r_content VARCHAR2(500) CONSTRAINT z_risk_content_nn NOT NULL, --리스크 내용
-	r_regdate DATE CONSTRAINT z_risk_regdate_nn NOT NULL, --등록일
-	r_send VARCHAR2(100) CONSTRAINT z_risk_send_nn NOT NULL, --제기자
-	r_receive VARCHAR2(100) , --조치자
-	r_rcontent VARCHAR2(500), --조치내용
-	r_file VARCHAR2(300), --첨부파일
-	j_no NUMBER CONSTRAINT z_job_j_no_fk REFERENCES Z_JOB(j_no) ON DELETE CASCADE, --작업번호
-	rs_name VARCHAR2(20) CONSTRAINT z_risk_state_rs_name_fk REFERENCES Z_RISK_STATE(rs_name) ON DELETE CASCADE --상태명
+   r_no NUMBER CONSTRAINT z_risk_no_pk PRIMARY KEY,
+   r_name VARCHAR2(100) CONSTRAINT z_risk_name_nn NOT NULL,
+   r_content VARCHAR2(500) CONSTRAINT z_risk_content_nn NOT NULL,
+   r_regdate DATE CONSTRAINT z_risk_regdate_nn NOT NULL,
+   r_send VARCHAR2(100) CONSTRAINT z_risk_send_nn NOT NULL,
+   r_receive VARCHAR2(100) ,
+   r_rcontent VARCHAR2(500),
+   p_no NUMBER CONSTRAINT z_project_p_no_fk REFERENCES Z_project(p_no) ON DELETE CASCADE,
+   rs_name VARCHAR2(20) CONSTRAINT z_risk_state_rs_name_fk REFERENCES Z_RISK_STATE(rs_name) ON DELETE CASCADE,
+   r_strat varchar2(50)
 );
-
 create sequence z_risk_no_seq
-	start with 1
-	increment by 1;
+   start with 1
+   increment by 1;
 
--- 조치이력 테이블
-CREATE TABLE Z_RISK_ACTION(
-	ac_no NUMBER CONSTRAINT z_risk_action_no_pk PRIMARY KEY, --pk
-	ac_receive VARCHAR2(100) CONSTRAINT z_risk_receive_nn NOT NULL, --조치자
-	ac_name VARCHAR2(500) CONSTRAINT z_risk_action_name_nn NOT NULL, -- 조치내용
-	ac_date DATE CONSTRAINT z_risk_action_date_nn NOT NULL, -- 조치일
-	ac_state VARCHAR2(50) CONSTRAINT z_risk_action_state_nn NOT NULL, -- 조치상태
-	r_no NUMBER CONSTRAINT z_risk_action_r_no_fk REFERENCES Z_RISK(r_no) ON DELETE CASCADE --리스크 번호
-);
-
-create sequence Z_RISK_ACTION_SEQ
-	start with 1
-	increment by 1;
-
-                           --리스크 번호          --리스크명  --리스크 내용       --등록일  --등록자  --조치자  --조치내용  --첨부파일 --작업번호 --상태명
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '데이터베이스 기술 문제','데이터베이스 서버 문제가 생겼습니다.',sysdate,'19IT574',NULL,NULL,NULL,1,'오픈');--1
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '일정 지연','기술적으로 너무 어려운 개발이기 때문에 마감 기한까지 완성시킬 수 없을 것 같습니다.',sysdate,'15MA486',NULL,NULL,NULL,2,'오픈');--2
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 변경 요소','갑작스러운 프로젝트 변경 요소가 생겼습니다.',sysdate,'94IT757',NULL,NULL,NULL,2,'오픈');--3
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','프로젝트관리 계획서 변경이 필요합니다.',sysdate,'17HR095',NULL,NULL,NULL,4,'오픈');--4
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 의사소통관리','보고서가 누락되었습니다.',sysdate,'05PL125',NULL,NULL,NULL,3,'오픈');--5
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 조달관리','프로젝트 조달 결정사항이 문서화되지 않았습니다.',sysdate,'99PL614',NULL,NULL,NULL,4,'오픈');--6
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 계획관리','미흡한 요구사항으로 인해 범위 계획 또한 미흡합니다.',sysdate,'05PL125',NULL,NULL,NULL,2,'오픈');--7
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','새로운 기술의 도입 리스크가 큽니다.',sysdate,'20IT254',NULL,NULL,NULL,3,'오픈');--8
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','예상치 못한 오류들이 계속 발생합니다.',sysdate,'18IT279',NULL,NULL,NULL,4,'오픈');--9
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','프로젝트의 규모가 갑자기 확대되었습니다.',sysdate,'09IT801',NULL,NULL,NULL,1,'오픈');--10
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 계획관리','프로젝트 변경 요소가 생겼습니다.',sysdate,'20IT254',NULL,NULL,NULL,2,'오픈');--11
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 의사소통관리','프로젝트 상태와 이슈가 모든 이해관계자에게 전달되지 않았습니다.',sysdate,'05PL125',NULL,NULL,NULL,3,'오픈');--12
-INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 인력관리','투입된 인원에 비해 업무량이 많습니다.',sysdate,'15MA486',NULL,NULL,NULL,4,'오픈');--13
-
---조치날짜, 조치 내용, 조치 상태, fk로 리스크 no를 가져오는 것
---Z_RISK_ACTION 인서트
-
-INSERT INTO Z_RISK_ACTION
-VALUES(Z_RISK_ACTION_SEQ.NEXTVAL,'02MA064','데이터베이스 서버점검 중', SYSDATE, '진행', 1);
-INSERT INTO Z_RISK_ACTION
-VALUES(Z_RISK_ACTION_SEQ.NEXTVAL,'02MA064','데이터베이스 테이블 점검 중', SYSDATE, '진행', 1);
-INSERT INTO Z_RISK_ACTION
-VALUES(Z_RISK_ACTION_SEQ.NEXTVAL,'02MA064','데이터베이스 서버점검 완료 하였습니다.', SYSDATE, '조치완료', 1);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL,'02MA064','전략 및 우선 순위를 수정하고, 범위 및 일정 조정을 진행하겠습니다.', SYSDATE, '진행', 2);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','투입 인력과 할당량을 조정합니다. ',SYSDATE, '홀드',2);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','투입 인력과 할당량 조정 완료',SYSDATE,'조치완료',2);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','변경된 일정을 기준으로 지속적으로 기준을 다시 설정합니다.',SYSDATE,'진행',3);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','프로젝트 관리 계획을 업데이트합니다.',SYSDATE,'진행',3);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','프로젝트 변경 요소 업데이트 완료',SYSDATE,'조치완료',3);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','전략 및 우선 순위를 수정하고, 범위 및 일정 조정을 진행하겠습니다.',SYSDATE,'진행',4);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','변경된 프로젝트 계획서를 업데이트합니다.',SYSDATE,'진행',4);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','변경된 프로젝트 계획서 업데이트가 완료되었습니다.',SYSDATE,'조치완료',4);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','보고서를 새로 업데이트합니다.',SYSDATE,'진행',5);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','보고서 업데이트 완료 하였습니다.',SYSDATE,'조치완료',5);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 조달 결정사항을 문서화합니다.',SYSDATE,'진행',6);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 조달 결정사항을 문서화하여 업데이트 완료했습니다.',SYSDATE,'조치완료',6);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','요구관리 전문인력을 투입합니다.',SYSDATE,'진행',7);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','요구관리 전문인력 투입 완료',SYSDATE,'조치완료',7);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','신기술을 배제하고 기존의 익숙한 기술을 최대한 활용합니다.',SYSDATE,'진행',8);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','기존 기술 활용 완료',SYSDATE,'조치완료',8);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','반복적인 테스트를 진행하여 오류를 방지합니다.',SYSDATE,'진행',9);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','반복적인 테스트를 진행하였습니다.',SYSDATE,'조치완료',9);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','프로토타입 개발과 시스템 중복 설계를 진행합니다.',SYSDATE,'진행',10);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '82HR012','프로토타입 개발과 시스템 중복 설계 진행 완료',SYSDATE,'조치완료',10);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','변경된 일정을 기준으로 지속적으로 기준을 다시 설정합니다.',SYSDATE,'진행',11);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 관리 계획을 업데이트합니다.',SYSDATE,'진행',11);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 관리 계획 업데이트 완료',SYSDATE,'조치완료',11);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 정보, 계획을 모두가 확인할 수 있도록 수시로 업데이트합니다.',SYSDATE,'진행',12);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','프로젝트 상태와 이슈 사항을 전달하였습니다.',SYSDATE,'조치완료',12);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','추가 인력을 배치합니다.',SYSDATE,'진행',13);
-INSERT INTO Z_RISK_ACTION VALUES(Z_RISK_ACTION_SEQ.NEXTVAL, '02MA064','추가 인력 배치 완료',SYSDATE,'진행',13);
-
-
+--리스크 조회
+SELECT * FROM z_risk;
+                           --리스크 번호          --리스크명  --리스크 내용       --등록일  --등록자  --조치자  --조치내용  --작업번호 --상태명 --대응전략
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '데이터베이스 기술 문제','데이터베이스 서버 문제가 생겼습니다.',sysdate,'19IT574',NULL,NULL,1,'오픈','완화');--1
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '일정 지연','기술적으로 너무 어려운 개발이기 때문에 마감 기한까지 완성시킬 수 없을 것 같습니다.',sysdate,'15MA486',NULL,NULL,2,'오픈','완화');--2
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 변경 요소','갑작스러운 프로젝트 변경 요소가 생겼습니다.',sysdate,'94IT757',NULL,NULL,2,'오픈','완화');--3
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','프로젝트관리 계획서 변경이 필요합니다.',sysdate,'17HR095',NULL,NULL,4,'오픈','완화');--4
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 의사소통관리','보고서가 누락되었습니다.',sysdate,'05PL125',NULL,NULL,3,'오픈','완화');--5
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 조달관리','프로젝트 조달 결정사항이 문서화되지 않았습니다.',sysdate,'99PL614',NULL,NULL,4,'오픈','완화');--6
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 계획관리','미흡한 요구사항으로 인해 범위 계획 또한 미흡합니다.',sysdate,'05PL125',NULL,NULL,2,'오픈','완화');--7
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','새로운 기술의 도입 리스크가 큽니다.',sysdate,'20IT254',NULL,NULL,3,'오픈','회피');--8
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','예상치 못한 오류들이 계속 발생합니다.',sysdate,'18IT279',NULL,NULL,4,'오픈','완화');--9
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 통합관리','프로젝트의 규모가 갑자기 확대되었습니다.',sysdate,'09IT801',NULL,NULL,1,'오픈','완화');--10
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 계획관리','프로젝트 변경 요소가 생겼습니다.',sysdate,'20IT254',NULL,NULL,2,'오픈','완화');--11
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 의사소통관리','프로젝트 상태와 이슈가 모든 이해관계자에게 전달되지 않았습니다.',sysdate,'05PL125',NULL,NULL,3,'오픈','완화');--12
+INSERT INTO z_risk values(z_risk_no_seq.nextval, '프로젝트 인력관리','투입된 인원에 비해 업무량이 많습니다.',sysdate,'15MA486',NULL,NULL,4,'오픈','완화');--13
 
 -- 조회
-SELECT * FROM Z_RISK_ACTION;
-SELECT * FROM Z_USER zu ;
-
--- 건들면 큰일나는 테이블 삭제
-DROP TABLE Z_RISK_ACTION CASCADE CONSTRAINTS;
-DROP SEQUENCE Z_RISK_ACTION_SEQ;
+SELECT * FROM Z_RISK;
+-- 삭제
+DROP TABLE Z_RISK CASCADE CONSTRAINTS;
+DROP SEQUENCE Z_RISK_NO_SEQ;
 
 ----------------------------------------------------------------
+-- 조치이력 테이블
+CREATE TABLE Z_RISK_ACTION(
+   ac_no NUMBER CONSTRAINT z_risk_action_no_pk PRIMARY KEY, --pk
+   ac_receive VARCHAR2(100) CONSTRAINT z_risk_receive_nn NOT NULL, --조치자
+   ac_name VARCHAR2(500) CONSTRAINT z_risk_action_name_nn NOT NULL, -- 조치내용
+   ac_date DATE CONSTRAINT z_risk_action_date_nn NOT NULL, -- 조치일
+   ac_state VARCHAR2(50) CONSTRAINT z_risk_action_state_nn NOT NULL, -- 조치상태
+   r_no NUMBER CONSTRAINT z_risk_action_r_no_fk REFERENCES Z_RISK(r_no) ON DELETE CASCADE --리스크 번호
+);
+-- 조회
+SELECT * FROM Z_RISK_ACTION;
+-- 삭제
+DROP TABLE Z_RISK_ACTION CASCADE CONSTRAINTS;
 
 
-
+----------------------------------------------------------------
 -- 산출물 테이블 ##########
 CREATE TABLE Z_OUTPUTS(
 	o_no NUMBER CONSTRAINT z_outputs_no_pk PRIMARY KEY,
@@ -483,8 +449,26 @@ INSERT INTO Z_OUTPUTS VALUES(Z_OUTPUTS_NO_SEQ.NEXTVAL, '사진', '/z01_upload/im
 SELECT * FROM Z_OUTPUTS;
 SELECT Z_OUTPUTS_NO_SEQ.CURRVAL FROM DUAL;
 -- 삭제
-DROP TABLE Z_OUTPUTS CASCADE CONSTRAINTS;
+
+DROP TABLE IF EXISTS 'Z_OUTPUTS' CASCADE CONSTRAINTS;
 DROP SEQUENCE Z_OUTPUTS_NO_SEQ;
 
+SELECT * FROM Z_PROJECT
+ORDER BY p_no desc;
 
 
+SELECT * FROM Z_USER zu ;
+
+
+
+CREATE TABLE TEST(
+	test NUMBER
+);
+
+SELECT * FROM TEST;
+DROP TABLE test;
+
+SELECT count(*) AS isExist
+  FROM ALL_TABLES
+ WHERE TABLE_NAME = 'TEST';
+ 

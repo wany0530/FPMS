@@ -16,7 +16,7 @@
 <%@ include file="../a01_main/bootstrapTop.jsp"%>
 <script type="text/javascript">
 	$(document).ready(function() {
-		alert($("#hihi").val());
+
 		$("#jobBack").on("click", function() {
 			location.href = "${path}/job.do?method=job";
 		});
@@ -136,19 +136,15 @@
 												integerOnly="true" var="crFmt" />
 											<tr class="data" id="${job.j_no}">
 												<td>${job.cnt }</td>
-												<td style="text-align: left">
-												
-													<c:forEach varStatus="sts" begin="1" end="${job.level }">
-															<c:if test="${job.j_refno>1}">&nbsp;</c:if>
-															<c:if test="${job.j_refno>1 and sts.last }">
-															┗
-														</c:if>
-													</c:forEach>${job.j_name } 
-													
-													<c:if test="${toFmt == crFmt }">
-														<span class="badge badge-danger">New</span>
+												<td style="text-align: left"><c:forEach varStatus="sts"
+														begin="1" end="${job.level }">
+														<c:if test="${job.j_refno>1}">&nbsp;</c:if>
+														<c:if test="${job.j_refno>1 and sts.last }">
+														┗
 													</c:if>
-												</td>
+													</c:forEach>${job.j_name } <c:if test="${toFmt == crFmt }">
+														<span class="badge badge-danger">New</span>
+													</c:if></td>
 												<td>${job.j_pname }</td>
 												<td>${job.j_startD_s }</td>
 												<td>${job.j_endD_s }</td>

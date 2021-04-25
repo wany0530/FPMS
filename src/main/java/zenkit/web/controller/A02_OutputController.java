@@ -34,19 +34,43 @@ public class A02_OutputController {
 		// 유저 정보 세션값 받기
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("sesMem");
-		OutputSch outputSch = new OutputSch();
-		outputSch.setU_no(user.getU_no());
 		
+		sch.setU_no(user.getU_no());
+		
+		if(sch.getCurrPage() == 0) {
+			sch.setCurrPage(1);
+		}
+		int size = 3;
+		int page = sch.getCurrPage();
+		int startNum = 1 + (page-1) * size;
+		int endNum = page * size;
+		int startPage = page -(page-1)%5;
+		int cnt = service.getUserOutCnt(sch);
+		int lastPage = ((cnt%size) == 0)? (cnt/size) : (cnt/size)+1;
+		int endPage = ((startPage+4 < lastPage)?startPage+4:lastPage);
+
+		sch.setCount(cnt);
+		sch.setLastPage(lastPage);
+		sch.setStartNum(startNum);
+		sch.setEndNum(endNum);
+		sch.setStartPage(startPage);
+		sch.setEndPage(endPage);
+		
+		// 해당 유저 프로젝트 리스트
+		m.addAttribute("proList", service.getUserProList(user.getU_no()));
 		// 해당 유저의 산출물 리스트
-		m.addAttribute("outputList", service.getOutput(outputSch));
+		m.addAttribute("outputList", service.getOutput(sch));
+		// 검색 객체
+		m.addAttribute("sch", sch);
 		
 		return "a02_myTask/a02_outputs";
 	}
+	
+	// 산출물 등록
 	@PostMapping(params="method=reg")
-	public String regOutput(MultipartFile o_file, UpOutput output, Model m) {
+	public String regOutput(MultipartFile o_file, UpOutput output, Model m,
+			HttpServletRequest request) {
 		
-		System.out.println("name="+o_file.getOriginalFilename());
-		System.out.println("size="+o_file.getSize());
 		// 산출물 등록
 		service.regOutput(output, o_file);
 		return "redirect:/output.do?method=outputs";

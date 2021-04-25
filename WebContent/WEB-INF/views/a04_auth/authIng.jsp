@@ -227,7 +227,7 @@
 		      						<div class="font-s13 text-muted">업로드자명 on 업로드일&nbsp;&nbsp;file size</div>
 		      					</div>
 		      					<div class="col-md-4" style="max-width: 32%;">
-		      						<a href="#" class="btn-label-brand btn btn-sm" title="파일 다운로드">
+		      						<a href="${path}/" class="btn-label-brand btn btn-sm" title="파일 다운로드">
 		      							<i class="fa fa-download">
 		      							</i>
 		      						</a>

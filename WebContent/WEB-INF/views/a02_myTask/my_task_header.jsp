@@ -8,13 +8,13 @@
 			<div class="card-body">
 				<ul class="nav ">
 					<li class="nav-item mr-1">
-			          <a class="btn ${(fileName=='/mytask.do?method=task')?'btn-primary':''}" 
+			          <a class="btn ${(fileName=='/WEB-INF/views/a02_myTask/a01_task.jsp')?'btn-primary':''}" 
 			          		href="${path}/mytask.do?method=task">
 			        		<i class="tim-icons icon-bullet-list-67"></i> 작업물
 			      		</a>
 			        </li>
 			        <li class="nav-item mr-1">
-			          <a class="btn ${(fileName=='/mytask.do?method=outputs')?'btn-primary':''}" 
+			          <a class="btn ${(fileName=='/WEB-INF/views/a02_myTask/a02_outputs.jsp')?'btn-primary':''}" 
 			          	href="${path}/output.do?method=outputs">
 			        		<i class="tim-icons icon-attach-87"></i> 산출물
 			      		</a>

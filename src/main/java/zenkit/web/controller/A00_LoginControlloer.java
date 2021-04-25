@@ -45,6 +45,7 @@ public class A00_LoginControlloer {
 	// http://localhost:7080/zenkit/zenkit.do?method=login
 	@GetMapping(params = "method=login")
 	public String login() {
+		service.createTable();
 		return "a00_login//a01_login";
 	}
 
@@ -173,6 +174,41 @@ public class A00_LoginControlloer {
 		return "a00_login/a01_findPwd";
 	}
 	
+	// 비밀번호 확인 폼
+	@RequestMapping("changePwd.do")
+	public String changePwdForm() {
+		
+		return "a00_login/a03_changePwd";
+	}
+	// 비밀번호 성공 했을 때 나타나는 폼
+	@GetMapping("pwdSuccForm.do")
+	public String pwdSuccForm() {
+		
+		return "a00_login/a04_pwdSuccess";
+	}
+	// 비밀번호 성공 했을 때 나타나는 폼
+	@PostMapping("pwdSuccForm.do")
+	public String pwdSuccForm(@RequestParam("newPwd") String pass, HttpServletRequest request,
+		Model m) {
+		
+		// 유저 세션값 받아오기
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("sesMem");
+		
+		// 유저 비밀번호 변경
+		user.setU_pass(pass);
+		service.updatePwd(user);
+		
+		m.addAttribute("change", "Y");
+		
+		return "a00_login/a04_pwdSuccess";
+	}
 	
+	// http://localhost:7080/zenkit/allClear.do
+	@RequestMapping("allClear.do")
+	public void adllClear() {
+		service.adllClear();
+	}
+		
 	
 }

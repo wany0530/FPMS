@@ -15,6 +15,11 @@
 		margin: 0px;
 		overflow: hidden; */
 	}
+	
+	.data:hover {
+		background: #1E1E28;
+		cursor: pointer;
+	}
 	</style>
 </head>
 <body class="sidebar-mini ">
@@ -34,19 +39,19 @@
 				<!-- Start project-info -->
 				<div class="row">
 
-					<div class="col-lg-6 col-md-6">
+					<div class="col-lg-4 col-md-4">
 						<div class="card card-tasks">
-							<div class="card-header mb-4">
+							<div class="card-header mb-1">
 								<h4 class="title">프로젝트 정보</h4>
 							</div>
 							<div class="card-body">
 							
 							<!-- 프로젝트 정보 -->
-								<div class="row mb-4 text-right">
-								<label class="col-sm-2 col-form-label title">
+								<div class="row mb-3 text-right">
+								<label class="col-sm-3 col-form-label title">
 									진행률 :
 								</label>
-								<div class="col-md-10">
+								<div class="col-md-9">
 									<div class="progress-container progress-primary pr-5 pt-3">
 										<div class="progress">
 											<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
@@ -60,12 +65,12 @@
 									</div>
 								</div>
 							
-								<!-- 프로젝트 정보 -->
-								<div class="row mb-4 text-right">
-									<label class="col-sm-2 col-form-label title">
+								<!-- 프로젝트 명 -->
+								<div class="row mb-3 text-right">
+									<label class="col-sm-3 col-form-label title">
 										프로젝트 명 :
 									</label>
-									<div class="col-sm-10">
+									<div class="col-sm-9">
 										<div class="form-group pr-5">
 											<input type="text" class="form-control" disabled 
 		                        		value="${proInfo.p_name}" style="color: gray;">
@@ -74,11 +79,11 @@
 								</div>
 								
 								<!-- 담당 부서 정보 -->
-								<div class="row mb-4 text-right">
-									<label class="col-sm-2 col-form-label title">
+								<div class="row mb-3 text-right">
+									<label class="col-sm-3 col-form-label title">
 										담당 부서 :
 									</label>
-									<div class="col-sm-10">
+									<div class="col-sm-9">
 										<div class="form-group pr-5">
 											<input type="text" class="form-control" disabled 
 		                        		value="${sesMem.d_name}" style="color: gray;">
@@ -87,11 +92,11 @@
 								</div>
 								
 								<!-- PM 정보 -->
-								<div class="row mb-4 text-right">
-									<label class="col-sm-2 col-form-label title">
+								<div class="row mb-3 text-right">
+									<label class="col-sm-3 col-form-label title">
 										PM :
 									</label>
-									<div class="col-sm-10">
+									<div class="col-sm-9">
 										<div class="form-group pr-5">
 											<input type="text" class="form-control" disabled 
 		                        		value="${pm}" style="color: gray;">
@@ -99,22 +104,26 @@
 									</div>
 								</div>
 								
-								<!-- 시작일, 종료일-->
-								<div class="row mb-4">
-									<label class="col-sm-2 col-form-label text-right title">
+								<!-- 시작일 -->
+								<div class="row mb-3 text-right">
+									<label class="col-sm-3 col-form-label title">
 										시작일 :
 									</label>
-									<div class="col-sm-4">
+									<div class="col-sm-9">
 										<div class="form-group pr-5">
-											<h3 class="form-control text-center title	" style="color: white; background: #1D8CF7;">
+											<h3 class="form-control text-center title mb-0" style="color: white; background: #1D8CF7;">
 												${proInfo.p_startD_s}
 											</h3>
 										</div>
 									</div>
-									<label class="col-sm-2 col-form-label text-right title">
+								</div>
+								
+								<!-- 종료일 -->
+								<div class="row text-right">
+									<label class="col-sm-3 col-form-label title">
 										종료일 :
 									</label>
-									<div class="col-sm-4">
+									<div class="col-sm-9">
 										<div class="form-group pr-5">
 											<h3 class="form-control text-center title	" style="color: white; background: #FE5D93;">
 												${proInfo.p_endD_s}
@@ -127,7 +136,7 @@
 						</div>
 					</div>
 
-					<div class="col-lg-6 col-sm-6 text-center">
+					<div class="col-lg-4 col-sm-4 text-center">
 						<div class="card card-tasks text-left">
 							<div class="card-header mb-4">
 								<h4 class="title">참여인원</h4>
@@ -157,6 +166,34 @@
 							</div>
 						</div>
 					</div>
+					
+					<div class="col-lg-4 col-sm-4 text-center">
+						<div class="card card-tasks text-left">
+							<div class="card-header mb-4">
+								<h4 class="title">내가 처리할 조치 리스트</h4>
+							</div>
+							<div class="card-body">
+								<div class="table-full-width table-responsive"
+									style="overflow: auto; max-height: 350px;">
+									<table class="table text-left mr-auto ml-auto" style="width: 90%">
+										<tbody>
+											<c:forEach var="risk" items="${myRiskList}">
+												<tr class="data" id="${risk.r_no}">
+													<td>${risk.r_no}</td>
+													<td>
+														<p class="text-warning" style="height: 21px; width:100%; overflow: hidden; margin: 0px;">
+															${risk.r_content}
+														</p>
+													</td>
+												</tr>
+											</c:forEach>										
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					
 				</div>
 				<!-- End of row -->
 
@@ -292,6 +329,14 @@
 	
 	<script>
 		
+		$(".data").click(function(){
+			var r_no=$(this).attr("id");
+			console.log(r_no);
+			
+			location.href="${path}/zenkit.do?method=detail&r_no="+r_no;
+		});
+	
+	
 		var pos = "${sesMem.pos_no}";
 		
 		if(pos == 4){

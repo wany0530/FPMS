@@ -58,6 +58,8 @@
 					<ul class="dropdown-menu dropdown-navbar">
 						<li class="nav-link"><a href="${path}/profile.do"
 							class="nav-item dropdown-item">프로필</a></li>
+						<li class="nav-link"><a href="${path}/changePwd.do"
+							class="nav-item dropdown-item">비밀번호 변경</a></li>
 						<li class="dropdown-divider"></li>
 						<li class="nav-link"><a href="${path}/zenkit.do?method=login"
 							class="nav-item dropdown-item">로그아웃</a></li>

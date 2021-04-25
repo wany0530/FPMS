@@ -37,25 +37,17 @@
 					<li class="nav-item mr-1">
 						<a class="btn ${(fileName=='/WEB-INF/views/a03_project/a04_Job.jsp')?'btn-primary':''}"
 							id="jobBtn" href="${path}/job.do?method=job">
-							<i class="tim-icons icon-bullet-list-67"></i> 작업관리
+							<i class="tim-icons icon-bullet-list-67"></i> 작업
 						</a>
 					</li>
 					
-					<!-- 배정정보 -->
-					<li class="nav-item mr-1">
-						<a class="btn ${(fileName=='/WEB-INF/views/a03_project/a05_assign.jsp')?'btn-primary':''}"
-							href="${path}/assign.do">
-	        				<i class="tim-icons icon-badge"></i> 배정현황
-	      			</a>
-	        		</li>
-	        		
 					<!-- 채팅 정보 -->
 					<li class="nav-item mr-1">
 						<a class="btn ${(fileName=='/WEB-INF/views/a03_project/a04_chatt.jsp')?'btn-primary':''}"
 							href="${path}/chatt.do?method=chatt">
-	        				<i class="tim-icons icon-badge"></i> 채팅
-	      			</a>
-	        		</li>
+							<i class="tim-icons icon-badge"></i> 채팅
+						</a>
+					</li>
 
 	      </ul>
 	    </div>

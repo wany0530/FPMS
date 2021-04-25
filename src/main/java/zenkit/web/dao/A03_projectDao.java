@@ -7,20 +7,29 @@ import org.springframework.stereotype.Repository;
 
 import zenkit.web.dto.AddResource;
 import zenkit.web.dto.JobStateCnt;
+import zenkit.web.dto.MyRisk;
 import zenkit.web.dto.ResourceName;
 import zenkit.web.dto.RiskStateCnt;
 import zenkit.web.dto.SchProject;
+import zenkit.web.dto.UpProject;
 import zenkit.web.vo.Job2;
 import zenkit.web.vo.Project;
+import zenkit.web.vo.Risk;
 
 @Repository
 public interface A03_projectDao {
 	// 회원이 참여한 프로젝트 전체 리스트 출력
-	public ArrayList<Project> getProList(SchProject sch);
+	public ArrayList<UpProject> getProList(SchProject sch);
+	// 회원이 참여한 프로젝트 리스트의 리스크 갯수
+	public ArrayList<UpProject> getProRiskCnt(int u_no);
+	// 회원이 참여한 프로젝트 리스트의 산출물 갯수
+	public ArrayList<UpProject> getProOutCnt(int u_no);
 	// 회원이 참여한 프로젝트 전체 리스트 카운트
 	public int getProListCnt(SchProject sch);
 	// 프로젝트 등록하기
 	public void projectReg(Project pro);
+	// 첫번째 작업 생성
+	public void firstJobInsert(UpProject pro);
 	// 마지막 유저 번호 얻기
 	public int get_LastPno();
 	// 유저 정보 얻기
@@ -39,6 +48,8 @@ public interface A03_projectDao {
 	public void delUser(AddResource deluser);
 	// 프로젝트 PM이름
 	public String getPM(int p_no); 
+	// 개인이 조치해야할 리스크 목록
+	public ArrayList<Risk> getMyRisk(MyRisk myRisk);
 	// 회원이 담당하는 프로젝트의 작업 건
 	public ArrayList<Job2> getJobList(HashMap<String, Integer> userPro); 
 	// 프로젝트별 작업 현황(카운트 값)

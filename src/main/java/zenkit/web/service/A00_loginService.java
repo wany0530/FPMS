@@ -1,5 +1,7 @@
 package zenkit.web.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.mail.MessagingException;
@@ -70,6 +72,188 @@ public class A00_loginService {
 		sender.send(msg);
 	}
 	
+	// 테이블 생성
+	public void createTable() {
+		
+		// 직급 테이블 생성
+		if(dao.tableExist("Z_RANK") == 0) {
+			dao.createRank();
+			// 직급 시퀀스 생성
+			if(dao.sequenceExist("Z_RANK_NO_SEQ") == 0) {
+				dao.createRankSeq();
+				
+				// 기본 직급 추가
+				dao.addRank("CEO");
+				dao.addRank("이사");
+				dao.addRank("부장");
+				dao.addRank("과장");
+				dao.addRank("대리");
+				dao.addRank("사원");
+			}
+		}
+		
+		// 직책 테이블 생성
+		if(dao.tableExist("Z_POSITION") == 0) {
+			dao.createPosition();
+			// 직책 시퀀스 생성
+			if(dao.sequenceExist("Z_POSITION_NO_SEQ") == 0) {
+				dao.createPositionSeq();
+				
+				// 기본 직책 추가
+				dao.addPosition("CEO");
+				dao.addPosition("인사담당자");
+				dao.addPosition("PM");
+				dao.addPosition("임직원");
+			}
+		}
+		
+		// 부서 테이블 생성
+		if(dao.tableExist("Z_DEPARTMENT") == 0) {
+			dao.createDept();
+			// 부서 시퀀스 생성
+			if(dao.sequenceExist("Z_DEPARTMENT_NO_SEQ") == 0) {
+				dao.createDeptSeq();
+				
+				// 기본 부서 추가
+				dao.addDept("임원진");
+				dao.addDept("경영지원팀");
+				dao.addDept("인사팀");
+				dao.addDept("영업팀");
+				dao.addDept("개발 1팀");
+				dao.addDept("개발 2팀");
+			}
+		}
+		
+		// 임직원 테이블 생성
+		if(dao.tableExist("Z_USER") == 0) {
+			dao.createUser();
+			
+			// 기본 임직원 추가
+			dao.addUser(new User(1, "ceo", "ceo", "CEO", "", "", "", 1, 1, 1)); // CEO
+			dao.addUser(new User(2, "hr", "hr", "김기영", "", "", "", 3, 2, 2)); // 인사담당자
+			dao.addUser(new User(3, "pm", "pm", "이나영", "", "", "", 5, 3, 3)); // CEO
+			dao.addUser(new User(4, "st1", "st1", "오현석", "", "", "", 5, 4, 5)); // 임직원
+			dao.addUser(new User(5, "st2", "st2", "이수현", "", "", "", 5, 4, 6)); // 임직원
+		}
+
+		// 일정 테이블 생성
+		if(dao.tableExist("Z_CALENDAR") == 0) {
+			dao.createCal();
+			// 일정 시퀀스 생성
+			if(dao.sequenceExist("Z_CALENDAR_NO_SEQ") == 0) {
+				dao.createCalSeq();
+			}
+		}
+		
+		// 프로젝트 테이블 생성
+		if(dao.tableExist("Z_PROJECT") == 0) {
+			dao.createProject();
+			// 프로젝트 시퀀스 생성
+			if(dao.sequenceExist("Z_PROJECT_NO_SEQ") == 0) {
+				dao.createProjectSeq();
+			}
+		}
+		
+		// 리소스 테이블 생성
+		if(dao.tableExist("Z_RESOURCE") == 0) {
+			dao.createResource();
+		}
+		
+		// 작업 테이블 생성
+		if(dao.tableExist("Z_JOB") == 0) {
+			dao.createJob();
+			// 작업 시퀀스 생성
+			if(dao.sequenceExist("Z_JOB_NO_SEQ") == 0) {
+				dao.createJobSeq();
+			}
+		}
+		
+		// 결재상태 테이블 생성
+		if(dao.tableExist("Z_AUTH_STATE") == 0) {
+			dao.createAuthState();
+			
+			// 결재상태 추가
+			dao.addAuthState("승인중");
+			dao.addAuthState("승인완료");
+			dao.addAuthState("반려");
+			dao.addAuthState("회수");
+			dao.addAuthState("대기");
+		}
+		
+		// 결재 테이블 생성
+		if(dao.tableExist("Z_AUTH") == 0) {
+			dao.createAuth();
+			// 결재 시퀀스 생성
+			if(dao.sequenceExist("Z_AUTH_NO_SEQ") == 0) {
+				dao.createAuthSeq();
+			}
+		}
+		
+		// 리스크상태 테이블 생성
+		if(dao.tableExist("Z_RISK_STATE") == 0) {
+			dao.createRiskState();
+			
+			// 결재상태 추가
+			dao.addRiskState("오픈");
+			dao.addRiskState("조치완료");
+			dao.addRiskState("진행");
+			dao.addRiskState("취소");
+			dao.addRiskState("홀드");
+		}
+		
+		// 리스크 테이블 생성
+		if(dao.tableExist("Z_RISK") == 0) {
+			dao.createRisk();
+			// 리스크 시퀀스 생성
+			if(dao.sequenceExist("Z_RISK_NO_SEQ") == 0) {
+				dao.createRiskSeq();
+			}
+		}
+		
+		// 조치이력 테이블 생성
+		if(dao.tableExist("Z_RISK_ACTION") == 0)
+			dao.createRiskAction();
+		
+		// 산출물 테이블 생성
+		if(dao.tableExist("Z_OUTPUTS") == 0) {
+			dao.createOutput();
+			// 리스크 시퀀스 생성
+			if(dao.sequenceExist("Z_OUTPUTS_NO_SEQ") == 0) {
+				dao.createOutputSeq();
+			}
+		}		
+	}
+	
+	public void adllClear() {
+		// 테이블 전체 삭제
+		System.out.println("asdfasdfadsfsd");
+		dao.deleteTable("Z_OUTPUTS");
+//		dao.deleteTable("Z_RISK_ACTION");
+//		dao.deleteTable("Z_RISK");
+//		dao.deleteTable("Z_RISK_STATE");
+//		dao.deleteTable("Z_AUTH");
+//		dao.deleteTable("Z_AUTH_STATE");
+//		dao.deleteTable("Z_JOB");
+//		dao.deleteTable("Z_RESOURCE");
+//		dao.deleteTable("Z_PROJECT");
+//		dao.deleteTable("Z_CALENDAR");
+//		dao.deleteTable("Z_USER");
+//		dao.deleteTable("Z_DEPARTMENT");
+//		dao.deleteTable("Z_POSITION");
+//		dao.deleteTable("Z_RANK");
+//		
+//		// 시퀀스 전체 삭제
+//		dao.deleteSequence("Z_OUTPUTS_NO_SEQ");
+//		dao.deleteSequence("Z_RISK_NO_SEQ");
+//		dao.deleteSequence("Z_AUTH_NO_SEQ");
+//		dao.deleteSequence("Z_JOB_NO_SEQ");
+//		dao.deleteSequence("Z_PROJECT_NO_SEQ");
+//		dao.deleteSequence("Z_CALENDAR_NO_SEQ");
+//		dao.deleteSequence("Z_DEPARTMENT_NO_SEQ");
+//		dao.deleteSequence("Z_POSITION_NO_SEQ");
+//		dao.deleteSequence("Z_RANK_NO_SEQ");
+	}
+	
 	// 임시 비밀번호 생성
 	public String tempPass(int size) {
 		StringBuffer buffer = new StringBuffer();
@@ -80,4 +264,10 @@ public class A00_loginService {
 			
 		return buffer.toString();
 	}
+	
+	// 패스워드 변경
+	public void updatePwd(User user) {
+		dao.updatePwd(user);
+	}
+	
 }

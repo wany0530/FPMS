@@ -7,21 +7,61 @@
 	<!-- 회원이 참여한 프로젝트의 작업에 산출물 조회 -->
 	<resultMap type="upOutput" id="outputMap"/>
 	<select id="getOutputs" resultMap="outputMap" parameterType="outputSch">
-		SELECT p.p_no, p.p_name, j.j_name, o.*
-		  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
-		 WHERE o.j_no = j.j_no
-		   AND j.p_no = p.p_no
-			AND j.j_no IN (
-			SELECT j_no FROM Z_JOB WHERE p_no IN (
-				SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
-			 )
-		 )
-		ORDER BY o_no DESC
+		SELECT *
+		  FROM (
+			SELECT ROWNUM num, p.*
+			  FROM (
+				SELECT p.p_no, p.p_name, j.j_name, o.*
+				  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
+				 WHERE o.j_no = j.j_no
+				   AND j.p_no = p.p_no
+					AND j.j_no IN (
+					SELECT j_no FROM Z_JOB WHERE p_no IN (
+						SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
+					)
+					<if test = "p_no != 0">
+						AND p.p_no = #{p_no}
+					</if>
+					AND o.o_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+				 )
+				ORDER BY o_no DESC
+				) p
+		)
+		WHERE num BETWEEN #{startNum} AND #{endNum}
+	</select>
+	
+	<!-- 산출물 개수 -->
+	<select id="getUserOutCnt" resultType="int" parameterType="outputSch">
+			SELECT count(*) count
+			  FROM (
+				SELECT p.p_no, p.p_name, j.j_name, o.*
+				  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
+				 WHERE o.j_no = j.j_no
+				   AND j.p_no = p.p_no
+					AND j.j_no IN (
+						SELECT j_no FROM Z_JOB WHERE p_no IN (
+							SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no}
+						)
+						<if test = "p_no != 0">
+							AND p.p_no = #{p_no}
+						</if>
+						AND o.o_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+				 	)
+				ORDER BY o_no DESC
+				)
+	</select>
+	
+	<!-- 회원별 프로젝트 리스트 -->
+	<resultMap type="project" id="userProMap2"></resultMap>
+	<select id="getUserProList" resultMap="userProMap2" parameterType="int">
+		SELECT *
+	 	  FROM Z_PROJECT
+	    WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = #{u_no})
 	</select>
 	
 	<!-- 산출물 o_no 확인 -->
 	<select id="getMaxNo" resultType="int">
-		SELECT max(o_no) AS o_no
+		SELECT NVL(max(o_no),0) AS o_no
   		  FROM Z_OUTPUTS
 	</select>
 	

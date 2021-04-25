@@ -3,6 +3,8 @@ SELECT * FROM Z_RESOURCE;
 SELECT * FROM Z_JOB;
 SELECT * FROM Z_OUTPUTS;
 SELECT * FROM Z_RISK;
+SELECT * FROM Z_USER;
+
 
 -- 회원별 참여 프로젝트
 SELECT *
@@ -359,6 +361,12 @@ UPDATE Z_JOB
 SELECT * FROM Z_JOB
 WHERE p_no = 27;
 
+SELECT * FROM Z_PROJECT;
+SELECT * FROM Z_USER;
+SELECT NVL(max(o_no),0) AS o_no
+  		  FROM Z_OUTPUTS;
+SELECT * FROM Z_OUTPUTS;
+
 SELECT *
   FROM (
 	SELECT ROWNUM num, p.*
@@ -374,3 +382,237 @@ SELECT *
 WHERE num BETWEEN 10 AND 13;
 
 SELECT * FROM Z_USER zu ;
+
+SELECT *
+  FROM Z_RISK
+ WHERE p_no = 1
+   AND r_receive = '210417-4';
+  
+  
+SELECT count(*) cnt
+  FROM Z_PROJECT
+ WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = 3)
+	AND p_name LIKE '%'||''||'%';
+
+
+SELECT count(*) FROM Z_RESOURCE WHERE u_no = 3;
+SELECT * FROM Z_USER zu ;
+
+SELECT *
+  FROM (
+	SELECT ROWNUM num,upproject.*
+	  FROM (
+		SELECT p.*, pr.riskCnt, po.outputCnt
+		  FROM Z_PROJECT p, (
+				SELECT p.p_no, count(r.p_no) AS riskCnt
+			   FROM Z_RISK r, Z_PROJECT p
+			   WHERE r.p_no(+) = p.p_no
+				AND p.p_no IN (
+					SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = 3
+				)
+				GROUP BY p.p_no
+		  ) pr, (
+				SELECT p.p_no, count(o.o_no) outputCnt
+				FROM Z_JOB j, Z_OUTPUTS o, Z_PROJECT p
+				WHERE j.j_no = o.j_no(+)
+				AND p.p_no = j.p_no(+)
+			 	AND p.p_no IN (
+			 		SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = 3
+				)
+				GROUP BY p.p_no
+		  ) po
+		WHERE p.p_no = pr.p_no
+		  AND p.p_no = po.p_no
+		  AND p.p_name LIKE '%'||''||'%'
+		ORDER BY p.p_no DESC
+	) upproject
+)
+WHERE num BETWEEN 1 AND 3;
+
+-- 프로젝트 리스트
+SELECT *
+  FROM (
+	SELECT ROWNUM num, p.*
+	  FROM (
+			SELECT *
+			  FROM Z_PROJECT
+			 WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = 3)
+			   AND p_name LIKE '%'||'C'||'%'
+			ORDER BY p_no DESC
+		) p
+	)
+WHERE num BETWEEN 1 AND 10;
+
+-- 프로젝트 리스크 갯수
+SELECT p_no, count(*) riskCnt
+  FROM Z_RISK
+ WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = 3)
+GROUP BY p_no;
+
+-- 프로젝트 산출물 갯수
+SELECT j.p_no, count(o.o_no) outputCnt
+  FROM Z_JOB j, Z_OUTPUTS o
+ WHERE j.j_no = o.j_no
+   AND j.p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = 3)
+GROUP BY j.p_no;
+ 
+SELECT * FROM Z_JOB zj ;
+SELECT * FROM Z_OUTPUTS zo ;
+SELECT * FROM Z_USER zu ;
+SELECT * FROM Z_RISK zr ;
+
+
+
+SELECT *
+  FROM (
+	SELECT ROWNUM num,upproject.*
+	  FROM (
+		SELECT p.*, pr.riskCnt, po.outputCnt
+		  FROM Z_PROJECT p, (
+				SELECT p.p_no, count(r.p_no) AS riskCnt
+			   FROM Z_RISK r, Z_PROJECT p
+			   WHERE r.p_no(+) = p.p_no
+				AND p.p_no IN (
+					SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = #{u_no}
+				)
+				GROUP BY p.p_no
+		  ) pr, (
+				SELECT p.p_no, count(o.o_no) outputCnt
+				FROM Z_JOB j, Z_OUTPUTS o, Z_PROJECT p
+				WHERE j.j_no = o.j_no(+)
+				AND p.p_no = j.p_no(+)
+			 	AND p.p_no IN (
+			 		SELECT p_no
+					FROM Z_RESOURCE
+					WHERE u_no = #{u_no}
+				)
+				GROUP BY p.p_no
+		  ) po
+		WHERE p.p_no = pr.p_no
+		  AND p.p_no = po.p_no
+		  AND p.p_name LIKE '%'||#{schWord, jdbcType=VARCHAR}||'%'
+		ORDER BY p.p_no DESC
+	) upproject
+)
+WHERE num BETWEEN #{startNum} AND #{endNum}
+		
+--회원이 참여한 프로젝트의 작업에 산출물 조회
+SELECT *
+  FROM (
+	SELECT ROWNUM num, p.*
+	  FROM (
+		SELECT p.p_no, p.p_name, j.j_name, o.*
+		  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
+		 WHERE o.j_no = j.j_no
+		   AND j.p_no = p.p_no
+			AND j.j_no IN (
+			SELECT j_no FROM Z_JOB WHERE p_no IN (
+				SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+			 )
+			-- AND p.p_no = 1
+			AND j.j_name LIKE '%'||''||'%'
+		 )
+		ORDER BY o_no DESC
+		) p
+)
+WHERE num BETWEEN 1 AND 10;
+SELECT * FROM z_user;
+
+
+-- 종합 대시보드 프로젝트 테이블 
+SELECT DISTINCT 
+   zp.P_NAME 
+   , zp.P_NO 
+   , pm.pm_name
+   , zd.D_NAME 
+   , (CASE WHEN sysdate < zp.P_STARTD THEN '시작전'
+                 WHEN zj.J_COMPLETER = 1 THEN '완료'
+                 WHEN zj.J_COMPLETER != 1 AND SYSDATE > zp.P_ENDD THEN '지연'
+                 ELSE '진행' END) progress_state
+   , zp.P_STARTD 
+   , zp.P_ENDD 
+   , nvl(zj.j_completer,0) * 100||'%' AS progress_rt
+   , nvl(zj2.JOB_CNT,0) AS JOB_CNT
+   , nvl(zr.RISK_CNT,0) AS RISK_CNT
+FROM Z_PROJECT zp 
+LEFT OUTER JOIN 
+(
+   SELECT
+      DISTINCT 
+      a.P_NO 
+      , a.U_NO 
+   FROM Z_RESOURCE a
+) zr ON zp.P_NO  = zr.P_NO
+LEFT OUTER JOIN 
+(
+   SELECT
+      distinct
+      a.U_NO 
+      , a.U_NAME 
+   FROM z_user a
+)zu ON zr.U_NO = zu.U_NO 
+LEFT OUTER JOIN 
+(
+   SELECT
+      a.U_ID 
+      , a.U_NAME AS pm_name
+   FROM Z_USER a
+) pm ON zp.p_pm = pm.U_ID
+LEFT OUTER JOIN Z_DEPARTMENT zd ON zp.D_NO = zd.D_NO 
+LEFT OUTER JOIN 
+(
+   SELECT
+      distinct
+      c.P_NO 
+      , a.J_COMPLETER
+   FROM Z_JOB a
+   LEFT OUTER JOIN Z_PROJECT c ON a.p_no = c.p_no
+   WHERE a.J_REFNO = 0
+) zj ON zp.p_no = zj.p_no
+LEFT OUTER JOIN 
+(
+   SELECT
+      c.P_NO
+      , COUNT(A.J_NO) AS JOB_CNT
+   FROM Z_JOB A
+   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
+   GROUP BY c.p_no
+) zj2 on zp.p_no = zj2.p_no
+LEFT OUTER JOIN 
+(
+   SELECT
+      A.P_NO
+      , COUNT(A.R_NO) AS RISK_CNT
+   FROM Z_RISK A
+   GROUP BY A.P_NO
+) zr on zp.p_no = zr.p_no
+ORDER BY zp.P_NO 
+;
+SELECT count(*) count
+  FROM (
+	SELECT p.p_no, p.p_name, j.j_name, o.*
+	  FROM Z_OUTPUTS o, Z_JOB j, Z_PROJECT p
+	 WHERE o.j_no = j.j_no
+	   AND j.p_no = p.p_no
+		AND j.j_no IN (
+			SELECT j_no FROM Z_JOB WHERE p_no IN (
+				SELECT p_no FROM Z_RESOURCE WHERE u_no = 3
+			)
+		AND p.p_no = 1
+		AND j.j_name LIKE '%'||''||'%'
+ 	)
+ORDER BY o_no DESC
+);
+SELECT * FROM Z_USER zu ;
+
+SELECT * FROM Z_OUTPUTS zo ;
+
+SELECT *
+  FROM Z_PROJECT
+ WHERE p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no = 2);

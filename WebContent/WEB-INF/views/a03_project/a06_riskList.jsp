@@ -37,52 +37,45 @@
 
       <!-- End Navbar -->
       <div class="content">
-      
-        <div class="col-md-8 ml-auto mr-auto">
-        
-          <h2 class="text-center"></h2>
-          <p class="text-center">
-           
-            <a href="#" target="_blank"></a>
-                    
-         
-           <button type="button" id="insertBtn" class="btn btn-primary">
-            리스크 등록</button>
-            
-          </p>
-        </div>
+   
+    
         <div class="row mt-5">
           <div class="col-md-12">
             <div class="card">
               <div class="card-body">
-                <div class="toolbar">
-                  <!--        Here you can write extra buttons/actions for the toolbar              -->
-                  <!-- 영문을 모르겠어서 한땀한땀 
-                  <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-                   <div class="row">
-                    <div class="dataTables_length" id="datatable_length">
-                     <label>
-                      
-                      <select name="datatable_length" aria-controls="datatable"
-                      class="custom-select-sm form-control form-control-sm">
-                       <option value="10">10</option>
-                       <option value="25">25</option>
-                       <option value="50">50</option>
-                       <option value="-1">All</option>
-                       </select>
-                             
-                     </label>
+                   <div class="row mb-3">
+					<div class="col-12 col-md-3 pr-0">
+                    <div class="input-group m-0" style="top: 5px;">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <i class="tim-icons icon-zoom-split"></i>
+                        </div>
+                      </div>
+                      <input type="text" name="schWord" value=""
+                      	class="form-control" placeholder="검색"/>
+                    </div>
+					</div>
+					<div class="col-12 col-md-2 text-left p-0">
+						<button class="btn btn-simple btn-behance">검 색</button>
+						&nbsp;
+						
+						 <button type="button" id="insertBtn" class="btn btn-simple btn-dribbble">
+                          리스크 등록</button>
+					</div>
+					
+					<div class="col-12 col-md-2 ml-auto text-right">
+					
+					</div>
+					
+				</div>
               
-                   </div>
-                  </div>
-                </div>
-                 -->
-                
+                <div class="toolbar">
+                 
                 <div class="col-sm-12 col-md-6">
                  <div id="datatable_filter" class="dataTables_filter">
                    <label>
-                    <input type="search" class="form-control form-control-sm"
-                    placeholder="Search records" aria-controls="datatable">      
+                    
+                    <input type="hidden" name="p_no" value="${risk.p_no}">
                    </label>
                 
                   </div>
@@ -92,7 +85,8 @@
                   <thead>
                     <tr class="text-center data" >
                      
-                      <th>제목(리스크명)</th>
+                      <th>리스크 명</th>
+                      <th>프로젝트 명</th>
                       <th>리스크 상태</th>
                       <th>등록자</th>
                       <th>등록일</th>
@@ -103,10 +97,11 @@
                  
                   <c:forEach var="risk" items="${riskList }">
                     <tr class="text-center data" id="${risk.r_no}">
-                    
+                  
                       <td>${risk.r_name}</td>
+                      <td>${risk.p_name}</td>
                       <td>${risk.rs_name }</td>
-                      <td>${risk.r_send}</td>            
+                      <td>${risk.u_name}</td>        
                       <td><fmt:formatDate value="${risk.r_regdate}"/>
                       </td>
                      
@@ -121,10 +116,71 @@
               <!-- end content-->
             </div>
             <!--  end card  -->
+            	<ul class="pagination justify-content-center">
+								
+								
+								
+								
+									<!-- 이전 버튼 -->
+									<li class="page-item">
+										<button class="page-link" aria-label="Previous" disabled>
+											<span aria-hidden="true">
+												<i class="tim-icons icon-double-left" aria-hidden="true"></i>
+											</span>
+										</button>
+									</li>
+									
+									<!-- 페이지 버튼 -->
+									
+										<li class="page-item active">
+											<button class="page-link">
+												1
+											</button>
+										</li>
+									
+										<li class="page-item ">
+											<button class="page-link">
+												2
+											</button>
+										</li>
+									
+										<li class="page-item ">
+											<button class="page-link">
+												3
+											</button>
+										</li>
+									
+										<li class="page-item ">
+											<button class="page-link">
+												4
+											</button>
+										</li>
+									
+										<li class="page-item ">
+											<button class="page-link">
+												5
+											</button>
+										</li>
+									
+									
+									<!-- 다음 버튼 -->									
+									<li class="page-item">
+										<button class="page-link" aria-label="Next" disabled>
+											<span aria-hidden="true">
+												<i class="tim-icons icon-double-right" aria-hidden="true"></i>
+											</span>
+										</button>
+									</li>
+									
+								</ul>
+            
           </div>
           <!-- end col-md-12 -->
+          
+          
         </div>
         <!-- end row -->
+       
       </div>
      
     </div>

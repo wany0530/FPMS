@@ -3,39 +3,79 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="zenkit.web.dao.A03_riskDao">
- <!-- 리스크 테이블 -->
+<!-- 리스크 테이블 -->
  <resultMap type="risk" id="riskMap"/>
  <select id="riskList" resultMap="riskMap">
     
-    SELECT r_no, j_name, r_name, rs_name, r_send, r_receive, r_regdate
-    FROM z_job zj, z_risk zr
-    WHERE zj.j_no = zr.j_no
-     
+
+ SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
+    FROM z_project zj, z_risk zr, z_user zu
+    WHERE zj.p_no = zr.p_no
+    AND zr.r_send= zu.u_id
+    ORDER BY r_regdate DESC
+
  </select>
-<!-- 리스크 상세화면 --> 
+
+ 
+ <!-- 리스크 번호 매퍼 -> 사용자 번호 가져오는 것 / 조치자 선택할 때 ..? 리스크 상 조치자 선택할 때-->
+ 
+ <!-- public int getPMNumber(int r_no); -->
+<select id="getPMNumber" parameterType="int" resultType="int">
+   SELECT zu.u_no
+   FROM Z_RISK zr, Z_PROJECT zp, Z_USER zu
+   WHERE zr.P_NO = zp.P_NO
+   AND zp.P_PM = zu.U_ID
+   AND zr.r_no = #{r_no}
+</select>
+ 
+ 
+<!-- 리스크 상세화면 (리스크 상세 이름 가져오는 것)--> 
   <select id="getRisk" resultType="risk" parameterType="int">
     
-    select * from z_risk
-    where r_no=#{r_no}
+    SELECT zr.r_no, r_name, r_content, R_REGDATE, zu.u_name AS R_SEND, R_RECEIVE, RS_NAME, p_name, zr.p_no, r_strat
+    FROM z_risk zr, z_project zj, Z_USER zu
+    WHERE zr.P_NO = zj.P_NO
+    AND zr.R_SEND = zu.U_ID
+    AND zr.r_no = #{zr.r_no}
      
  </select>
+
+
  <!-- 리스크 상세 수정 -->
  <update id="updateRisk" parameterType="risk">
  
  update z_risk
-  set  r_receive = #{r_receive},
-       r_rcontent = #{r_rcontent},
-       rs_name = #{rs_name}
-       where r_no = #{r_no}
+  set r_name = #{r_name},
+      r_content = #{r_content},
+      r_receive= #{r_receive},
+      r_strat= #{r_strat}    
+      where r_no = #{r_no}
  
  </update>
  
+ <!-- 디테일 select문 플젝 인원 구하기   public ArrayList<User> getUsers(int p_no); -->
+ 
+ <select id="getUsers" resultType="user" parameterType="int">
+ 
+SELECT U_ID, U_NAME 
+FROM Z_USER zu, Z_RESOURCE zr 
+WHERE zu.u_no=zr.u_no 
+AND p_no= #{p_no}
+ 
+ </select>
+ 
  <!-- 조회 변경사항 등록 -->
+ <insert id="riskActionInsert" parameterType="riskAction">
+
+ insert into z_risk_action values(z_risk_action_seq.nextval, #{ac_receive}, #{ac_name}, sysdate, #{ac_state}, #{r_no})
+ 
+ </insert>
+ 
  
 <!-- 리스크 등록 -->
  <insert id="riskInsert" parameterType="risk">
- insert into z_risk values(z_risk_no_seq.nextval,#{r_name},#{r_content}, 
- sysdate, #{r_send}, 0, 0, 0,#{j_no},#{rs_name})
+ insert into z_risk values(z_risk_no_seq.nextval, #{r_name}, #{r_content},
+  sysdate, #{r_send}, 0, 0, #{p_no}, '오픈', null)
  </insert>
 
 <!-- 리스크 삭제 -->
@@ -44,4 +84,41 @@
 		from z_risk
 		where r_no = #{r_no}
 </delete>
+
+<!-- 조치내용 리스트 -->
+<select id="riskactionList" parameterType="int" resultType="riskAction">
+
+SELECT AC_NO, zu.U_NAME AS AC_RECEIVE, AC_NAME, AC_DATE, AC_STATE, zra.R_NO
+FROM Z_RISK_ACTION zra, Z_USER zu
+WHERE zra.AC_RECEIVE = zu.U_ID
+AND zra.r_no = #{r_no}
+ORDER BY AC_DATE DESC
+
+</select>
+
+<!-- 리스크 업데이트 -->
+<!--  public void uptRiskState(Risk upt); -->
+<update id="uptRiskState" parameterType="risk">
+
+update z_risk
+set rs_name= #{rs_name}
+where r_no= #{r_no}
+
+</update>
+
+<!-- 프로젝트 선택 SELECT 
+strMap은 한 문장이라고 보면 된다 / 우리가 가지고 올 것은 정수와 이름이니까
+VO를 새로 만드는 방법이 있다. -->
+
+<select id="getProjects" parameterType="int" resultType="project">
+
+    SELECT zp.P_NO, zp.P_NAME 
+	FROM Z_PROJECT zp, Z_USER zu, Z_RESOURCE zr
+	WHERE zu.U_NO = zr.u_no
+	AND zp.P_NO = zr.P_NO 
+	AND zr.U_NO = #{U_NO}
+
+</select>
+
+<!-- 페이징 -->
 </mapper>

@@ -4,93 +4,135 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 	
 <mapper namespace="zenkit.web.dao.A01_AllDashDao">
+	
+	<!-- 종합 대시보드 주요 프로젝트 현황 셀렉트박스 -부서명 -->
+	<!-- public ArrayList<AllDashBoard> getDname(); -->
+	<select id="getDname" resultType="allDash">
+		SELECT D_NAME,D_NO
+		FROM Z_DEPARTMENT	
+	</select>
 
 	<!-- 종합 대시보드 프로젝트 리스트 (전체프로젝트)-->
 	<!-- public ArrayList<AllDashBoard> allProjList(); -->
 	<select id="allProjList" resultType="allDash">
 	<![CDATA[
-	SELECT zp.P_NAME, zp.P_NO , zd.D_NAME, 
-		zp.P_STARTD, zp.P_ENDD, count(zo.O_NO) AS poCnt,
-		trunc(zp.P_ENDD)-trunc(sysdate) dDay,
-		(CASE WHEN (sysdate < zp.P_STARTD) THEN 0
-	  WHEN (sysdate > zp.P_ENDD) THEN 100
-	  ELSE ROUND(MOD((trunc(sysdate-zp.P_STARTD))/(trunc(zp.P_ENDD-zp.P_STARTD)),1)*100,0) END) percent ,
-		zu.U_NAME AS pmName,
-		(CASE WHEN (sysdate < zp.P_STARTD) THEN '시작전'
-	 	 WHEN (sysdate > zp.P_ENDD) THEN '완료'
-		 ELSE '진행' END) progress 
-	FROM Z_PROJECT zp, Z_USER zu , Z_OUTPUTS zo, Z_RESOURCE zr, Z_JOB zj, Z_DEPARTMENT zd, Z_POSITION zp2 
-	WHERE zu.U_NO = zr.U_NO 
-	AND zp.P_NO = zr.P_NO 
-	AND zr.U_NO = zj.U_NO 
-	AND zr.P_NO = zj.P_NO 
-	AND zj.J_NO = zo.J_NO 
-	AND zd.D_NO = zp.D_NO
-	AND zp2.POS_NO = 3
-	AND zp2.POS_NO = zu.POS_NO 
-	GROUP BY zp.P_NAME, zp.P_NO , zd.D_NAME, 
-			zp.P_STARTD, zp.P_ENDD, zu.U_NAME
-	ORDER BY zp.p_no
+		SELECT DISTINCT 
+		   zp.P_NAME , zp.P_NO , pm.pm_name, zd.D_NAME 
+		   , (CASE WHEN sysdate < zp.P_STARTD THEN '시작전'
+		                 WHEN zj.J_COMPLETER = 1 THEN '완료'
+		                 WHEN zj.J_COMPLETER != 1 AND SYSDATE > zp.P_ENDD THEN '지연'
+		                 ELSE '진행' END) progress_state
+		   , zp.P_STARTD  , zp.P_ENDD 
+		   , nvl(zj.j_completer,0) * 100 AS progress_rt
+		   , nvl(zj2.job_cnt,0) AS job_cnt, nvl(zr.risk_cnt,0) AS risk_cnt
+		FROM Z_PROJECT zp 
+		LEFT OUTER JOIN 
+		(
+		   SELECT DISTINCT 
+		      a.P_NO , a.U_NO 
+		   FROM Z_RESOURCE a
+		) zr ON zp.P_NO  = zr.P_NO
+		LEFT OUTER JOIN 
+		(
+		   SELECT distinct
+		      a.U_NO , a.U_NAME 
+		   FROM z_user a
+		)zu ON zr.U_NO = zu.U_NO 
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      a.U_ID , a.U_NAME AS pm_name
+		   FROM Z_USER a
+		) pm ON zp.p_pm = pm.U_ID
+		LEFT OUTER JOIN Z_DEPARTMENT zd ON zp.D_NO = zd.D_NO 
+		LEFT OUTER JOIN 
+		(
+		   SELECT distinct
+		      c.P_NO , a.J_COMPLETER
+		   FROM Z_JOB a
+		   LEFT OUTER JOIN Z_PROJECT c ON a.p_no = c.p_no
+		   WHERE a.J_REFNO = 0
+		) zj ON zp.p_no = zj.p_no
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      c.P_NO, COUNT(A.J_NO) AS job_cnt
+		   FROM Z_JOB A
+		   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
+		   GROUP BY c.p_no
+		) zj2 on zp.p_no = zj2.p_no
+		LEFT OUTER JOIN 
+		(
+		   SELECT
+		      A.P_NO , COUNT(A.R_NO) AS risk_cnt
+		   FROM Z_RISK A
+		   GROUP BY A.P_NO
+		) zr on zp.p_no = zr.p_no
+		ORDER BY zp.P_NO 
 	]]>
 	</select>
 	
-	<!-- 종합 대시보드 프로젝트 리스트 (부서별)-->
-	<!-- public ArrayList<AllDashBoard> deptProjList(int d_no); -->
+	<!-- 종합 대시보드 프로젝트 리스트 (ajax 부서별 조회)-->
+	<!-- public ArrayList<AllDashBoard> deptProjList(int d_no); -->	
 	<select id="deptProjList" resultType="allDash" parameterType="int">
 	<![CDATA[
-	SELECT zp.P_NAME, zp.P_NO , zd.D_NAME, 
-		zp.P_STARTD, zp.P_ENDD, count(zo.O_NO) AS poCnt,
-		trunc(zp.P_ENDD)-trunc(sysdate) dDay,
-		(CASE WHEN (sysdate < zp.P_STARTD) THEN 0
-	  WHEN (sysdate > zp.P_ENDD) THEN 100
-	  ELSE ROUND(MOD((trunc(sysdate-zp.P_STARTD))/(trunc(zp.P_ENDD-zp.P_STARTD)),1)*100,0) END) percent ,
-		zu.U_NAME AS pmName,
-		(CASE WHEN (sysdate < zp.P_STARTD) THEN '시작전'
-	 	 WHEN (sysdate > zp.P_ENDD) THEN '완료'
-		 ELSE '진행' END) progress 
-	FROM Z_PROJECT zp, Z_USER zu , Z_OUTPUTS zo, Z_RESOURCE zr, Z_JOB zj, Z_DEPARTMENT zd, Z_POSITION zp2 
-	WHERE zu.U_NO = zr.U_NO 
-	AND zp.P_NO = zr.P_NO 
-	AND zr.U_NO = zj.U_NO 
-	AND zr.P_NO = zj.P_NO 
-	AND zj.J_NO = zo.J_NO 
-	AND zd.D_NO = zp.D_NO
-	AND zp2.POS_NO = 3
-	AND zp2.POS_NO = zu.POS_NO 
-	AND zd.D_NO = #{D_NO}
-	GROUP BY zp.P_NAME, zp.P_NO , zd.D_NAME, 
-			zp.P_STARTD, zp.P_ENDD, zu.U_NAME
-	ORDER BY zp.p_no
-	]]>
+		SELECT DISTINCT 
+			   zp.P_NAME , zp.P_NO , pm.pm_name, zd.D_NAME 
+			   , (CASE WHEN sysdate < zp.P_STARTD THEN '시작전'
+			                 WHEN zj.J_COMPLETER = 1 THEN '완료'
+			                 WHEN zj.J_COMPLETER != 1 AND SYSDATE > zp.P_ENDD THEN '지연'
+			                 ELSE '진행' END) progress_state
+			   , zp.P_STARTD  , zp.P_ENDD 
+			   , nvl(zj.j_completer,0) * 100 AS progress_rt
+			   , nvl(zj2.job_cnt,0) AS job_cnt, nvl(zr.risk_cnt,0) AS risk_cnt
+			FROM Z_PROJECT zp 
+			LEFT OUTER JOIN 
+			(
+			   SELECT DISTINCT 
+			      a.P_NO , a.U_NO 
+			   FROM Z_RESOURCE a
+			) zr ON zp.P_NO  = zr.P_NO
+			LEFT OUTER JOIN 
+			(
+			   SELECT distinct
+			      a.U_NO , a.U_NAME 
+			   FROM z_user a
+			)zu ON zr.U_NO = zu.U_NO 
+			LEFT OUTER JOIN 
+			(
+			   SELECT
+			      a.U_ID , a.U_NAME AS pm_name
+			   FROM Z_USER a
+			) pm ON zp.p_pm = pm.U_ID
+			LEFT OUTER JOIN Z_DEPARTMENT zd ON zp.D_NO = zd.D_NO 
+			LEFT OUTER JOIN 
+			(
+			   SELECT distinct
+			      c.P_NO , a.J_COMPLETER
+			   FROM Z_JOB a
+			   LEFT OUTER JOIN Z_PROJECT c ON a.p_no = c.p_no
+			   WHERE a.J_REFNO = 0
+			) zj ON zp.p_no = zj.p_no
+			LEFT OUTER JOIN 
+			(
+			   SELECT
+			      c.P_NO, COUNT(A.J_NO) AS job_cnt
+			   FROM Z_JOB A
+			   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
+			   GROUP BY c.p_no
+			) zj2 on zp.p_no = zj2.p_no
+			LEFT OUTER JOIN 
+			(
+			   SELECT
+			      A.P_NO , COUNT(A.R_NO) AS risk_cnt
+			   FROM Z_RISK A
+			   GROUP BY A.P_NO
+			) zr on zp.p_no = zr.p_no
+			WHERE zd.D_NO = #{d_no}
+			ORDER BY zp.P_NO 
+		]]>
 	</select>
-	
-	
-	<!-- 종합 대시보드 주요 프로젝트 현황 셀렉트박스 -부서명 -->
-	<!-- public ArrayList<AllDashBoard> getDname(); -->
-	<select id="getDname" resultType="allDash">
-	SELECT D_NAME,D_NO
-	FROM Z_DEPARTMENT	
-	</select>
-		
-	<!-- 종합 대시보드 주요 프로젝트 현황 셀렉트박스 -진행상태 -->
-	<!-- public ArrayList<AllDashBoard> getProgress(); -->
-	<select id="getProgress" resultType="allDash">
-	<![CDATA[
-	SELECT DISTINCT (CASE WHEN (sysdate < zp.P_STARTD) THEN '시작전'
-	 	 WHEN (sysdate > zp.P_ENDD) THEN '완료'
-		 ELSE '진행' END) progress 
-	FROM z_project zp
-	]]>
-	</select>
-	
-	<!-- 종합 대시보드 주요 프로젝트 현황 셀렉트박스 -연도 -->
-	<!-- public ArrayList<AllDashBoard> getYear1(); -->
-	<select id="getYear1" resultType="allDash">
-	SELECT DISTINCT TO_CHAR(P_STARTD,'YYYY') pYear1
-	FROM Z_PROJECT 
-	ORDER BY pYear1 DESC	
-	</select>
-	
+
 	<!-- 종합 대시보드 프로젝트 수행지표 리스트 (전체부서) -->
 	<!-- public ArrayList<AllDashBoard> getAllCnt(); -->
 	<select id="getAllCnt" resultType="allDash">
@@ -115,32 +157,33 @@
 		AND zj.J_REFNO =0) a
 	GROUP BY a.D_NAME, a.D_NO
 	]]>
-	</select>
+	</select>	
 	
-	<!-- 종합 대시보드 프로젝트 수행지표 리스트 (부서 내 프로젝트별) -->
-	<!-- public ArrayList<AllDashBoard> getAllProjCnt(int d_no); -->
-	<select id="getAllProjCnt" resultType="allDash" parameterType="int">
-	<![CDATA[
-	SELECT a.P_NAME, COUNT(*) allCnt
-	, SUM(CASE WHEN sysdate < a.P_STARTD THEN 1 ELSE 0 END) AS before_Cnt
-	, SUM(CASE WHEN sysdate >= a.P_STARTD AND SYSDATE <= a.P_ENDD AND a.J_COMPLETER NOT IN (0,1) THEN 1 ELSE 0 END) AS ongoing_Cnt
-	, SUM(CASE WHEN a.J_COMPLETER = 1 THEN 1 ELSE 0 END) AS complete_Cnt
-	, SUM(CASE WHEN a.J_COMPLETER != 1 AND SYSDATE > a.P_ENDD THEN 1 ELSE 0 END) AS late_Cnt
-	FROM (SELECT zd.D_NAME , zp.P_NAME, zp.P_STARTD ,zp.P_ENDD ,zj.J_COMPLETER  
-		FROM Z_PROJECT zp , Z_DEPARTMENT zd , Z_JOB zj
-		, (
-			SELECT
-				P_NO 
-			FROM Z_RESOURCE a
-			GROUP BY p_no
-		) zr
-		WHERE zd.D_NO = zp.D_NO 
-		AND zr.P_NO = zp.P_NO 
-		AND zp.P_NO = zj.P_NO 
-		AND zj.J_REFNO =0
-		AND zd.D_NO = #{D_NO}) a
-	GROUP BY a.P_NAME
-	]]>
+	<!-- 종합 대시보드 리스크 현황 - pieChart -->
+	<!-- public AllDashBoard getAllRiskCnt(); -->
+	<select id="getAllRiskCnt"  resultType="allDash" >
+		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c4.rCancelCnt, c5.rHoldCnt
+		  FROM (
+			SELECT count(*) rOpenCnt
+			  FROM Z_RISK r
+			 WHERE rs_name = '오픈'
+			)c1 ,(
+			SELECT count(*) rDoneCnt
+			  FROM Z_RISK r
+			WHERE rs_name = '조치완료'
+			)c2 ,(
+			SELECT count(*) rOngoingCnt
+			  FROM Z_RISK r
+			 WHERE rs_name = '진행'
+			)c3 ,(
+			SELECT count(*) rCancelCnt
+			  FROM Z_RISK r
+			 WHERE rs_name = '취소'
+			)c4 ,(
+			SELECT count(*) rHoldCnt
+			  FROM Z_RISK r
+			 WHERE rs_name = '홀드'
+			)c5 
 	</select>
 	
 	

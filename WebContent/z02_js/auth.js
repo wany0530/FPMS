@@ -87,7 +87,8 @@ function modalOutputInfo(data) {
 		outputCode += '<div class="row grid-row"><div class="col-md-7">';
 		outputCode += '<div class="forum-list-title" id="task_outputname'+idx+'">'+output.o_name+'</div></div>';
 		outputCode += '<div class="col-md-4" style="max-width: 32%;">';
-		outputCode += '<a href="#" class="btn-label-brand btn btn-sm" title="파일 다운로드">';
+		outputCode += '<a href="'+path+'/output.do?method=down&fname=';
+		outputCode += output.o_path+'" class="btn-label-brand btn btn-sm" title="파일 다운로드">';
 		outputCode += '<i class="fa fa-download"></i></a></div></div>';
 		$('#tab_1_2 .grid-template-row').append(outputCode);
 	});
@@ -117,7 +118,6 @@ function modalJobInfo(data) {
 
 // 결재요청함에서 [결재회수] 버튼 클릭 했을 때 결재회수하기
 $('.auth-cancle').on('click', function(){
-	console.log($(this).parent().parent().data('ano'));
 	var ano=$(this).parent().parent().data('ano');
 	if(confirm('결재 회수 하시겠습니까?')) {
 		location.href=path+'/retire.do?a_no='+ano;
@@ -137,7 +137,49 @@ $('#pro_name').on('change', function(){
 // 프로젝트 디테일 화면 이동하기
 function goProject(pno) {
 	var formCode = '<form id="proform" method="post" action="'+path+'/project.do?method=form">';
-	formCode += '<input type="hidden" name="p_no" value="'+pno+'">';
+	formCode += '<input type="hidden" name="p_no" value="'+pno+'"></form>';
 	$('#authTableBody').append(formCode);
 	$('#proform').submit();
 }
+
+// 산출물 다운로드
+$('.download').on("click", function(){
+	var o_path = $(this).parent().prevAll().eq(4).val();
+	var realpath = "${path}/z03_upload"+o_path;
+	
+	// 파일 유뮤 테스트
+	$.ajax({
+		url: realpath,
+		type: 'HEAD',
+		success: function () {
+			const swalWithBootstrapButtons = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-success',
+					cancelButton: 'btn btn-danger'
+				},
+				buttonsStyling: false
+				})
+		      swalWithBootstrapButtons.fire({
+					title: '다운로드 하시겠습니까',
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '다운로드',
+					cancelButtonText: '취소',
+					reverseButtons: true
+		      }).then((result) => {
+				if (result.value) {
+					location.href="${path}/output.do?method=down&fname="+o_path;
+				} 
+			}) 
+		},
+		error: function () {
+			Swal.fire({
+				position: 'center',
+				type: 'error',
+				title: '파일을 다운로드 할 수 없습니다.',
+				showConfirmButton: false,
+				timer: 1500
+			})
+		}
+	});
+});

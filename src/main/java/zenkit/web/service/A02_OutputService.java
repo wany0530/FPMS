@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import zenkit.web.dao.A02_OutputDao;
 import zenkit.web.dto.OutputSch;
 import zenkit.web.dto.UpOutput;
+import zenkit.web.vo.Project;
 
 @Service
 public class A02_OutputService {
@@ -40,10 +41,18 @@ public class A02_OutputService {
 				o.setF_name(fname);
 			}
 		}
-		
-		
 		return outputs;
 	}
+	// 프로젝트 리스트
+	public ArrayList<Project> getUserProList(int u_no){
+		return dao.getUserProList(u_no);
+	}
+	
+	// 산출물 갯수
+	public int getUserOutCnt(OutputSch sch) {
+		return dao.getUserOutCnt(sch);
+	}
+	
 	
 	// 산출물 등록
 	public void regOutput(UpOutput output, MultipartFile o_file){
@@ -55,11 +64,12 @@ public class A02_OutputService {
 		if(filename != null && !filename.equals("")) {
 			
 			// 등록된 산출물 PK (o_no)
-			int o_no = dao.getMaxNo()+1;
 			
+			String o_no = "o_"+ Integer.toString(dao.getMaxNo()+1);
+			String p_no = "p_"+output.getP_no();
 			// 파일 경로 생성(웹경로, 실제경로)
-			String upPath = uploadPath + File.separator + "output" + File.separator + o_no;
-			String dbPath = File.separator+"output"+File.separator+o_no+File.separator+filename;
+			String upPath = uploadPath + File.separator + "output" + File.separator + p_no + File.separator + o_no;
+			String dbPath = File.separator+"output"+File.separator+p_no+File.separator+o_no+File.separator+filename;
 			
 			File realSavePath = new File(upPath); // 물리적 경로
 			
