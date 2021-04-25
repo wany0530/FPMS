@@ -105,5 +105,24 @@
 * 완료율은 0& 및 수정날짜 등록날짜는 sysdate값으로 등록된다.
 * 담당자는 프로젝트 참여인원 목록을 출력하고 select할 수 있다.
 
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/77144929/115982620-9b7acc80-a5d7-11eb-8be9-34a9364c9e55.gif)
 
+## 프로젝트 작업 상세정보(수정/삭제 가능)
+* 게시판에 출력된 작업을 더블클릭시 해당 작업 상세 페이지로 이동
+* 상세페이지 내에서 수정 및 삭제 가능.
+* 작업명, 작업설정, 시작날짜, 종료날짜, 완료율, 담당자 수정가능
+* 수정 권한은 해당 프로젝트의 PM만 가능(PM계정시 수정/삭제 버튼생성, 이외 버튼생성X)
+* 하위작업 완료율 수정시 상위 작업 완료율 갱신.
 
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/77144929/115982771-7e92c900-a5d8-11eb-8d5b-19d09369c426.gif)
+
+## 프로젝트별 그룹 채팅 로그인
+* [그룹명]으로 프로젝트명이 자동 할당.
+* [임직원명]으로 본인의 이름을 입력하면 채팅방 입장 버튼이 생성.
+
+![ezgif com-gif-maker (2)](https://user-images.githubusercontent.com/77144929/115982860-08db2d00-a5d9-11eb-8db5-d409e3b5d9b8.gif)
+
+## 다 vs 다 채팅
+* 동일한 그룹명으로 채팅방 입장시 채팅이 가능
+
+![ezgif com-gif-maker (3)](https://user-images.githubusercontent.com/77144929/115983035-d978f000-a5d9-11eb-9974-9fee2b362aef.gif)
