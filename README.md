@@ -58,7 +58,7 @@
 
 ![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/77144929/115966970-f3c7b500-a56a-11eb-9924-b70d8e3f754e.gif)
 
-* 페이지 크기 select을 통해 출력되는 한 페이지에 N개의 작업물을 보여줄수 있다.
+* 페이지 크기 select을 통해 출력되는 한 페이지에 N개의 작업물 출력.
 * 페이징 처리를 하여 페이지 크기에 따른 페이지 수
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/77144929/115966918-b6632780-a56a-11eb-8703-79f05f058062.gif)
@@ -66,10 +66,10 @@
 <br>
 
 ### 프로젝트 작업 등록
-* 상위작업은 새작업 또는 등록된 작업들을 선택 할 수 있다.
+* 상위작업은 새작업 또는 등록된 작업들 선택 가능.
 * 작업명/작업설정/시작날짜/종료날짜 입력해야하고 null값시 경고창 출력
-* 완료율은 0& 및 수정날짜 등록날짜는 sysdate값으로 등록된다.
-* 담당자는 프로젝트 참여인원 목록을 출력하고 select할 수 있다.
+* 완료율은 0& 및 수정날짜 등록날짜는 sysdate값으로 등록.
+* 담당자는 프로젝트 참여인원 목록을 출력하고 select 가능.
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/77144929/115982620-9b7acc80-a5d7-11eb-8be9-34a9364c9e55.gif)
 
