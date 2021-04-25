@@ -33,6 +33,7 @@
 <br>
 #### 데이터 베이스 설계
 > 총 14개의 테이블로 구성
+
 ![image](https://user-images.githubusercontent.com/77144929/115965820-e22fde80-a565-11eb-9d52-882e4bb4ce5c.png)
 
 <br>
