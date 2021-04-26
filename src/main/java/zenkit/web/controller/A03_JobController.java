@@ -19,6 +19,7 @@ import zenkit.web.service.A03_JobService;
 import zenkit.web.vo.Gantt;
 import zenkit.web.vo.Gantt2;
 import zenkit.web.vo.Job;
+import zenkit.web.vo.User;
 
 @Controller
 @RequestMapping("/job.do")
@@ -157,17 +158,28 @@ public class A03_JobController {
 		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
 		return "pageJsonReport";
 	}
+	
 	// Gantt 등록
-	// http://localhost:7080/zenkit/job.do?method=insert
+	// http://localhost:7080/zenkit/job.do?method=insert2
 	@RequestMapping(params = "method=insert2")
-	public String jobInsert2(Gantt2 g, Model d,HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		int p_no = (int) session.getAttribute("p_no");
+	public String jobInsert2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no, @SessionAttribute("sesMem") User user1) {
+		g.setU_no(user1.getU_no());
 		g.setP_no(p_no);
+		System.out.println("상위작업:"+g.getParent());
+		System.out.println("작업명:"+g.getText());
+		System.out.println("작업설명:"+g.getJcontent());
+		System.out.println("시작일:"+g.getStart_date());
+		System.out.println("종료일:"+g.getEnd_date());
+		System.out.println("완료율:"+g.getProgress());
+		System.out.println("프로젝트 번호:"+g.getP_no());
+		System.out.println("유저 번호:"+g.getU_no());
+			service.jobInsert2(g);
 		d.addAttribute("success","Y");
 		/*
 		 * service.jobInsert2(g); // 작업 데이터 삭제 처리
-		 */		return "forward:/job.do?method=insertForm";
+		 * return "forward:/job.do?method=insertForm";
+		 */
+		return "pageJsonReport";
 	}
 	
 }

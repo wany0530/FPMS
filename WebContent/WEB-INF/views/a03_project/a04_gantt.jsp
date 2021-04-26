@@ -90,7 +90,6 @@ html, body {
 			{ name: "text", tree: true, width: 250, resize: true }, // 작업명
             { name: "start_date", align: "center", resize: true ,width: 100}, // 시작일
             { name: "end_date", align: "center", resize: true ,width: 100}, // 종료일
-            { name: "charger", align: "center" ,width: 100}, // 담당자
             { name: "progress", align: "center" ,width: 100}, // 완료율
 	        { name: "buttons", label:"관리", width: 75, template: function(task) { // CRUD 
 	            return (
@@ -139,6 +138,7 @@ html, body {
 	            		if(pm != user){
 	            			alert("작업 등록 권한이 없습니다.");
 	            		}else{
+	            			alert("작업 등록시 완료율은 0%로 고정됩니다.")
 	            			gantt.createTask(null, id);
 	                        break;
 	            			/* location.href="${path}/job.do?method=insertForm"; */
@@ -194,13 +194,27 @@ html, body {
 	    
 	    
 		gantt.attachEvent("onAfterTaskAdd", function(id,item){
-			concole.log(item);
-			insertCall(id,item);
+			if(item.progress > 1 || item.progress < 0){
+				alert("완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				gantt.deleteTask(id);
+				gantt.hideLightbox();
+			}else if(item.text != "" && item.jcontent != "" && item.progress != "" && item.end_date > item.start_date){
+				insertCall(id,item);
+				gantt.refreshTask();
+			}else{
+				alert("데이터를 입력해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				gantt.deleteTask(id);
+				gantt.hideLightbox();
+			}
 		});
 		
 		gantt.attachEvent("onAfterTaskUpdate", function(id,item){
-			if(item.text != "" && item.jcontent != "" && item.progress <= 1 && item.progress >= 0 && item.progress != "" && item.end_date > item.start_date){
+			if(item.progress > 1 || item.progress < 0){
+				alert("완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				getGantt();
+			}else if(item.text != "" && item.jcontent != "" && item.progress != "" && item.end_date > item.start_date){
 				updateCall(id,item);
+				gantt.refreshTask();
 			}else{
 				alert("데이터를 입력해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				getGantt();
@@ -209,33 +223,14 @@ html, body {
 		  
 		gantt.attachEvent("onAfterTaskDelete", function(id,item){
 			deleteTask(id);
-			gantt.refreshTask(id);
+			gantt.refreshTask();
 		});
 	});
 	// 업데이트 처리
 	function updateCall(id, item){
-			$.ajax({
-				type:"post",
-				url:"${path}/job.do?method=update2",
-				data:item,
-				dataType:"json",
-				 success:function(data){
-					  if(data.success=="Y"){
-						  alert("수정 완료");  
-						  console.log(data.gantt);
-					  }
-				  },
-				  error:function(err){
-					  alert("에러발생: " + err);
-					  console.log(err);
-				  }
-			});
-	}
-	
-	function insertCall(id,item){
 		$.ajax({
 			type:"post",
-			url:"${path}/job.do?method=insert",
+			url:"${path}/job.do?method=update2",
 			data:item,
 			dataType:"json",
 			 success:function(data){
@@ -245,10 +240,31 @@ html, body {
 				  }
 			  },
 			  error:function(err){
-				  alert("에러발생: " + err);
+				  console.log("에러발생: " + err);
 				  console.log(err);
 			  }
 		});
+	}
+	// insert 처리
+	function insertCall(id,item){
+		var sch = newSch(item);
+		sch.progress = 0;
+		$.ajax({
+			type:"post",
+			url:"${path}/job.do?method=insert2",
+			data:sch,
+			dataType:"json",
+			 success:function(data){
+				  if(data.success=="Y"){
+					  alert("등록 완료");  
+					  console.log(data.gantt);
+				  }
+			  },
+			  error:function(err){
+				  alert("에러발생: " + err);
+				  console.log(err);
+			  }
+		})
 	}
 	
 	function deleteTask(id){
@@ -264,7 +280,6 @@ html, body {
 				  }
 			  },
 			  error:function(err){
-				  alert("에러발생: " + err);
 				  console.log(err);
 			  }
 		});
@@ -281,6 +296,20 @@ html, body {
 	  sch.progress = gantt.progress; 
 	  return sch;
 	};
+	
+	function newSch(gantt){
+		console.log("###newSch###");
+		console.log(gantt);
+	  var sch = {};
+	  sch.parent = gantt.parent; 
+	  sch.jcontent = gantt.jcontent;	
+	  sch.text = gantt.text;
+	  sch.start_date = gantt.start_date;
+	  sch.end_date = gantt.end_date;
+	  sch.progress = gantt.progress; 
+	  return sch;
+	};
+	
 	/* 삭제 처리 기능 */
 	function getFormatDate(date){
 	    var year2 = date.substring(0,4);
