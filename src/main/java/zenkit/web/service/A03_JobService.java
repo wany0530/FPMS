@@ -130,6 +130,16 @@ public class A03_JobService {
 		dao.jobInsert(ins);
 	}
 	
+	public void jobInsert2(Job ins) {
+		SimpleDateFormat sDate = new SimpleDateFormat("YYYY/MM/dd");
+		String startD = sDate.format(ins.getJ_startD());
+		String endD = sDate.format(ins.getJ_endD());
+		ins.setJ_startD_s(startD);
+		ins.setJ_endD_s(endD);
+		
+		dao.jobInsert(ins);
+	}
+	
 	public void jobDelete(int j_no) {
 		dao.jobDelete(j_no);
 	}

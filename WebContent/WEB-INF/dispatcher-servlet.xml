@@ -63,8 +63,8 @@
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.gmail.com"/>
 		<property name="port" value="587"/>
-		<property name="username" value="gun235448@gmail.com"/>
-		<property name="password" value="see010811^^"/>
+		<property name="username" value="xevybybin@gmail.com"/>
+		<property name="password" value="rhddlfrhd010"/>
 		<!-- 보안 관련 설정 -->
 		<property name="javaMailProperties">
 			<props>
@@ -92,7 +92,8 @@
 			</list>
 		</property>
 	</bean>
-
+	
+	<!-- 5. 채팅 -->
 	<!-- 1. 요청 핸들러 매핑 클래스와 어댑터 선언 -->
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />

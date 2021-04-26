@@ -157,7 +157,7 @@ public class A03_JobController {
 		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
 		return "pageJsonReport";
 	}
-	/* Gantt 등록
+	// Gantt 등록
 	// http://localhost:7080/zenkit/job.do?method=insert
 	@RequestMapping(params = "method=insert2")
 	public String jobInsert2(Gantt2 g, Model d,HttpServletRequest request) {
@@ -165,8 +165,9 @@ public class A03_JobController {
 		int p_no = (int) session.getAttribute("p_no");
 		g.setP_no(p_no);
 		d.addAttribute("success","Y");
-		service.jobInsert2(g); // 작업 데이터 삭제 처리
-		return "forward:/job.do?method=insertForm";
+		/*
+		 * service.jobInsert2(g); // 작업 데이터 삭제 처리
+		 */		return "forward:/job.do?method=insertForm";
 	}
-	*/
+	
 }

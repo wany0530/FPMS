@@ -133,6 +133,7 @@
 						show +="<tr class='data' id='"+job.j_no+"'>";
 						show +="<td>"+job.cnt+"</td>";
 						show +="<td style='text-align:left'>";
+						
 						for(var sts=1; sts<=job.level; sts++){
 							if(job.j_refno > 1) show += "&nbsp;&nbsp&nbsp;&nbsp&nbsp;"
 							if(job.j_refno > 1 && (sts==job.level)) show += "┗";

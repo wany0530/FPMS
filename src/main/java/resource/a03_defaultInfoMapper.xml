@@ -17,7 +17,9 @@
 	
 	<!-- public void uptProInfo(A03_ProInfo upt) -->
 	<update id="uptProInfo" parameterType="a03_proInfo">
-		
+		update z_project 
+		set p_name=#{p_name}, p_content=#{p_content}
+		where p_no=#{p_no}
 	</update>
 	
 	<!-- public void delproInfo(int p_no) -->
