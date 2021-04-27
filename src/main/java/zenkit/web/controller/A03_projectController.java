@@ -99,7 +99,7 @@ public class A03_projectController {
 	}
 	// http://localhost:7080/zenkit/project.do?method=detail_3
 	@PostMapping(params = "method=detail_3")
-	public String detailForm_3(@RequestParam("u_name") String u_name,
+	public String detailForm_3(@RequestParam("u_no") int u_no,
 							@RequestParam("btnState") String btnState,
 							HttpServletRequest req) {
 		
@@ -107,7 +107,7 @@ public class A03_projectController {
 		HttpSession session = req.getSession();
 		int p_no = (int)session.getAttribute("p_no");
 		
-		AddResource resource = new AddResource(p_no, u_name);
+		AddResource resource = new AddResource(p_no, u_no);
 		if(btnState.equals("add")) 
 			service.addResource(resource); // 프로젝트 참여시키기
 		else

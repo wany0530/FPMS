@@ -32,6 +32,7 @@
 			if(confirm("채팅서버에 접속하시겠습니까??")){
 					$(".card-body").attr("style","height:100%;");
 					wsocket = new WebSocket("ws://localhost:7080//${path}//chat-ws.do");
+					//wsocket = new WebSocket("ws://192.168.0.20:7080//${path}//chat-ws.do");
 					// 1. 접속시.
 					wsocket.onopen = function(evt){
 						//채팅 서버에 접속되었을 때, 처리할 내용..

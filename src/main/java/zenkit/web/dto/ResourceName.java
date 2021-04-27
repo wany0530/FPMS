@@ -6,6 +6,7 @@ public class ResourceName extends Resource{
 	private String u_name;
 	private String r_name;
 	private String pos_name;
+	private int u_no;
 	
 	public ResourceName() {
 		// TODO Auto-generated constructor stub
@@ -40,6 +41,14 @@ public class ResourceName extends Resource{
 
 	public void setPos_name(String pos_name) {
 		this.pos_name = pos_name;
+	}
+
+	public int getU_no() {
+		return u_no;
+	}
+
+	public void setU_no(int u_no) {
+		this.u_no = u_no;
 	}
 	
 }

@@ -38,7 +38,7 @@
 									style="overflow: auto; max-height: 380px;">
 									
 									<form method="post" id="memberForm">
-									<input type="hidden" value="" name="u_name" id="select-member"/>
+									<input type="hidden" value="" name="u_no" id="select-member"/>
 									<input type="hidden" value="" name="btnState"/>
 									<table class="table text-center">
 										<thead>
@@ -87,7 +87,7 @@
 									style="overflow: auto; max-height: 380px;">
 									
 									<form method="post" id="deptPersonForm">
-									<input type="hidden" value="" name="u_name" id="select-deptUser"/>
+									<input type="hidden" value="" name="u_no" id="select-deptUser"/>
 									<input type="hidden" value="" name="btnState"/>
 									<table class="table text-center">
 										<thead>
@@ -104,6 +104,7 @@
 													<td>${deptPerson.pos_name}</td>
 													<td>${deptPerson.r_name}</td>
 												</tr>
+												<input type="hidden" value="${deptPerson.u_no}" >
 											</c:forEach>
 										</tbody>
 									</table>
@@ -131,7 +132,10 @@
 			$(".deptPerson-item").css("background", "#26293D");
 			selectPerson = $(this).children().eq(0).text();
 			$("#select-deptUser").val(selectPerson);
+			selectU_no = $(this).next().val();
+			console.log(selectU_no);
 			$(this).css("background", "#1E1E28");
+			$("#select-deptUser").val(selectU_no);
 		});
 		
 		// 제거 할 인원 선택
@@ -143,7 +147,9 @@
 			selectMember = $(this).children().eq(0).text();
 			selectMemberPos = $(this).children().eq(1).text();
 			selectU_no = $(this).next().val();
-			$("#select-member").val(selectMember);
+			console.log(selectU_no);
+			$("#select-member").val(selectU_no);
+			
 			$(this).css("background", "#1E1E28");
 		});
 		

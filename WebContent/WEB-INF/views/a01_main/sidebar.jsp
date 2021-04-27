@@ -9,7 +9,7 @@
             <img src="${path}/assets/img/logo_symbol.png" />
           </a>
           <a href="javascript:void(0)" class="simple-text logo-normal">
-            zenkit
+           fpms
           </a>
         </div>
         <ul class="nav">

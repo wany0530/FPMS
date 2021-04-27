@@ -52,7 +52,7 @@ public class A03_defaultInfoController {
 	@GetMapping("delproInfo.do")
 	public String delproInfo(@RequestParam("p_no") int p_no) {
 		service.delproInfo(p_no);
-		return "a03_project\\a00_projectList";
+		return "redirect:/project.do?method=form";
 	}
 	@PostMapping("uptProInfo.do")
 	public String uptProInfo(A03_ProInfo upt, Model d, HttpServletRequest request) {

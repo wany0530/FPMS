@@ -85,23 +85,40 @@
                      <label class="col-sm-2 col-form-label text-right">조치자</label>
                      <div class="col-sm-4">
                         <div class="form-group">
-                           <select name="r_receive" class="selectpicker" id="r_receive">
-                                      <option value="0">조치자 선택 </option>
-                                      <c:forEach var="getUser" items="${getUsers}">
-                                      <option value="${getUser.u_id}">${getUser.u_name}</option>
-                                      </c:forEach>
-                                   </select>
+                        	<c:choose>
+                        		<c:when test="${pmNumber==sesMem.u_no}">
+                        		<select name="r_receive" class="selectpicker" id="r_receive">
+	                                <option value="0">조치자 선택 </option>
+	                                <c:forEach var="getUser" items="${getUsers}">
+	                                <option value="${getUser.u_id}">${getUser.u_name}</option>
+	                             	</c:forEach>
+                        	   </select>
+                        		</c:when>
+                        		<c:otherwise>
+                        		<div class="form-control">${risk.r_receivename}</div>
+                        		</c:otherwise>
+                        	</c:choose>
+                           
                         </div>
                      </div>
                      <label class="col-sm-2 col-form-label text-right">대응전략</label>
                      <div class="col-sm-4">
                         <div class="form-group">
-                           <select name="r_strat" class="selectpicker" id="r_strat">
-                                      <option value="">대응전략 선택</option>
-                                      <c:forEach var="rs" items="${resStrategies}">
-                                      <option>${rs.title}</option>
-                                      </c:forEach>
-                                   </select>
+                        	<c:choose>
+                        		<c:when test="${pmNumber==sesMem.u_no}">
+		                           <select name="r_strat" class="selectpicker" id="r_strat">
+		                              <option value="">대응전략 선택</option>
+		                              <c:forEach var="rs" items="${resStrategies}">
+		                              <option>${rs.title}</option>
+		                              </c:forEach>
+		                           </select>
+                        		</c:when>
+                        		<c:otherwise>
+                        			<div class="form-control">${risk.r_strat}
+                        			<c:if test="${empty risk.r_strat}">미설정</c:if></div>
+                        		</c:otherwise>
+                        	</c:choose>
+
                         </div>
                      </div>
                   </div>
@@ -156,11 +173,11 @@
                            style="color:#D4D4D8;border:none;max-height:100px;padding:10px 15px;"></textarea>
                      </div>
                      <div class="col-md-12 riskaction_btn">
-                        <c:choose>
+                          <c:choose>
+                        <c:when test="${risk.rs_name eq '조치완료'}"><div style="height:48px;"></div></c:when>
                         <c:when test="${sesMem.u_no==pmNumber || sesMem.u_id==risk.r_receive }">
                         <button type="button" id="rainsBtn" class="btn btn-primary btn-simple" style="float:right;">조치내용 등록</button>
                         </c:when>
-                        <c:when test="${risk.rs_name eq '조치완료'}"><div style="height:48px;"></div></c:when>
                         <c:otherwise><div style="height:48px;"></div></c:otherwise>
                         </c:choose>
                      </div>
@@ -224,6 +241,7 @@
 <%@ include file="../a01_main/plugin.jsp" %>
 <%@ include file="../a01_main/bootstrapBottom.jsp" %>
 <script type="text/javascript">
+$('.navbar-brand').text('리스크');
 var receive = "${risk.r_receive}";
 if(receive!="") {
    $('#r_receive').val(receive);

@@ -36,12 +36,16 @@ public class A01_DashJsonController {
 	// http://localhost:7080/zenkit/jsonAlist.do?d_no=5
 	
 	@RequestMapping("/jsonAlist.do") 
-	public String jsonAlist(@RequestParam("d_no") int d_no , Model d) {
-		// 종합 대시보드 프로젝트 수행지표 리스트 (ajax 부서별 조회)
-		d.addAttribute("deptProjList", aservice.deptProjList(d_no));
-		
-		return "pageJsonReport";
-	}
+	   public String jsonAlist(@RequestParam("d_no") int d_no , Model d) {
+	      if(d_no==0) {
+	         d.addAttribute("deptProjList", aservice.allProjList());
+	      } else {
+	         // 종합 대시보드 프로젝트 수행지표 리스트 (ajax 부서별 조회)
+	         d.addAttribute("deptProjList", aservice.deptProjList(d_no));
+	      }
+	      
+	      return "pageJsonReport";
+	   }
 
 	
 		

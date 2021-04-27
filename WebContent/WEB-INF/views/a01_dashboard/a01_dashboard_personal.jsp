@@ -329,12 +329,14 @@
 		<div class="row" style="margin-bottom:30px;">
               <div class="col-md-3 " style="float:right;">
               	 <input type="hidden" name="d_no" value=""/>
-                  <select class="selectpicker" data-size="5" data-style="btn btn-primary" 
-				        title="부서 선택" id="deptSelect" style="width:50px;">
+                   <select class="selectpicker" data-size="5" data-style="btn btn-primary" 
+                    title="부서 선택" id="deptSelect" style="width:50px;">
+                    <option value="0">부서 선택</option>
                        <c:forEach var="sd" items="${selectDname}">
-                    	  <option value="${sd.d_no}">${sd.d_name}</option>
+                         <option value="${sd.d_no}">${sd.d_name}</option>
                       </c:forEach>
                    </select>
+                   
              </div>
         </div>     	             
         <div class="row">

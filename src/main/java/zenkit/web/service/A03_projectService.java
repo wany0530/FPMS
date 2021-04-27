@@ -108,11 +108,13 @@ public class A03_projectService {
 		hm.put("u_no", u_no);
 		dao.projectInvite(hm);
 		
-		// 첫번째 작업 등록
+		/* 첫번째 작업 등록 */
 		upro.setP_no(p_no);
 		upro.setU_no(u_no);
 		dao.firstJobInsert(upro);
-	}
+		
+	}   
+	
 
 	// 프로젝트 기본정보
 	public Project getProjectInfo(int p_no) {

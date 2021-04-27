@@ -36,7 +36,7 @@
 								<form method="post" class="form-horizontal" id="regForm">
 
 									<!-- 프로젝트 명 -->
-									<div class="row mb-3">
+									<div class="row mb-2">
 										<label class="col-sm-2 col-form-label">프로젝트 명 *</label>
 										<div class="col-sm-10">
 											<div class="form-group">
@@ -47,17 +47,16 @@
 									
 									<!-- 부서 -->
 									<div class="row mb-1">
-										<label class="col-sm-2 col-form-label">부서명 *</label>
+										<label class="col-sm-2 col-form-label">부서코드 *</label>
 										<div class="col-sm-3">
 											<div class="form-group">
-												<select class="selectpicker" data-size="7" name="d_no"
-													data-style="btn btn-primary" title="Single Select">
-													<option disabled selected>담당 부서를 선택하세요.</option>
-												</select>
+												<input type="text" class="form-control" name="d_no"
+													value="${sesMem.d_no}" readonly="readonly"
+													style="color: gray;">
 											</div>
 										</div>
 									</div>
-
+									
 									<!-- 프로젝트 관리자 -->
 									<div class="row mb-1">
 										<label class="col-sm-2 col-form-label">프로젝트 관리자 *</label>
@@ -128,30 +127,6 @@
 
 		</div>
 	</div>
-	<script src="${path}/assets/js/core/jquery.min.js"></script>
-	<script>
-	var d_no = "${sesMem.d_no}";
-	// 프로젝트 리스트 읽어오기
-	$.ajax({
-		type:"post",
-		url:"${path}/user.do?method=model",
-		dataType:"json",
-		success:function(data){
-			console.log(data);
-			var deptList = data.deptList;
-			
-			/* deptList */
-			var show = "";
-			$.each(deptList, function(idx, dept){
-				show += "<option value='"+dept.d_no+"'>"+dept.d_name+"</option>";
-			});
-			$('[name="d_no"]').append(show).val(d_no);
-			console.log(d_no);
-		},
-		error:function(err){
-			console.log(err);
-		}
-	});
 	</script>
 	<%@ include file="../a01_main/plugin.jsp"%>
 	<%@ include file="../a01_main/bootstrapBottom.jsp"%>

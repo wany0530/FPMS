@@ -144,18 +144,20 @@ public class A03_JobController {
 	// Gantt 업데이트
 	// http://localhost:7080/zenkit/job.do?method=update2
 	@RequestMapping(params = "method=update2")
-	public String jobUpdate2(Gantt2 g, Model d) {
-		d.addAttribute("success","Y");
+	public String jobUpdate2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
+		service.TopjobcomR(g.getParent());
 		service.jobUpdate2(g);
-		service.TopjobcomR(g.getParent()); // 업데이트된 완료율 상위작업에 적용 처리
+		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	// Gantt 삭제
 	// http://localhost:7080/zenkit/job.do?method=delete2
 	@RequestMapping(params = "method=delete2")
-	public String jobDelete2(Gantt2 g, Model d) {
+	public String jobDelete2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
 		d.addAttribute("success","Y");
 		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	
@@ -165,16 +167,9 @@ public class A03_JobController {
 	public String jobInsert2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no, @SessionAttribute("sesMem") User user1) {
 		g.setU_no(user1.getU_no());
 		g.setP_no(p_no);
-		System.out.println("상위작업:"+g.getParent());
-		System.out.println("작업명:"+g.getText());
-		System.out.println("작업설명:"+g.getJcontent());
-		System.out.println("시작일:"+g.getStart_date());
-		System.out.println("종료일:"+g.getEnd_date());
-		System.out.println("완료율:"+g.getProgress());
-		System.out.println("프로젝트 번호:"+g.getP_no());
-		System.out.println("유저 번호:"+g.getU_no());
-			service.jobInsert2(g);
+		service.jobInsert2(g);
 		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	

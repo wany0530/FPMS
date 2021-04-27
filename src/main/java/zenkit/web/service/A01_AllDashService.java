@@ -21,7 +21,15 @@ public class A01_AllDashService {
 	
 	// 종합 대시보드 프로젝트 리스트
 	public ArrayList<AllDashBoard> allProjList(){
-		return dao.allProjList();
+		ArrayList<AllDashBoard> allDash = dao.allProjList();
+		for(AllDashBoard a : allDash) {
+			SimpleDateFormat sDate = new SimpleDateFormat("YYYY. MM. dd");		
+			a.setP_startD_s(sDate.format(a.getP_startD()));
+			a.setP_endD_s(sDate.format(a.getP_endD()));
+		}		
+		return allDash;	
+				
+				
 	}
 	// 종합 대시보드 프로젝트 리스트 (ajax 부서별 조회)
 	public ArrayList<AllDashBoard> deptProjList(int d_no){

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import zenkit.web.dto.UpRisk;
 import zenkit.web.service.A03_riskService;
 import zenkit.web.vo.Project;
 import zenkit.web.vo.ResponseStrategies;
@@ -31,7 +32,11 @@ public class A03_riskController {
 	private A03_riskService service;
 	//http://localhost:7080/zenkit/zenkit.do?method=riskList
 	@RequestMapping(params="method=riskList")
-	public String riskList(@ModelAttribute("sch") Risk sch, Model d) {
+	public String riskList( HttpServletRequest request, @ModelAttribute("sch") UpRisk sch, Model d) {
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("sesMem");
+		sch.setU_no(user.getU_no());
+		
 		d.addAttribute("riskList",service.riskList(sch));
 		// return "a06_project/a06_riskDetail";
 		return "a03_project//a06_riskList";
@@ -45,14 +50,8 @@ public class A03_riskController {
 	   
    //http://localhost:7080/zenkit/zenkit.do?method=riskInsert
 	   @RequestMapping(params="method=riskInsert")
-	   public String riskInsert( Risk insert, Model d) {
-	      System.out.println(insert.getR_name());
-	      System.out.println(insert.getR_content());  
-	      System.out.println(insert.getR_rcontent());
-	      System.out.println(insert.getR_receive());
-	      System.out.println(insert.getRs_name());
-	      service.riskInsert(insert);
-	     
+	   public String riskInsert( Risk insert, Model d) {	     
+	      service.riskInsert(insert);     
 	      d.addAttribute("proc","riskInsert");   
 	      return "a03_project//a06_riskInsert";
 	  //     return "a06_project/a06_riskDetail";
@@ -92,18 +91,15 @@ public ArrayList<String> getPmPros(@SessionAttribute("sesMem") User user) {
 	   @RequestMapping(params="method=detail")
 	   public String riskDetail(@RequestParam  int r_no, Model d, HttpServletRequest request){
 	      HttpSession session=request.getSession();
-	      session.setAttribute("risk",service.getRisk(r_no));
-	      
+	      session.setAttribute("risk",service.getRisk(r_no));      
 	      System.out.println("r_no:"+r_no);
 	      d.addAttribute("risk",service.getRisk(r_no));
 	      //동일한 r_no에 대한 조치내용 리스트 가져오기
 	      d.addAttribute("riskactionList",service.getactionList(r_no));
 	      //리스크 디테일 이름 가져오기
-	      d.addAttribute("pmNumber", service.getPMNumber(r_no));
-	           
+	      d.addAttribute("pmNumber", service.getPMNumber(r_no));	           
 	      //상세 페이지에서 p_no로 프로젝트 인원 수 구하기 public ArrayList<User> getUsers(int p_no){
-	  	//return dao.getUsers(p_no);
-	    
+	  	//return dao.getUsers(p_no);    
 	      d.addAttribute("getUsers", service.getUsers(service.getRisk(r_no).getP_no()));
 	   
 	      //r_no로 리스크 정보를 가져올 수 있다. getRiskmapper 여기에 플젝 번호가 들어감

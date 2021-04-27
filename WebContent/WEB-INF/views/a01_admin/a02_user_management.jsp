@@ -88,13 +88,34 @@
 							<div class="card-body">
 								<!-- 직원정보 -->
 								<form method="post" action="${path}/user.do?method=insert" id="inviteForm">
+								<div class="row">
+									<div class="col-3">
+										<select class="selectpicker" data-size="7" name="d_no" 
+											data-style="btn btn-primary" title="">
+											<option selected>부서</option>
+										</select>
+									</div>
+									<div class="col-3">
+										<select class="selectpicker" data-size="7" name="pos_no"
+											data-style="btn btn-primary" title="Single Select">
+											<option selected>직책</option>
+										</select>
+									</div>	
+									<div class="col-3">
+										<select class="selectpicker" data-size="7" name="r_no"
+											data-style="btn btn-primary" title="Single Select">
+											<option selected>직급</option>
+										</select>
+									</div>
+								</div>
+									
 								<div class="row text-left">
 									<div class="col-1 p-0 align-items-center d-flex justify-content-end">
 										<label class="col-form-label m-0 p-0">
 											이메일 *
 										</label>
 									</div>
-									<div class="col-3">
+									<div class="col-4">
 										<div class="form-group mt-2">
 											<input type="email" class="form-control" name="u_email"
 												placeholder="exam@email.com">
@@ -105,7 +126,7 @@
 											이름 *
 										</label>
 									</div>
-									<div class="col-2">
+									<div class="col-3">
 										<div class="form-group mt-2">
 											<input type="text" class="form-control" name="u_name"
 												placeholder="이름을 입력하세요.">
@@ -243,25 +264,26 @@
 				/* deptList */
 				var show = "";
 				$.each(deptList, function(idx, dept){
-					show += "<option>"+dept.d_name+"</option>";
+					show += "<option value='"+dept.d_no+"' >"+dept.d_name+"</option>";
 				})
-				$('#dept').append(show);
-				$('#modalDept').append(show);
+				$('[name=d_name]').append(show);
+				$('[name=d_no]').append(show);
+				
 				/* positionList */
 				show = "";
 				$.each(posList, function(idx, position){
-					show += "<option>"+position.pos_name+"</option>";
+					show += "<option value='"+position.pos_no+"'>"+position.pos_name+"</option>";
 				})
-				$('#position').append(show);
-				$('#modalPos').append(show);
+				$('[name=pos_name]').append(show);
+				$('[name=pos_no]').append(show);
 				
 				/* rankList */
 				show = "";
 				$.each(rankList, function(idx, rank){
-					show += "<option>"+rank.r_name+"</option>";
+					show += "<option value='"+rank.r_no+"'>"+rank.r_name+"</option>";
 				})
-				$('#rank').append(show);
-				$('#modalRank').append(show);
+				$('[name=r_name]').append(show);
+				$('[name=r_no]').append(show);
 				
 				/* userList */
 				show = "";
@@ -388,9 +410,13 @@
 		      }).then((result) => {
 					if (result.value) {
 						/* modalDeptmodalPosmodalRank */
-						var dept = $("#modalDept").val();
-						var pos = $("#modalPos").val();
-						var rank = $("#modalRank").val();
+						var dept = $("#modalDept option:checked").text();
+						var pos = $("#modalPos option:checked").text();
+						var rank = $("#modalRank option:checked").text();
+						
+						console.log(dept);
+						console.log(pos);
+						console.log(rank);
 						
 						if(dept==null || dept=="" || dept=="부서"){
 							Swal.fire({
@@ -456,8 +482,13 @@
 			$('#inviteBtn').on("click",function(){
 				var email = $('#inviteForm [name=u_email]').val();
 				var name = $('#inviteForm [name=u_name]').val();
-				console.log(email);
-				console.log(name);
+				
+				var d_no = $('#inviteForm [name=d_no]').val();
+				var pos_no = $('#inviteForm [name=pos_no]').val();
+				var r_no = $('#inviteForm [name=r_no]').val();
+				
+				console.log(d_no);
+				
 				if(email==""){
 					Swal.fire({
 						title: '이메일을 입력하세요.',
@@ -470,6 +501,33 @@
 				} else if(name=="") {
 					Swal.fire({
 						title: '이름을 입력하세요.',
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn'
+						},
+						buttonsStyling: false,
+			      })
+				} else if(d_no=="부서") {
+					Swal.fire({
+						title: '부서를 입력하세요.',
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn'
+						},
+						buttonsStyling: false,
+			      })
+				} else if(pos_no=="직책") {
+					Swal.fire({
+						title: '직책를 입력하세요.',
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn'
+						},
+						buttonsStyling: false,
+			      })
+				} else if(r_no=="직급") {
+					Swal.fire({
+						title: '직급를 입력하세요.',
 						type: 'error',
 						customClass: {
 							confirmButton: 'btn'

@@ -28,8 +28,6 @@ public interface A03_projectDao {
 	public int getProListCnt(SchProject sch);
 	// 프로젝트 등록하기
 	public void projectReg(Project pro);
-	// 첫번째 작업 생성
-	public void firstJobInsert(UpProject pro);
 	// 마지막 유저 번호 얻기
 	public int get_LastPno();
 	// 유저 정보 얻기
@@ -60,4 +58,5 @@ public interface A03_projectDao {
 	public int getJobCnt(HashMap<String, Integer> userPro);
 	// 작업의 담당자가 없어질 경우, 담당자 PM으로 변경
 	public void updateManager(HashMap<String, Integer> userPro);
+	public void firstJobInsert(UpProject upro);
 }

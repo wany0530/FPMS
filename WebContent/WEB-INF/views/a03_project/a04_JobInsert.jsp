@@ -156,7 +156,6 @@
 										<div class="col-sm-2">
 											<div class="form-group">
 												 <select class="selectpicker" name="j_refno">
-												 		<option value="0">새 작업</option>
 												 	<c:if test="${joblist ne null}">
 												 		<c:forEach var="job" items="${joblist}">
 															<option value="${job.j_no}">${job.j_name }</option>

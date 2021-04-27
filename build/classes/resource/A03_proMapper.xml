@@ -82,24 +82,20 @@
 	<!-- 해당 인원 참여 시키기 -->
 	<insert id="addUser" parameterType="addResource"> 
 		INSERT INTO Z_RESOURCE 
-	  		  VALUES (#{p_no},(SELECT u_no
-					   				FROM Z_USER
- 					  		  		  WHERE u_name = #{u_name}))
+	  		  VALUES (#{p_no},#{u_no})
 	</insert>
 	
 	<!-- 해당 인원 프로젝트에서 제외 -->
 	<delete id="delUser" parameterType="addResource">
 		DELETE Z_RESOURCE
 		 WHERE p_no = #{p_no}
-		   AND u_no = (SELECT u_no
-							  FROM Z_USER
-		 					 WHERE u_name = #{u_name})	
+		   AND u_no = #{u_no}
 	</delete>
 	
 	<!-- 참여 가능한 부서별 전체인원 -->
 	<resultMap type="resourcename" id="deptResourceMap"></resultMap>
 	<select id="getDeptResource" resultMap="deptResourceMap" parameterType="hashmap">
-		SELECT u.u_name, ra.r_name, pos.pos_name
+		SELECT u.u_no, u.u_name, ra.r_name, pos.pos_name
 		  FROM Z_USER u, Z_RANK ra, Z_POSITION pos
 		 WHERE u.r_no = ra.r_no
 		 	AND u.pos_no = pos.pos_no

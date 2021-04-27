@@ -23,11 +23,11 @@
 		SELECT max(u_no) FROM Z_USER
 	</select>
 	
-	<insert id="userInsert" parameterType="user">
+	<insert id="userInsert" parameterType="userInfoDetail">
 		INSERT INTO Z_USER
 		VALUES(#{u_no}, #{u_id}, #{u_pass}, #{u_name},
-				#{u_email}, NULL, NULL, NULL,
-				NULL, NULL)
+				#{u_email}, NULL, NULL, #{d_no},
+				#{pos_no}, #{r_no})
 	</insert>
 	
 	<delete id="userDelete" parameterType="String">
@@ -53,19 +53,9 @@
 	<!-- 부서, 직급, 직책 변경 -->
 	<update id="userUpdate" parameterType="usersch">
 		UPDATE Z_USER
-			SET d_no = (
-				SELECT d_no
-				  FROM Z_DEPARTMENT
-				 WHERE d_name = #{d_name}
-			), pos_no = (
-				SELECT pos_no
-				  FROM Z_POSITION
-				 WHERE pos_name = #{pos_name}
-			), r_no =(
-				SELECT r_no
-				  FROM Z_RANK
-				 WHERE r_name = #{r_name}
-			)
+			SET d_no = #{d_name},
+				pos_no = #{pos_name},
+				r_no = #{r_name}
 		WHERE U_ID = #{u_id}
 	</update>
 	

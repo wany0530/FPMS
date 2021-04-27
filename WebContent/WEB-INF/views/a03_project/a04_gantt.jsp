@@ -64,8 +64,6 @@ html, body {
 				url:"${path}/job.do?method=data",
 				dataType:"json",
 				success:function(data){
-					var project = data.project;
-					var people = data.people;
 					var data = data.job;
 					gantt.init("gantt_here");
 					gantt.parse({
@@ -202,8 +200,9 @@ html, body {
 				gantt.hideLightbox();
 			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				insertCall(id,item);
+				gantt.refreshData();
 			}else{
-				alert("데이터를 확인해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				alert("데이터를 확인해주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				gantt.deleteTask(id);
 				gantt.hideLightbox();
 			}
@@ -215,6 +214,7 @@ html, body {
 				getGantt();
 			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				updateCall(id,item);
+				gantt.refreshData();
 			}else{
 				alert("데이터를 확인해주세요. \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				getGantt();
@@ -223,6 +223,7 @@ html, body {
 		  
 		gantt.attachEvent("onAfterTaskDelete", function(id,item){
 			deleteTask(id);
+			gantt.refreshData();
 		});
 	});
 	// 업데이트 처리
@@ -246,6 +247,7 @@ html, body {
 				  console.log(err);
 			  }
 		});
+		
 	}
 	// insert 처리
 	function insertCall(id,item){
@@ -260,13 +262,15 @@ html, body {
 				  if(data.success=="Y"){
 					  alert("등록 완료");  
 					  console.log(data.gantt);
+					  location.href="${path}/job.do?method=job";
 				  }
 			  },
 			  error:function(err){
 				  alert("에러발생: " + err);
 				  console.log(err);
 			  }
-		})
+		});
+		
 	}
 	
 	gantt.message({type:"error", text:""});
@@ -287,6 +291,7 @@ html, body {
 				  console.log(err);
 			  }
 		});
+		
 	}
 	function callSch(gantt){
 		console.log("###callSch###");

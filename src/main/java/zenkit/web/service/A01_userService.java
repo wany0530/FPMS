@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import zenkit.web.dao.A01_userDao;
 import zenkit.web.dto.UserSch;
 import zenkit.web.vo.User;
+import zenkit.web.vo.UserInfoDetail;
 
 @Service
 public class A01_userService {
@@ -38,7 +39,7 @@ public class A01_userService {
 	public int getU_no() {
 		return dao.getU_no();
 	}
-	public void userInsert(User user) {
+	public void userInsert(UserInfoDetail user) {
 		dao.userInsert(user);
 	}
 	
@@ -48,7 +49,7 @@ public class A01_userService {
 		String content;
 		
 		// 2. 제목 설정.
-		msg.setSubject("[zenkit]에 가입이 완료되었습니다.");
+		msg.setSubject("[FPMS]에 가입이 완료되었습니다.");
 		
 		// 3. 수신자 설정.
 		msg.setRecipient(RecipientType.TO,

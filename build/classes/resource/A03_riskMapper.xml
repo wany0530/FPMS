@@ -4,16 +4,14 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="zenkit.web.dao.A03_riskDao">
 <!-- 리스크 테이블 -->
- <resultMap type="risk" id="riskMap"/>
+ <resultMap type="upRisk" id="riskMap"/>
  <select id="riskList" resultMap="riskMap">
-    
-
- SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
-    FROM z_project zj, z_risk zr, z_user zu
-    WHERE zj.p_no = zr.p_no
-    AND zr.r_send= zu.u_id
-    ORDER BY r_regdate DESC
-
+	SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
+	FROM z_project zj, z_risk zr, z_user zu
+	WHERE zj.p_no = zr.p_no
+	AND zr.r_send = zu.u_id
+	AND zj.p_no IN (SELECT p_no FROM  Z_RESOURCE WHERE u_no=#{u_no})
+	ORDER BY r_regdate DESC
  </select>
 
  

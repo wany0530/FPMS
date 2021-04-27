@@ -21,6 +21,7 @@ import zenkit.web.vo.Department;
 import zenkit.web.vo.Position;
 import zenkit.web.vo.Rank;
 import zenkit.web.vo.User;
+import zenkit.web.vo.UserInfoDetail;
 
 @Controller
 @RequestMapping("user.do")
@@ -47,11 +48,13 @@ public class A01_userController {
 	@RequestMapping(params = "method=update")
 	public String userUpdate(UserSch user) {
 		userService.userUpdate(user);
+		
+		
 		return "redirect:/user.do?method=form";
 	}
 	// http://localhost:7080/zenkit/user.do?method=insert
 	@RequestMapping(params = "method=insert")
-	public String userInsert(User user) throws MessagingException {
+	public String userInsert(UserInfoDetail user) throws MessagingException {
 		String pass = tempPass(10);
 		// 현재 u_no + 1
 		int u_no = (userService.getU_no()+1);

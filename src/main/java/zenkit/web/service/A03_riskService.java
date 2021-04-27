@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import zenkit.web.dao.A03_riskDao;
+import zenkit.web.dto.UpRisk;
 import zenkit.web.vo.Project;
 import zenkit.web.vo.Risk;
 import zenkit.web.vo.RiskAction;
@@ -16,7 +17,7 @@ import zenkit.web.vo.User;
 public class A03_riskService {
 @Autowired(required=false)
  private A03_riskDao dao;
-public ArrayList<Risk> riskList(Risk sch){
+public ArrayList<UpRisk> riskList(UpRisk sch){
   
    return  dao.riskList(sch);
 }
