@@ -203,7 +203,7 @@ html, body {
 			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				insertCall(id,item);
 			}else{
-				alert("데이터를 입력해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				alert("데이터를 확인해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				gantt.deleteTask(id);
 				gantt.hideLightbox();
 			}
@@ -216,7 +216,7 @@ html, body {
 			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				updateCall(id,item);
 			}else{
-				alert("데이터 입력 필수. \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				alert("데이터를 확인해주세요. \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				getGantt();
 			}
 		});
