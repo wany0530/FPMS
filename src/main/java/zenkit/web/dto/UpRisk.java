@@ -1,10 +1,9 @@
 package zenkit.web.dto;
 
-import zenkit.web.vo.Risk;
-
-public class UpRisk extends Risk{
+public class UpRisk extends Page{
 
 	private int u_no;
+	private String r_name;
 	
 	public UpRisk() {
 		// TODO Auto-generated constructor stub
@@ -22,5 +21,14 @@ public class UpRisk extends Risk{
 	public void setU_no(int u_no) {
 		this.u_no = u_no;
 	}
+
+	public String getR_name() {
+		return r_name;
+	}
+
+	public void setR_name(String r_name) {
+		this.r_name = r_name;
+	}
+	
 	
 }

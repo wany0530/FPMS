@@ -15,6 +15,7 @@ public class Risk {
 	private String r_regdate_s; //등록일
 	private String r_send; //제기자
 	private String r_receive; //조치자
+	private String r_receivename; // 조치자 이름
 	private String r_rcontent; //조치내용
 	private int p_no; //작업번호
 	private String zj;
@@ -24,6 +25,8 @@ public class Risk {
 	private String u_name; //아이디 이름 - 리스크 리스트에 올라갈 것
 	private String zu;
 	private String r_strat; //리스크 대응전략
+	
+	
 	
 	
 	
@@ -168,6 +171,15 @@ public class Risk {
 	public void setR_receive(String r_receive) {
 		this.r_receive = r_receive;
 	}
+	public String getR_receivename() {
+		return r_receivename;
+	}
+
+
+	public void setR_receivename(String r_receivename) {
+		this.r_receivename = r_receivename;
+	}
+
 
 	public String getR_rcontent() {
 		return r_rcontent;
@@ -193,4 +205,6 @@ public class Risk {
 	public void setP_name(String p_name) {
 		this.p_name = p_name;
 	}
+	
+	
 }

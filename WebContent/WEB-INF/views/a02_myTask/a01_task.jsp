@@ -163,9 +163,13 @@
 		                  </table>
 		                 <c:if test="${!empty taskList}">
 	        			<nav aria-label="...">
-	  						<ul class="pagination">
+	  						<ul class="pagination justify-content-center">
 								<li class="page-item">
-									<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" tabindex="-1">Previous</a>
+									<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" aria-label="Previous">
+										<span aria-hidden="true">
+											<i class="tim-icons icon-double-left" aria-hidden="true"></i>
+										</span>
+									</a>
 								</li>
 								<c:forEach var="cnt" begin="${sch.startBlock}" end="${sch.endBlock}">
 									<li class="page-item ${sch.curPage==cnt ? 'active':''}">
@@ -173,7 +177,11 @@
 									</li>
 								</c:forEach>
 								<li class="page-item">
-									<a class="page-link" href="javascript:goPage(${sch.endBlock+1})">Next</a>
+									<a class="page-link" href="javascript:goPage(${sch.endBlock+1})" aria-label="Next">
+										<span aria-hidden="true">
+											<i class="tim-icons icon-double-right" aria-hidden="true"></i>
+										</span>
+									</a>
 								</li>
 							</ul>
 						</nav>

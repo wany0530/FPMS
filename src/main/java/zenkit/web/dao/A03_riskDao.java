@@ -15,7 +15,8 @@ import zenkit.web.vo.User;
 
 @Repository
 public interface A03_riskDao {
-  public ArrayList<UpRisk> riskList(UpRisk sch);
+	public int totCnt(UpRisk sch);
+  public ArrayList<Risk> riskList(UpRisk sch);
   public void riskInsert(Risk insert);
   public Risk getRisk(int r_no);
   public void updateRisk(Risk upt);

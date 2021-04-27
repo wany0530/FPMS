@@ -269,8 +269,19 @@ $(document).ready(function(){
       }
       $('[name=ac_name]').val($('.ratextarea').val());
       $('[name=ac_state]').val($('#raState').val());
-     // $('#raForm').attr('action', '${path}/zenkit.do?method=riskActionInsert');
-      $('#raForm').submit();
+      $.ajax({
+        type:"post",
+        url:"${path}/zenkit.do?method=riskActionInsert",
+        data:$("#raForm").serialize(),
+        dataType:"json",
+        success:function(data){
+          location.reload();
+        },
+        error:function(err){
+           alert("에러발생");
+           console.log(err);
+        }
+      });
    });
     
     $("#uptBtn").click(function(){

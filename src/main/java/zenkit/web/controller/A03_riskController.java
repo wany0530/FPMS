@@ -71,8 +71,7 @@ public class A03_riskController {
 		   upt.setR_no(insert.getR_no());
 		   upt.setRs_name(insert.getAc_state());
 		   service.uptRiskState(upt);
-		   d.addAttribute("riskActionInsert");
-		   return "forward:/zenkit.do?method=detail";
+		   return "pageJsonReport";
 	   }
 	   
 	   /*혜지언니의 소중한 소스

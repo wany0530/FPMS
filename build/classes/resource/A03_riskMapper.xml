@@ -3,15 +3,35 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="zenkit.web.dao.A03_riskDao">
+<!-- public int totCnt(UpRisk sch); -->
+<select id="totCnt" resultType="int" parameterType="upRisk">
+	SELECT count(*)
+	FROM (
+		SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
+		FROM z_project zj, z_risk zr, z_user zu
+		WHERE zj.p_no = zr.p_no
+		AND zr.r_send = zu.u_id
+		AND zj.p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no=#{u_no})
+		AND UPPER(zr.r_name) LIKE '%'||upper(#{r_name})||'%'
+		ORDER BY r_regdate DESC
+	)
+</select>
 <!-- 리스크 테이블 -->
- <resultMap type="upRisk" id="riskMap"/>
- <select id="riskList" resultMap="riskMap">
-	SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
-	FROM z_project zj, z_risk zr, z_user zu
-	WHERE zj.p_no = zr.p_no
-	AND zr.r_send = zu.u_id
-	AND zj.p_no IN (SELECT p_no FROM  Z_RESOURCE WHERE u_no=#{u_no})
-	ORDER BY r_regdate DESC
+ <resultMap type="risk" id="riskMap"/>
+ <select id="riskList" resultMap="riskMap" parameterType="upRisk">
+	SELECT *
+	FROM (
+		SELECT rownum AS cnt, a.*
+		FROM (
+			SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
+			FROM z_project zj, z_risk zr, z_user zu
+			WHERE zj.p_no = zr.p_no
+			AND zr.r_send = zu.u_id
+			AND zj.p_no IN (SELECT p_no FROM Z_RESOURCE WHERE u_no=#{u_no})
+			AND UPPER(zr.r_name) LIKE '%'||upper(#{r_name})||'%'
+			ORDER BY r_regdate DESC
+		) a )
+	WHERE cnt BETWEEN #{start} AND #{end}
  </select>
 
  
