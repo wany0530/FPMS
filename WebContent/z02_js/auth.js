@@ -1,3 +1,5 @@
+const currhref = window.location.href.replace('http://localhost:7080/zenkit/','');
+
 // 전체선택 
 $('#checkAll').click(function(){
 	var chk = $(this).is(":checked");
@@ -19,7 +21,8 @@ $('.btn-app').click(function(){
 	$('#authContentLabel').text($(this).text()+' 내용');
 });
 
-// 작업승인/반려 모달 창에서 저장 클릭 시 체크된 작업마다 ajax로 결재 상태 승인완료/반려 업데이트하기
+// 작업승인/반려 모달 창에서 저장 클릭 시 체크된 작업마다 
+// ajax로 결재 상태 승인완료/반려 업데이트하기
 $('#authBtn').on('click', function(){
 	var a_resultN = $('#auth_content').val();
 	var a_name = '';
@@ -35,7 +38,9 @@ $('#authBtn').on('click', function(){
 		$.ajax({
 			type:"post",
 			url:path+"/apprej.do",
-			data:"a_no="+$(this).val()+"&a_resultN="+a_resultN+"&a_name="+a_name+"&a_requestP="+a_requestP+"&j_no="+j_no,
+			data:"a_no="+$(this).val()+"&a_resultN="+a_resultN
+				+"&a_name="+a_name+"&a_requestP="
+				+a_requestP+"&j_no="+j_no,
 			success:function(){
 				location.href=path+'/authIng.do';
 			},
@@ -81,16 +86,25 @@ $('[class^=jno]').on('click', function(){
 
 // 작업상세정보 - 산출물탭
 function modalOutputInfo(data) {
+	var outputCode = '';
 	$('#tab_1_2 .grid-template-row').empty();
-	$.each(data, function(idx, output){
-		var outputCode = '';
+	console.log(data);
+	if(data.length==0) {
 		outputCode += '<div class="row grid-row"><div class="col-md-7">';
-		outputCode += '<div class="forum-list-title" id="task_outputname'+idx+'">'+output.o_name+'</div></div>';
-		outputCode += '<div class="col-md-4" style="max-width: 32%;">';
-		outputCode += '<a href="#" class="btn-label-brand btn btn-sm" title="파일 다운로드">';
-		outputCode += '<i class="fa fa-download"></i></a></div></div>';
+		outputCode += '<div class="forum-list-title">데이터가 없습니다.</div></div></div>';
 		$('#tab_1_2 .grid-template-row').append(outputCode);
-	});
+	} else {
+		$.each(data, function(idx, output){
+			outputCode += '<div class="row grid-row"><div class="col-md-7">';
+			outputCode += '<div class="forum-list-title" id="task_outputname'+idx
+				+'">'+output.o_name+'</div></div>';
+			outputCode += '<div class="col-md-4" style="max-width: 32%;">';
+			outputCode += '<a href="'+path+'/output.do?method=down&fname=';
+			outputCode += output.o_path+'" class="btn-label-brand btn btn-sm" title="파일 다운로드">';
+			outputCode += '<i class="fa fa-download"></i></a></div></div>';
+			$('#tab_1_2 .grid-template-row').append(outputCode);
+		});
+	}
 }
 
 // 작업상세정보 - 결재정보탭
@@ -98,7 +112,9 @@ function modalAuthInfo(data) {
 	$('#modal_reqName').text(data.req_name);
 	$('#modal_reqN').html(data.a_requestN);
 	$('#task_resName').text(data.res_name);
-	// 결재 상태가 반려/승인완료가 아니면 결재자가 뜨면 안됨
+	//$('#task_completeP').text(data.a_requestP+'%');
+	
+	// 결재 상태가 반려/승인완료가 아닐 시 결재자 뜨지 않게 하기
 	if(data.a_name=='반려' || data.a_name=='승인완료') {
 		$('#modal_resName').text(data.res_name);
 		$('#modal_resN').html(data.a_resultN);
@@ -112,12 +128,12 @@ function modalJobInfo(data) {
 	$('#task_name').text(data.j_name);
 	$('#task_start').text(new Date(data.j_startD).toLocaleDateString());
 	$('#task_finish').text(new Date(data.j_endD).toLocaleDateString());
+	$('#task_memo').text(data.j_content);
 	$('#task_completeP').text(data.j_completeR*100+'%');
 }
 
 // 결재요청함에서 [결재회수] 버튼 클릭 했을 때 결재회수하기
 $('.auth-cancle').on('click', function(){
-	console.log($(this).parent().parent().data('ano'));
 	var ano=$(this).parent().parent().data('ano');
 	if(confirm('결재 회수 하시겠습니까?')) {
 		location.href=path+'/retire.do?a_no='+ano;
@@ -137,7 +153,8 @@ $('#pro_name').on('change', function(){
 // 프로젝트 디테일 화면 이동하기
 function goProject(pno) {
 	var formCode = '<form id="proform" method="post" action="'+path+'/project.do?method=form">';
-	formCode += '<input type="hidden" name="p_no" value="'+pno+'">';
+	formCode += '<input type="hidden" name="p_no" value="'+pno+'"></form>';
 	$('#authTableBody').append(formCode);
 	$('#proform').submit();
 }
+

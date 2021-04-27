@@ -31,12 +31,6 @@
         						<option>승인완료</option>
         						<option>반려</option>
         					</form:select>
-<%--         					<select class="selectpicker" data-size="7" data-style="btn btn-primary">
-        						<option class="bs-title-option">작업 상태를 선택하세요</option>
-        						<option>승인중</option>
-        						<option>승인완료</option>
-        						<option>반려</option>
-        					</select>--%>
         				</div>
         			</div>
         			<div class="col-md-3">
@@ -64,25 +58,23 @@
         			<table class="table" id="auth-table">
         				<colgroup>
         					<col style="width:25%">
-        					<col style="width:25%">
+        					<col style="width:30%">
         					<col style="width:100px">
-        					<col style="width:150px">
-        					<col style="width:200px">
+        					<col style="width:100px">
+        					<col style="width:110px">
+        					<col style="width:110px">
+        					<col style="width:110px">
         				</colgroup>
         				<thead>
         					<tr>
-        						<th>결재작업</th>
-        						<th>프로젝트</th>
-        						<th>상태</th>
-        						<th>결재요청자</th>
-        						<th>결재요청일</th>
-        						<th></th>
+        						<th>결재작업</th><th>프로젝트</th><th>상태</th>
+        						<th>결재요청자</th><th>요청완료율(%)</th><th>결재요청일</th><th></th>
         					</tr>
         				</thead>
         				<tbody id="authTableBody">
         				    <c:if test="${empty authList}">
         						<tr class="text-center" id="no_task_tr">
-        							<td colspan="6">데이터가 없습니다</td>
+        							<td colspan="7">데이터가 없습니다</td>
         						</tr>
         					</c:if>
         					<c:if test="${!empty authList}">
@@ -101,7 +93,8 @@
          							</c:choose>
          						</td>
         						<td class="text-center">${auth.req_name}</td>
-        						<td class="text-center"><fmt:formatDate type="date" value="${auth.a_date}"/></td>
+        						<td class="text-center">${auth.a_requestP}%</td>
+        						<td class="text-center"><fmt:formatDate type="date" value="${auth.a_date}" pattern="yyyy.MM.dd"/></td>
         						<td class="text-center">
         							<c:if test="${'승인중' eq auth.a_name}">
         							<button type="button" class="btn btn-primary btn-sm btn-simple auth-cancle" id="auth-cancle">결재회수</button>
@@ -114,22 +107,25 @@
         			</table>
         			<c:if test="${!empty authList}">
         			<nav aria-label="...">
-  						<ul class="pagination">
+  						<ul class="pagination justify-content-center">
 							<li class="page-item">
-								<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" tabindex="-1">Previous</a>
+								<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" aria-label="Previous">
+									<span aria-hidden="true">
+										<i class="tim-icons icon-double-left" aria-hidden="true"></i>
+									</span>
+								</a>
 							</li>
 							<c:forEach var="cnt" begin="${sch.startBlock}" end="${sch.endBlock}">
 								<li class="page-item ${sch.curPage==cnt ? 'active':''}">
 									<a class="page-link" href="javascript:goPage(${cnt})">${cnt}</a>
 								</li>
 							</c:forEach>
-<!-- 							<li class="page-item active"><a class="page-link" href="#">1 <span class="sr-only">(current)</span></a></li>
 							<li class="page-item">
-								<a class="page-link" href="#">2</a>
-							</li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li> -->
-							<li class="page-item">
-								<a class="page-link" href="javascript:goPage(${sch.endBlock+1})">Next</a>
+								<a class="page-link" href="javascript:goPage(${sch.endBlock+1})" aria-label="Next">
+									<span aria-hidden="true">
+										<i class="tim-icons icon-double-right" aria-hidden="true"></i>
+									</span>
+								</a>
 							</li>
 						</ul>
 					</nav>
@@ -195,18 +191,6 @@
 		      					<div class="col-md-7">
 		      						<div class="forum-list-title" id="o_name">파일제목</div>
 		      						<div class="font-s13 text-muted" id="req_name">업로드자명 on 업로드일</div>
-		      					</div>
-		      					<div class="col-md-4" style="max-width: 32%;">
-		      						<a href="#" class="btn-label-brand btn btn-sm" title="파일 다운로드">
-		      							<i class="fa fa-download">
-		      							</i>
-		      						</a>
-		      					</div>
-		      				</div>
-		      				<div class="row grid-row">
-		      					<div class="col-md-7">
-		      						<div class="forum-list-title">파일제목2</div>
-		      						<div class="font-s13 text-muted">업로드자명 on 업로드일</div>
 		      					</div>
 		      					<div class="col-md-4" style="max-width: 32%;">
 		      						<a href="#" class="btn-label-brand btn btn-sm" title="파일 다운로드">

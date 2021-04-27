@@ -1,3 +1,4 @@
+// 체크박스 전체선택 
 $('#checkAll').click(function(){
 	var chk = $(this).is(":checked");
 	if(chk) {
@@ -7,16 +8,34 @@ $('#checkAll').click(function(){
 	}	
 });
 
+// 승인요청 버튼 클릭
 $('.btn-app').click(function(){
 	if(!$('.form-check-input').is(":checked")) {
 		alert("선택된 작업이 없습니다.");
 		return;
 	}
+	$('input:checkbox[name=checkjno]:checked').each(function(){
+		var j_no = $(this).val();
+		var a_requestP = $('[name=completeRate'+j_no+']').val();
+		console.log(a_requestP);
+		if(a_requestP=="") {
+			alert(a_requestP+'완료율 확인 해주세요.');
+			return;
+		}
+	});
 	$('#authModal').modal();
 });
 
+// 완료율창 입력 못하게 하기
+$('.compleInput').keydown(function(){
+	return false;
+});
+$('.compleInput').keyup(function(){
+    $(this).val($(this).val().replace(/[^0-9]/gi,''));
+});
+
+// 작업승인 모달창 - 저장 버튼 클릭
 $('#authreqBtn').click(function(){
-	console.log('저장클릭');
 	$('input:checkbox[name=checkjno]:checked').each(function(){
 		var j_no = $(this).val();
 		var a_requestP = $('[name=completeRate'+j_no+']').val();
@@ -36,44 +55,30 @@ $('#authreqBtn').click(function(){
 	});
 });
 
+// 작업 상태 셀렉트 값 변경
 $('#statesel').on('change', function(){
-/*	var state = $(this).val();
-	if(state == 'nstart') {
-		$('.rate').hide();
-		$('.ing').hide();
-		$('.nstart').show();
-		return;
-	}
-	if(state == 'rate') {
-		$('.nstart').hide();
-		$('.ing').hide();
-		$('.rate').show();
-		return;
-	}
-	if(state == 'ing') {
-		$('.rate').hide();
-		$('.nstart').hide();
-		$('.ing').show();
-		return;
-	}
-	if(state == 'all') {
-		$('.ing').show();
-		$('.nstart').show();
-		$('.rate').show();
-	}*/
 	$('#ingstate').val($(this).val());
 	$('#sch').submit();
 });
 
+// 프로젝트 셀렉트 값 변경
 $('#prosel').on('change', function(){
 	$('#p_name').val($(this).val());
 	$('#sch').submit();
 });
 
-
+// 작업명 검색
 $('#jobNameSch').on('keyup', function(e){
 	if(e.keyCode==13) {
 		$('#j_name').val($(this).val());
 		$('#sch').submit();
 	}
 });
+
+// 프로젝트 디테일 화면 이동하기
+function goProject(pno) {
+	var formCode = '<form id="proform" method="post" action="'+path+'/project.do?method=form">';
+	formCode += '<input type="hidden" name="p_no" value="'+pno+'"></form>';
+	$('#taskTable').append(formCode);
+	$('#proform').submit();
+}

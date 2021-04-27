@@ -51,9 +51,10 @@
         			<table class="table" id="auth-table">
         				<colgroup>
         					<col style="width:25%">
-        					<col style="width:25%">
+        					<col style="width:30%">
         					<col style="width:100px">
         					<col style="width:150px">
+        					<col style="width:110px">
         				</colgroup>
         				<thead>
         					<tr>
@@ -61,13 +62,14 @@
         						<th>프로젝트</th>
         						<th>상태</th>
         						<th>결재요청자</th>
+        						<th>요청완료율(%)</th>
         						<th>결재요청일</th>
         					</tr>
         				</thead>
         				<tbody id="authTableBody">
         				    <c:if test="${empty authList}">
         						<tr class="text-center" id="no_task_tr">
-        							<td colspan="5">데이터가 없습니다</td>
+        							<td colspan="6">데이터가 없습니다</td>
         						</tr>
         					</c:if>
         					<c:if test="${!empty authList}">
@@ -84,7 +86,8 @@
          							</c:choose>
          						</td>
         						<td class="text-center">${auth.req_name}</td>
-        						<td class="text-center"><fmt:formatDate value="${auth.a_date}" pattern="yyyy-MM-dd"/></td>
+        						<td class="text-center">${auth.a_requestP}%</td>
+        						<td class="text-center"><fmt:formatDate value="${auth.a_date}" pattern="yyyy.MM.dd"/></td>
         					</tr>
         					</c:forEach>
         					</c:if>
@@ -92,22 +95,25 @@
         			</table>
         			<c:if test="${!empty authList}">
         			<nav aria-label="...">
-  						<ul class="pagination">
+  						<ul class="pagination justify-content-center">
 							<li class="page-item">
-								<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" tabindex="-1">Previous</a>
+								<a class="page-link" href="javascript:goPage(${sch.startBlock-1})" aria-label="Previous">
+									<span aria-hidden="true">
+										<i class="tim-icons icon-double-left" aria-hidden="true"></i>
+									</span>
+								</a>
 							</li>
 							<c:forEach var="cnt" begin="${sch.startBlock}" end="${sch.endBlock}">
 								<li class="page-item ${sch.curPage==cnt ? 'active':''}">
 									<a class="page-link" href="javascript:goPage(${cnt})">${cnt} ${sch.curPage==cnt ? '<span class="sr-only">(current)</span>':''}</a>
 								</li>
 							</c:forEach>
-<!-- 							<li class="page-item active"><a class="page-link" href="#">1 <span class="sr-only">(current)</span></a></li>
 							<li class="page-item">
-								<a class="page-link" href="#">2</a>
-							</li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li> -->
-							<li class="page-item">
-								<a class="page-link" href="javascript:goPage(${sch.endBlock+1})">Next</a>
+								<a class="page-link" href="javascript:goPage(${sch.endBlock+1})" aria-label="Next">
+									<span aria-hidden="true">
+										<i class="tim-icons icon-double-right" aria-hidden="true"></i>
+									</span>
+								</a>
 							</li>
 						</ul>
 					</nav>
@@ -162,7 +168,7 @@
 			      		<div class="form-group row">
 			      			<label class="col-lg-2 col-form-label text-right">메모</label>
 			      			<div class="col-lg-8">
-			      				<textarea class="form-control" id="task_memo" rows="7" style="color:#222a42;border:1px solid #2b3553;max-height:200px;"></textarea>
+			      				<textarea class="form-control" id="task_memo" rows="7" style="color:#222a42;border:1px solid #2b3553;max-height:200px;background-color:white;" readonly></textarea>
 			      			</div>
 			      		</div>
 		      		</div>

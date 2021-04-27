@@ -96,3 +96,13 @@ button.authClose {
 #no_task_tr {
 	height:300px;
 }
+
+#authTableBody a {
+	color: #d1c0e8;
+}
+#authTableBody a:hover {
+	color: #FF00DD;
+}
+#authTableBody tr:hover {
+	background-color:#2c2e43;
+}
