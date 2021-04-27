@@ -13,6 +13,8 @@
 		WHERE zu.U_NO = zr.U_NO 
 		AND zr.P_NO = zj.P_NO
 		AND zr.U_NO = zj.U_NO 
+		AND zj.J_COMPLETER != 1
+		AND zj.J_REFNO != 0
 		AND zr.U_NO = #{U_NO}
 	</select>
 	
@@ -37,6 +39,7 @@
 		AND zr.P_NO = zp.P_NO
 		AND zr.P_NO = zj.P_NO 
 		AND zj.J_NO = zo.J_NO 
+		AND zj.J_REFNO != 0
 		AND zu.U_NO = #{U_NO}
 	</select>
 	
@@ -82,27 +85,29 @@
 		  	SELECT count(*) beforeCnt 
 		  	FROM Z_JOB 
 		  	WHERE u_no = #{U_NO} 
-		  	AND j_completer = 0
+			  	AND j_completer = 0
+			  	AND J_REFNO!=0
 		  ), (
 		  	SELECT count(*) ongoingCnt
 		 	  FROM Z_JOB
 			 WHERE u_no = #{U_NO}	
 				AND j_completer > 0 
 				AND j_completer < 1  
+				AND J_REFNO!=0
 		  ), (
 			SELECT count(*) doneCnt
 			  FROM Z_JOB
 			 WHERE u_no = #{U_NO}	
-			 AND j_completer = 1
+				 AND j_completer = 1
+				 AND J_REFNO!=0
 		  ), Z_JOB 
-		WHERE J_REFNO!=0
 	]]>
 	</select>
 	
 	<!-- 개인 대시보드 리스크 카운트 - pieChart -->
 	<!-- public DashBoard riskCntList(int u_no); -->
 	<select id="riskCntList" resultType="dashboard" parameterType="int">
-		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c4.rCancelCnt, c5.rHoldCnt
+		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c5.rHoldCnt
 		  FROM (
 			SELECT count(*) rOpenCnt
 			  FROM Z_RISK r
@@ -122,12 +127,6 @@
 				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
 			 ) AND rs_name = '진행'
 			) c3 ,(
-			SELECT count(*) rCancelCnt
-			  FROM Z_RISK r
-			 WHERE r.R_RECEIVE IN (
-				SELECT U_ID FROM Z_USER WHERE u_no = #{U_NO}
-			 ) AND rs_name = '취소'
-			) c4 ,(
 			SELECT count(*) rHoldCnt
 			  FROM Z_RISK r
 			 WHERE r.R_RECEIVE IN (
@@ -184,6 +183,7 @@
 		      c.P_NO, COUNT(A.J_NO) AS job_cnt
 		   FROM Z_JOB A
 		   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
+		   WHERE A.J_REFNO != 0
 		   GROUP BY c.p_no
 		) zj2 on zp.p_no = zj2.p_no
 		LEFT OUTER JOIN 

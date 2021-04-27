@@ -117,6 +117,8 @@ html, body {
     		}
 		});
 		
+		
+		
 		/* 간트영역 수정/생성/삭제 클릭시 기능별 정의 */
 		gantt.attachEvent("onTaskClick", function(id, e){
 	        var button = e.target.closest("[data-action]")
@@ -138,7 +140,7 @@ html, body {
 	            		if(pm != user){
 	            			alert("작업 등록 권한이 없습니다.");
 	            		}else{
-	            			alert("작업 등록시 완료율은 0%로 고정됩니다.")
+	            			alert("작업 등록시 완료율 0% 고정입니다.")
 	            			gantt.createTask(null, id);
 	                        break;
 	            			/* location.href="${path}/job.do?method=insertForm"; */
@@ -198,9 +200,8 @@ html, body {
 				alert("완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				gantt.deleteTask(id);
 				gantt.hideLightbox();
-			}else if(item.text != "" && item.jcontent != "" && item.progress != "" && item.end_date > item.start_date){
+			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				insertCall(id,item);
-				gantt.refreshTask();
 			}else{
 				alert("데이터를 입력해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				gantt.deleteTask(id);
@@ -212,22 +213,23 @@ html, body {
 			if(item.progress > 1 || item.progress < 0){
 				alert("완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				getGantt();
-			}else if(item.text != "" && item.jcontent != "" && item.progress != "" && item.end_date > item.start_date){
+			}else if(item.text != "" && item.jcontent != "" && item.end_date > item.start_date){
 				updateCall(id,item);
-				gantt.refreshTask();
 			}else{
-				alert("데이터를 입력해 주세요 \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
+				alert("데이터 입력 필수. \n 완료율 0.0(0%) ~ 1.0(100%)범위로 입력해주세요. ");
 				getGantt();
 			}
 		});
 		  
 		gantt.attachEvent("onAfterTaskDelete", function(id,item){
 			deleteTask(id);
-			gantt.refreshTask();
 		});
 	});
 	// 업데이트 처리
 	function updateCall(id, item){
+		if(item.progress == ""){
+			item.progress = 0.0;
+		}
 		$.ajax({
 			type:"post",
 			url:"${path}/job.do?method=update2",
@@ -266,6 +268,8 @@ html, body {
 			  }
 		})
 	}
+	
+	gantt.message({type:"error", text:""});
 	
 	function deleteTask(id){
 		$.ajax({

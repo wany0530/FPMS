@@ -29,7 +29,12 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-             <input type="hidden" name="proc"/>
+            <!-- 
+             <input type="hidden" name="p_name"/>
+             <input type="hidden" name="r_name"/>
+             <input type="hidden" name="r_content"/>
+             <input type="hidden" name="r_send"/>
+            -->
               <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <i class="tim-icons icon-simple-remove"></i>
@@ -46,7 +51,7 @@
           </div>
          
           <div class="col-md-12">
-            <form:form modelAttribute="risk" action="${path}/zenkit.do?method=riskInsert" method="post"
+            <form:form modelAttribute="risk" action="${path}/zenkit.do?method=riskInsert" method="post" id="raForm"
             class="form-horizontal">
               <div class="card">
                
@@ -63,7 +68,7 @@
                        <select name="p_no" class="selectpicker">
                         <option value="0">프로젝트 명 선택</option>
                         <c:forEach var="risk" items="${risks }">
-                        <option value="${risk.p_no }">${risk.p_name }</option>
+                        <option value="${risk.p_no}">${risk.p_name }</option>
                         </c:forEach>
                        
                        </select>
@@ -124,7 +129,8 @@
                 </div>
                 <div class="card-footer text-center">
                   
-                  <button class="btn btn-info btn-sm btn-simple" id="saveBtn" >저장</button>
+                  <button type="button" class="btn btn-info btn-sm btn-simple" id="saveBtn" >저장</button>
+                  <button type="button" class="btn btn-info btn-sm btn-simple" id="delBtn" >취소</button>
                  
                 </div>
                 
@@ -144,15 +150,40 @@
  <%@ include file="../a01_main/bootstrapBottom.jsp" %>
   
   <script type="text/javascript">
- 
-  $(document).ready(function(){
+	$("#saveBtn").click(function(){
+	     if($('[name=p_no]').val()==0) {
+	    	 console.log($('[name=p_no]').val());
+	         alert('프로젝트 이름을 선택해주세요');
+	         return;
+	      }
+	     if($('#r_name').val()=="") {
+	         alert('리스크명을 입력해주세요');
+	         return;
+	      }
+	      if($('#r_content').val()=="") {
+	         alert('리스크 내용을 입력해주세요');
+	         return;
+	      }
+
+	     $('[name=p_no]').val($('[name=p_no]').val());
+	     $('[name=r_name]').val($('#r_name').val());
+	     $('[name=r_content]').val($('#r_content').val());
+        $('#raForm').attr('action', '${path}/zenkit.do?method=riskInsert');
+         $('#raForm').submit();
+	   });
+  $(document).ready(function(){	
+
 	  var isInsert="${param.r_name}";
 	  if(isInsert!=""){
 	 	 if(confirm("등록 완료!!\n리스크 목록 화면으로 이동하시겠습니까?")){
 	 		 $(location).attr("href","${path}/zenkit.do?method=riskList");
 	 	 }
-	
-	  };	 
+	  }
+	  
+	  $("#delBtn").click(function(){
+		  alert("리스크 등록 취소되었습니다.");
+		  location.href="${path}/zenkit.do?method=riskList";
+	  });
   });
   </script>
 </body>

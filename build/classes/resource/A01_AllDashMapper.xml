@@ -134,12 +134,15 @@
 	</select>
 
 	<!-- 종합 대시보드 프로젝트 수행지표 리스트 (전체부서) -->
-	<!-- public ArrayList<AllDashBoard> getAllCnt(); -->
+	<!-- public ArrayList<AllDashBoard> getAllCnt(); 
+	sysdate >= a.P_STARTD AND SYSDATE <= a.P_ENDD AND 
+	
+	-->
 	<select id="getAllCnt" resultType="allDash">
 	<![CDATA[
 	SELECT a.D_NAME, COUNT(*) allCnt
 	, SUM(CASE WHEN sysdate < a.P_STARTD THEN 1 ELSE 0 END) AS before_Cnt
-	, SUM(CASE WHEN sysdate >= a.P_STARTD AND SYSDATE <= a.P_ENDD AND a.J_COMPLETER NOT IN (0,1) THEN 1 ELSE 0 END) AS ongoing_Cnt
+	, SUM(CASE WHEN a.J_COMPLETER NOT IN (0,1) THEN 1 ELSE 0 END) AS ongoing_Cnt
 	, SUM(CASE WHEN a.J_COMPLETER = 1 THEN 1 ELSE 0 END) AS complete_Cnt
 	, SUM(CASE WHEN a.J_COMPLETER != 1 AND SYSDATE > a.P_ENDD THEN 1 ELSE 0 END) AS late_Cnt
 	, a.D_NO
@@ -162,7 +165,7 @@
 	<!-- 종합 대시보드 리스크 현황 - pieChart -->
 	<!-- public AllDashBoard getAllRiskCnt(); -->
 	<select id="getAllRiskCnt"  resultType="allDash" >
-		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c4.rCancelCnt, c5.rHoldCnt
+		SELECT c1.rOpenCnt, c2.rDoneCnt, c3.rOngoingCnt, c5.rHoldCnt
 		  FROM (
 			SELECT count(*) rOpenCnt
 			  FROM Z_RISK r
@@ -175,11 +178,7 @@
 			SELECT count(*) rOngoingCnt
 			  FROM Z_RISK r
 			 WHERE rs_name = '진행'
-			)c3 ,(
-			SELECT count(*) rCancelCnt
-			  FROM Z_RISK r
-			 WHERE rs_name = '취소'
-			)c4 ,(
+			)c3,(
 			SELECT count(*) rHoldCnt
 			  FROM Z_RISK r
 			 WHERE rs_name = '홀드'

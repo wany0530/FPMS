@@ -32,10 +32,11 @@
 <!-- 리스크 상세화면 (리스크 상세 이름 가져오는 것)--> 
   <select id="getRisk" resultType="risk" parameterType="int">
     
-    SELECT zr.r_no, r_name, r_content, R_REGDATE, zu.u_name AS R_SEND, R_RECEIVE, RS_NAME, p_name, zr.p_no, r_strat
-    FROM z_risk zr, z_project zj, Z_USER zu
-    WHERE zr.P_NO = zj.P_NO
-    AND zr.R_SEND = zu.U_ID
+	SELECT zr.r_no, r_name, r_content, R_REGDATE, zu.u_name AS R_SEND, r_receive, zu2.u_name AS R_RECEIVENAME, RS_NAME, p_name, zr.p_no, r_strat
+	FROM z_risk zr, z_project zj, Z_USER zu, Z_USER zu2
+	WHERE zr.P_NO = zj.P_NO
+	AND zr.R_SEND = zu.U_ID
+	AND zr.R_RECEIVE = zu2.U_ID
     AND zr.r_no = #{zr.r_no}
      
  </select>
@@ -75,7 +76,7 @@ AND p_no= #{p_no}
 <!-- 리스크 등록 -->
  <insert id="riskInsert" parameterType="risk">
  insert into z_risk values(z_risk_no_seq.nextval, #{r_name}, #{r_content},
-  sysdate, #{r_send}, 0, 0, #{p_no}, '오픈', null)
+  sysdate, #{r_send}, #{r_receive}, 0, #{p_no}, '오픈', null)
  </insert>
 
 <!-- 리스크 삭제 -->
@@ -118,6 +119,12 @@ VO를 새로 만드는 방법이 있다. -->
 	AND zp.P_NO = zr.P_NO 
 	AND zr.U_NO = #{U_NO}
 
+</select>
+<!--  public String getPmId(int p_no); -->
+<select id="getPmId" parameterType="int" resultType="String">
+	SELECT p_pm
+	FROM Z_PROJECT
+	where p_no=#{p_np}
 </select>
 
 <!-- 페이징 -->

@@ -34,6 +34,7 @@ public interface A03_riskDao {
   
   //리스크 상태 업데이트
   public void uptRiskState(Risk upt);
+  public String getPmId(int p_no);
  
 }
 

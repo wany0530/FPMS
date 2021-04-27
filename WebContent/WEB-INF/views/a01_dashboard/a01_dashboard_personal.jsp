@@ -28,7 +28,8 @@
       <%@ include file="../a01_main/header.jsp"%>
     <c:if test="${sesMem.pos_no >2}">
       <div class="content">
-        <div class="row">   
+        <div class="row"> 
+         <c:if test="${sesMem.pos_no >3}"> 
           <div class="col-lg-3 col-md-6">
             <div class="card card-stats">
               <div class="card-body" OnClick="location.href ='${path}/mytask.do?method=task'">
@@ -38,14 +39,16 @@
                       <i class="tim-icons icon-single-02"></i>
                     </div>
                   </div>
-                  <div class="col-7">
-                    <div class="numbers">
-                      <p class="card-category" style="font-weight:550;">작업</p>
-                     <c:forEach var="jc" items="jobCnt" varStatus="status">
-                      	<h3 class="card-title">${jobCnt}</h3>
-                    </c:forEach>
-                    </div>
-                  </div>
+                  
+	                  <div class="col-7">
+	                    <div class="numbers">
+	                      <p class="card-category" style="font-weight:550;">작업</p>
+	                     <c:forEach var="jc" items="jobCnt" varStatus="status">
+	                      	<h3 class="card-title">${jobCnt}</h3>
+	                    </c:forEach>
+	                    </div>
+	                  </div>
+                  
                 </div>
               </div>
               <div class="card-footer">
@@ -58,7 +61,7 @@
               </div>
             </div>
           </div>
-
+		</c:if>
           <div class="col-lg-3 col-md-6">
             <div class="card card-stats">
               <div class="card-body" OnClick="location.href ='${path}/project.do?method=form'">
@@ -115,7 +118,7 @@
           </div> 
           <div class="col-lg-3 col-md-6">
             <div class="card card-stats">
-              <div class="card-body" OnClick="location.href ='${path}/zenkit.do?method=riskList'">
+              <div class="card-body"">
                 <div class="row">
                   <div class="col-5">
                     <div class="info-icon text-center icon-info">
@@ -133,8 +136,8 @@
               <div class="card-footer">
                 <hr>
                 <div class="stats">
-	                <a href="zenkit.do?method=riskList" style="color:#a9a9b1; font-weight:500;">
-	                  View More <i class="tim-icons icon-minimal-right"></i>
+	                <a >
+	                &nbsp;
 	                </a> 
                 </div>
               </div>
@@ -220,10 +223,6 @@
 								<h4 class="card-title">
 									<i class="tim-icons  icon-tag text-info "></i>
 									<span class="title text-info">진행 - ${riskCntList.rOngoingCnt} 건</span>
-								</h4>
-								<h4 class="card-title">
-									<i class="tim-icons  icon-tag" style="color:#FCEB28;"></i>
-									<span class="title" style="color:#FCEB28;">취소 - ${riskCntList.rCancelCnt} 건</span>
 								</h4>
 								<h4 class="card-title">
 									<i class="tim-icons  icon-tag" style="color:#4FFF4C;"></i>
@@ -535,10 +534,6 @@
 									<span class="title text-info">진행 - ${allRiskCnt.rOngoingCnt} 건</span>
 								</h4>
 								<h4 class="card-title">
-									<i class="tim-icons icon-tag" style="color:#FCEB28;"></i>
-									<span class="title" style="color:#FCEB28;">취소 - ${allRiskCnt.rCancelCnt} 건</span>
-								</h4>
-								<h4 class="card-title">
 									<i class="tim-icons icon-tag" style="color:#4FFF4C;"></i>
 									<span class="title" style="color:#4FFF4C;">홀드 - ${allRiskCnt.rHoldCnt} 건</span>
 								</h4>
@@ -643,15 +638,15 @@
 			var myChart = new Chart(ctx, {
 				type: 'pie',
 				data: {
-					labels: [1, 2, 3, 4, 5],
+					labels: [1, 2, 3, 4],
 					datasets: [{
 						label: "Emails",
 						pointRadius: 0,
 						pointHoverRadius: 0,
-						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#FCEB28','#4FFF4C'],
+						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#4FFF4C'],
 						borderWidth: 0,
 						data: ['${allRiskCnt.rOpenCnt}', '${allRiskCnt.rDoneCnt}'
-							, '${allRiskCnt.rOngoingCnt}', '${allRiskCnt.rCancelCnt}', '${allRiskCnt.rHoldCnt}']
+							, '${allRiskCnt.rOngoingCnt}', '${allRiskCnt.rHoldCnt}']
 					}]
 				},
 				options: {
@@ -706,15 +701,15 @@
 			var myChart = new Chart(ctx, {
 				type: 'pie',
 				data: {
-					labels: [1, 2, 3, 4, 5],
+					labels: [1, 2, 3, 4],
 					datasets: [{
 						label: "Emails",
 						pointRadius: 0,
 						pointHoverRadius: 0,
-						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#FCEB28','#4FFF4C'],
+						backgroundColor: ['#FE5D93', '#FF8D72', '#0175FA','#4FFF4C'],
 						borderWidth: 0,
 						data: ['${riskCntList.rOpenCnt}', '${riskCntList.rDoneCnt}'
-							, '${riskCntList.rOngoingCnt}', '${riskCntList.rCancelCnt}', '${riskCntList.rHoldCnt}']
+							, '${riskCntList.rOngoingCnt}', '${riskCntList.rHoldCnt}']
 					}]
 				},
 				options: {

@@ -145,7 +145,6 @@ public class A03_JobController {
 	// http://localhost:7080/zenkit/job.do?method=update2
 	@RequestMapping(params = "method=update2")
 	public String jobUpdate2(Gantt2 g, Model d) {
-		System.out.println("냥냥:"+g.getStart_date());
 		d.addAttribute("success","Y");
 		service.jobUpdate2(g);
 		return "pageJsonReport";
@@ -175,10 +174,6 @@ public class A03_JobController {
 		System.out.println("유저 번호:"+g.getU_no());
 			service.jobInsert2(g);
 		d.addAttribute("success","Y");
-		/*
-		 * service.jobInsert2(g); // 작업 데이터 삭제 처리
-		 * return "forward:/job.do?method=insertForm";
-		 */
 		return "pageJsonReport";
 	}
 	

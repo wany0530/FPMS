@@ -22,6 +22,7 @@ public ArrayList<Risk> riskList(Risk sch){
 }
 
 public void riskInsert(Risk insert) {
+	insert.setR_receive(dao.getPmId(insert.getP_no()));
 	dao.riskInsert(insert);
 }
 public Risk getRisk(int r_no) {
