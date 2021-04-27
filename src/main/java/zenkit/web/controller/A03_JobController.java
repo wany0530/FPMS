@@ -147,6 +147,7 @@ public class A03_JobController {
 	public String jobUpdate2(Gantt2 g, Model d) {
 		d.addAttribute("success","Y");
 		service.jobUpdate2(g);
+		service.TopjobcomR(g.getParent()); // 업데이트된 완료율 상위작업에 적용 처리
 		return "pageJsonReport";
 	}
 	// Gantt 삭제
