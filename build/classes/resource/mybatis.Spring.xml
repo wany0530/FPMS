@@ -32,11 +32,11 @@
 		<typeAlias alias="jobSch" type="zenkit.web.dto.JobSch"/>
 		<typeAlias alias="auth" type="zenkit.web.vo.Auth"/>
 		<typeAlias alias="authsch" type="zenkit.web.dto.AuthSch"/>
-	      <typeAlias alias="mytasksch" type="zenkit.web.dto.MyTaskSch"/>
-	      <typeAlias alias="upproject" type="zenkit.web.dto.UpProject"/>
-	      <typeAlias alias="myRisk" type="zenkit.web.dto.MyRisk"/>
-	      <typeAlias alias="upRisk" type="zenkit.web.dto.UpRisk"/>
-	      <typeAlias alias="riskAction" type="zenkit.web.vo.RiskAction"/>
+		<typeAlias alias="mytasksch" type="zenkit.web.dto.MyTaskSch"/>
+		<typeAlias alias="upproject" type="zenkit.web.dto.UpProject"/>
+		<typeAlias alias="myRisk" type="zenkit.web.dto.MyRisk"/>
+		<typeAlias alias="upRisk" type="zenkit.web.dto.UpRisk"/>
+		<typeAlias alias="riskAction" type="zenkit.web.vo.RiskAction"/>
 	</typeAliases>
       
 

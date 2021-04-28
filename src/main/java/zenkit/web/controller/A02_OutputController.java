@@ -84,9 +84,10 @@ public class A02_OutputController {
 		return "redirect:/output.do?method=outputs";
 	}
 	
+	// 다운로드
 	@GetMapping(params="method=down")
 	public String download(@RequestParam("fname") String fname, Model d) {
-		
+		System.out.println("fname : "+ fname);
 		d.addAttribute("downloadFile", fname);
 		return "downloadviewer";
 	}

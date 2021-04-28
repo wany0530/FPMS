@@ -481,17 +481,24 @@
 			//초대
 			$('#inviteBtn').on("click",function(){
 				var email = $('#inviteForm [name=u_email]').val();
-				var name = $('#inviteForm [name=u_name]').val();
+				var name = $('#inviteForm [name=u_name]').val().trim();
 				
 				var d_no = $('#inviteForm [name=d_no]').val();
 				var pos_no = $('#inviteForm [name=pos_no]').val();
 				var r_no = $('#inviteForm [name=r_no]').val();
 				
-				console.log(d_no);
-				
 				if(email==""){
 					Swal.fire({
 						title: '이메일을 입력하세요.',
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn'
+						},
+						buttonsStyling: false,
+			      })
+				} else if(!emailIsValid(email)){
+					Swal.fire({
+						title: '이메일을 형식을 확인해주세요.',
 						type: 'error',
 						customClass: {
 							confirmButton: 'btn'
@@ -506,7 +513,16 @@
 							confirmButton: 'btn'
 						},
 						buttonsStyling: false,
-			      })
+			     	 })
+				} else if(name.length >= 10){
+					Swal.fire({
+						title: '이름을 10자이하로 입력하세요.',
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn'
+						},
+						buttonsStyling: false,
+			      	})
 				} else if(d_no=="부서") {
 					Swal.fire({
 						title: '부서를 입력하세요.',
@@ -515,7 +531,7 @@
 							confirmButton: 'btn'
 						},
 						buttonsStyling: false,
-			      })
+			      	})
 				} else if(pos_no=="직책") {
 					Swal.fire({
 						title: '직책를 입력하세요.',
@@ -563,6 +579,10 @@
 				return false;
 			});
 		});
+		
+		function emailIsValid (email) {
+		  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+		}
 	</script>
 </body>
 

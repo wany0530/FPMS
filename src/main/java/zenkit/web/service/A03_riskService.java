@@ -25,7 +25,7 @@ public class A03_riskService {
 		if(dao.totCnt(sch)>0) {
 			sch.setCount(dao.totCnt(sch));
 			if(sch.getPageSize()==0) {
-				sch.setPageSize(10);
+				sch.setPageSize(10);	
 			}
 			sch.setPageCount((int) Math.ceil(sch.getCount()/(double) sch.getPageSize()));
 			if(sch.getCurPage()==0) {

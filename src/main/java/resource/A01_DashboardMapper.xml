@@ -39,7 +39,6 @@
 		AND zr.P_NO = zp.P_NO
 		AND zr.P_NO = zj.P_NO 
 		AND zj.J_NO = zo.J_NO 
-		AND zj.J_REFNO != 0
 		AND zu.U_NO = #{U_NO}
 	</select>
 	
@@ -86,20 +85,17 @@
 		  	FROM Z_JOB 
 		  	WHERE u_no = #{U_NO} 
 			  	AND j_completer = 0
-			  	AND J_REFNO!=0
 		  ), (
 		  	SELECT count(*) ongoingCnt
 		 	  FROM Z_JOB
 			 WHERE u_no = #{U_NO}	
 				AND j_completer > 0 
 				AND j_completer < 1  
-				AND J_REFNO!=0
 		  ), (
 			SELECT count(*) doneCnt
 			  FROM Z_JOB
 			 WHERE u_no = #{U_NO}	
 				 AND j_completer = 1
-				 AND J_REFNO!=0
 		  ), Z_JOB 
 	]]>
 	</select>
@@ -183,7 +179,6 @@
 		      c.P_NO, COUNT(A.J_NO) AS job_cnt
 		   FROM Z_JOB A
 		   LEFT OUTER JOIN Z_PROJECT c ON A.p_no = c.p_no
-		   WHERE A.J_REFNO != 0
 		   GROUP BY c.p_no
 		) zj2 on zp.p_no = zj2.p_no
 		LEFT OUTER JOIN 

@@ -233,7 +233,7 @@
 												<select class="selectpicker" name="j_completeR">
 													<c:forEach var="complete" items="${completeN }">
 														<option value="${complete}"
-															<c:if test="${jobdetail.j_completeR eq complete}">selected</c:if>>
+															<c:if test="${jobdetail.j_completeR - ((jobdetail.j_completeR*10)%1*0.1) eq complete}">selected</c:if>>
 															${complete*100}%</option>
 													</c:forEach>
 												</select>

@@ -50,7 +50,8 @@
 					<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 						<div class="photo">
 							<img src="${path}/${sesMem.u_img}" alt="Profile Photo"
-								onerror="this.src='${path}/z04_img/defailtProfile.png';">
+								onerror="this.src='${path}/z04_img/defailtProfile.png';"
+								style="width: 30px; height: 30px;">
 						</div>
 						<b class="caret d-none d-lg-block d-xl-block"></b>
 						<p class="d-lg-none">Log out</p>

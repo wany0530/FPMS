@@ -49,8 +49,8 @@
 					<div class="col-12 col-md-1 pl-0">
 						<select class="selectpicker" data-size="7" data-style="btn btn-primary"
 							title="Single Select" id="pageSize">
-							<option selected>3</option>
-							<option>5</option>
+							<option>3</option>
+							<option selected>5</option>
 							<option>10</option>
 							<option>20</option>
 						</select>

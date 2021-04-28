@@ -1,13 +1,15 @@
 package zenkit.web.vo;
 
 import java.util.Date;
+
+import zenkit.web.dto.Page;
 /*
  *   SELECT zr.r_no, zj.p_no, p_name, r_name, rs_name, r_regdate, zu.u_name
     FROM z_project zj, z_risk zr, z_user zu
     WHERE zj.p_no = zr.p_no
     AND zr.r_send= #{zu.u_id}
  */
-public class Risk {
+public class Risk extends Page{
 	private int r_no;//리스크 번호
 	private String r_name;// 리스크명
 	private String r_content; // 리스크 내용

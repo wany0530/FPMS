@@ -91,7 +91,7 @@
           </div>
           <div class="col-lg-3 col-md-6">
             <div class="card card-stats">
-              <div class="card-body" OnClick="location.href ='${path}/mytask.do?method=outputs'">
+              <div class="card-body">
                 <div class="row">
                   <div class="col-5">
                     <div class="info-icon text-center icon-danger">
@@ -109,8 +109,8 @@
               <div class="card-footer">
                 <hr>
                 <div class="stats">
-	                <a href="mytask.do?method=outputs" style="color:#a9a9b1; font-weight:500;">
-	                  View More <i class="tim-icons icon-minimal-right"></i>
+	                <a >
+	                &nbsp;
 	                </a> 
                 </div>
               </div>

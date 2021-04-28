@@ -69,7 +69,7 @@
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<div class="input-group-text">
-												<i class="tim-icons icon-email-85"></i>
+												<i class="tim-icons icon-single-02"></i>
 											</div>
 										</div>
 										<input type="text" name="u_id" class="form-control"

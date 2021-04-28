@@ -64,6 +64,7 @@ public class A01_userController {
 		user.setU_no(u_no);
 		user.setU_id(id);
 		user.setU_pass(pass);
+		user.setU_name(user.getU_name().trim());
 		
 		userService.sendMail(user);
 		userService.userInsert(user);

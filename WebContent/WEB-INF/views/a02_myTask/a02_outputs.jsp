@@ -377,7 +377,7 @@
 				Swal.fire({
 					position: 'center',
 					type: 'warning',
-					title: '프로젝트를 선택하세요.',
+					title: '작업을 선택하세요.',
 					showConfirmButton: false,
 					timer: 1500
 		      })

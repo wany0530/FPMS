@@ -11,7 +11,12 @@
 
 <head>
   <%@ include file="../a01_main/bootstrapTop.jsp" %>
-  
+  <style>
+	.riskListTr:hover {
+	   background-color: #2c2e43;
+	   cursor: pointer; 
+	}
+	</style>
 </head>
 
 <body class="sidebar-mini ">
@@ -78,11 +83,12 @@
                   </div>
              
                 </div> --%>
-                <table id="datatable" class="table table-striped">
+                <table id="datatable" class="table">
                 	<colgroup>
                 		<col width="35%">
                 		<col width="35%">                		
                 	</colgroup>
+                	
                   <thead>
                     <tr class="text-center data" >
                       <th>리스크 명</th>
@@ -95,7 +101,7 @@
                   <tbody>
                  
                   <c:forEach var="risk" items="${riskList }">
-                    <tr class="text-center data" id="${risk.r_no}">
+                    <tr class="text-center data riskListTr" id="${risk.r_no}">
                   
                       <td>${risk.r_name}</td>
                       <td>${risk.p_name}</td>
@@ -159,7 +165,7 @@ $(document).ready(function(){
 	$("#detailBtn").click(function(){
 		location.href="${path}/detailRisk"
 	});
-	$(".data").dblclick(function(){
+	$(".riskListTr").click(function(){
 		var r_no=$(this).attr("id");
 		console.log(r_no);
 		location.href="${path}/zenkit.do?method=detail&r_no="+r_no;

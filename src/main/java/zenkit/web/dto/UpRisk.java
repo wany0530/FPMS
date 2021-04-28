@@ -1,6 +1,8 @@
 package zenkit.web.dto;
 
-public class UpRisk extends Page{
+import zenkit.web.vo.Risk;
+
+public class UpRisk extends Risk{
 
 	private int u_no;
 	private String r_name;

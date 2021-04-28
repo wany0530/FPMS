@@ -101,7 +101,7 @@ public class A00_LoginControlloer {
 		
 		// 파일 경로 생성(웹경로, 실제경로)
 		String upPath = uploadPath + File.separator + "profile" + File.separator + u_id;
-		String dbPath = "z03_upload"+File.separator+"profile"+File.separator+u_id+File.separator+filename;
+		String dbPath = "z03_upload"+ "/" +"profile"+ "/" +u_id+ "/" +filename;
 		
 		// 수정할 파일이 있을 시
 		if(filename != null && !filename.equals("")) {

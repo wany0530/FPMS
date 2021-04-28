@@ -8,19 +8,15 @@
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <title>Basic initialization</title>
-<script
-	src="/zenkit/a00_com/a02_project/codebase/sources/dhtmlxgantt.js"></script>
-<link rel="stylesheet"
-	href="/zenkit/a00_com/a02_project/codebase/sources/dhtmlxgantt.css">
+<script src="/zenkit/a00_com/a02_project/codebase/sources/dhtmlxgantt.js"></script>
+<link rel="stylesheet" href="/zenkit/a00_com/a02_project/codebase/sources/dhtmlxgantt.css">
 <link rel="stylesheet" href="${path}/a00_com/jquery-ui.css">
 <script src="${path}/a00_com/jquery.min.js"></script>
 <script src="${path}/a00_com/jquery-ui.js"></script>
 <script src="${path}/a00_com/popper.min.js"></script>
 <!-- icons -->
-<link href="${path}/Admin/dist/assets/css/icons.min.css"
-	rel="stylesheet" type="text/css" />
-<link rel="stylesheet"
-	href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css?v=5.2.0">
+<link href="${path}/Admin/dist/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css?v=5.2.0">
 <style>
 html, body {
 	height: 100%;
@@ -266,9 +262,7 @@ html, body {
 				  if(data.success=="Y"){
 					  alert("등록 완료");  
 					  console.log(data.gantt);
-					  
 					  location.href="${path}/job.do?method=job";
-
 				  }
 			  },
 			  error:function(err){

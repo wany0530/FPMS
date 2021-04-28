@@ -144,18 +144,20 @@ public class A03_JobController {
 	// Gantt 업데이트
 	// http://localhost:7080/zenkit/job.do?method=update2
 	@RequestMapping(params = "method=update2")
-	public String jobUpdate2(Gantt2 g, Model d) {
+	public String jobUpdate2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
 		service.TopjobcomR(g.getParent());
 		service.jobUpdate2(g);
 		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	// Gantt 삭제
 	// http://localhost:7080/zenkit/job.do?method=delete2
 	@RequestMapping(params = "method=delete2")
-	public String jobDelete2(Gantt2 g, Model d) {
-		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
+	public String jobDelete2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
 		d.addAttribute("success","Y");
+		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	
@@ -167,6 +169,7 @@ public class A03_JobController {
 		g.setP_no(p_no);
 		service.jobInsert2(g);
 		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	

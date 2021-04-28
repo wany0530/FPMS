@@ -103,6 +103,7 @@
 	<%@ include file="../a01_main/bootstrapBottom.jsp"%>
 	<script>
 		function insert(){
+			console.log($('#d_name').val().trim().length);
 			if($('#d_name').val().trim() == ""){
 				Swal.fire({
 					title: '부서명을 입력하세요.',
@@ -111,8 +112,15 @@
 					},
 					buttonsStyling: false
 				})
-			}
-			else {
+			} else if($('#d_name').val().trim().length >= 10){
+				Swal.fire({
+					title: '부서명을 10자 이하으로 입력해 주세요.',
+					customClass: {
+						confirmButton: 'btn btn-info'
+					},
+					buttonsStyling: false
+				})
+			} else {
 				const swalWithBootstrapButtons = Swal.mixin({
 					customClass: {
 						confirmButton: 'btn btn-success',
