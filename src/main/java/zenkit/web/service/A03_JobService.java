@@ -181,7 +181,11 @@ public class A03_JobService {
 	}
 	
 	public void TopjobcomR(int j_refno) {
-		dao.TopjobcomR(j_refno);
+		while(j_refno != 0) {
+			dao.TopjobcomR(j_refno);
+			Job a = dao.jobDetail(j_refno); // 처음 작업의 상위번호를 가진 작업데이터 추출
+			j_refno = a.getJ_refno();
+		}
 	}
 
 	public Project projectGet(int p_no) {
@@ -190,5 +194,9 @@ public class A03_JobService {
 
 	public int jobcount(int p_no) {
 		return dao.jobcount(p_no);
+	}
+	
+	public int partnerJob(int j_no) {
+		return dao.partnerJob(j_no);
 	}
 }

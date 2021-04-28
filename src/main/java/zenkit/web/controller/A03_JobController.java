@@ -118,6 +118,7 @@ public class A03_JobController {
 	@RequestMapping(params = "method=insert")
 	public String jobInsert(Job job, Model d) {
 		service.jobInsert(job);
+		service.TopjobcomR(job.getJ_refno());
 		d.addAttribute("proc", "insert");
 		return "forward:/job.do?method=insertForm";
 	}
@@ -136,7 +137,9 @@ public class A03_JobController {
 	// http://localhost:7080/zenkit/job.do?method=delete
 	@RequestMapping(params = "method=delete")
 	public String jobDelete(Job job, Model d) {
+		int ptnj_refno = service.partnerJob(job.getJ_no()); // 삭제 처리할 작업의 (같은 상위작업을가진)동료 작업을 가지고 
 		service.jobDelete(job.getJ_no()); // 작업 데이터 삭제 처리
+		service.TopjobcomR(ptnj_refno);
 		d.addAttribute("proc", "delete"); // delete 처리시 list이동
 		return "a03_project/a04_JobDetail";
 	}
@@ -145,19 +148,21 @@ public class A03_JobController {
 	// http://localhost:7080/zenkit/job.do?method=update2
 	@RequestMapping(params = "method=update2")
 	public String jobUpdate2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
-		service.TopjobcomR(g.getParent());
 		service.jobUpdate2(g);
+		service.TopjobcomR(g.getParent());
 		d.addAttribute("success","Y");
-		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	// Gantt 삭제
 	// http://localhost:7080/zenkit/job.do?method=delete2
 	@RequestMapping(params = "method=delete2")
 	public String jobDelete2(Gantt2 g, Model d, @SessionAttribute("p_no") int p_no) {
-		d.addAttribute("success","Y");
+		int ptnj_refno = service.partnerJob(g.getId());
+		//service.partnerJob(g.getId()) == g.getParent() 랑 똑같지만
+		// g에는 id값만 존재하기 때문에 동료 정보를 가져오고 거기서 j_refno를 뽑아오는거다.
 		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
-		d.addAttribute("job", service.jobList(p_no));
+		service.TopjobcomR(ptnj_refno);
+		d.addAttribute("success","Y");
 		return "pageJsonReport";
 	}
 	
@@ -168,8 +173,8 @@ public class A03_JobController {
 		g.setU_no(user1.getU_no());
 		g.setP_no(p_no);
 		service.jobInsert2(g);
+		service.TopjobcomR(g.getParent());
 		d.addAttribute("success","Y");
-		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	

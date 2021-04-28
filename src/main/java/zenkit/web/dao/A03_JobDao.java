@@ -47,4 +47,7 @@ public interface A03_JobDao {
 	
 	// 특정 작업 완료율 수정시 -> 상위 작업 완료율 업데이트
 	public void TopjobcomR(int j_refno);
+	
+	// gantt로 특정 작업 삭제시 (같은위치 = 동료)작업들 중 한개의 작업번호
+	public int partnerJob(int j_no);
 }

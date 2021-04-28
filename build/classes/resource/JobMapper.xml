@@ -116,7 +116,7 @@
 	</delete>
 	
 	<!-- // 특정 작업 완료율 수정시 -> 상위 작업 완료율 업데이트
-	public void TopjobcomR(int p_no, int j_refno); -->
+	public void TopjobcomR(int j_refno); -->
 	<update id="TopjobcomR" parameterType="int">
 		UPDATE z_job
 			SET j_completeR = (SELECT trunc(avg(J_COMPLETER),2) AS J_COMPLETER FROM z_job WHERE J_REFNO = #{j_refno})
@@ -130,5 +130,18 @@
 	<select id="jobcount" resultType="int" parameterType="int">
 		SELECT count(*) FROM z_job WHERE p_no = #{p_no}
 	</select>
+	
+	<!-- 
+	gantt로 특정 작업 삭제시 (같은위치 = 동료) 작업들 중 한개 데이터
+	public int partnerJob(int j_no);
+	 -->
+	 <select id="partnerJob" resultType="int" parameterType="int">
+	 	SELECT J_refno 
+		from Z_JOB 
+		WHERE j_refno IN (
+			SELECT J_REFNO 
+			FROM z_job 
+			WHERE J_no = #{j_no}) AND rownum = 1
+	 </select>
 	
 </mapper>
