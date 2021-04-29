@@ -45,7 +45,7 @@
 * 차트 그래프 Drag를 통한 날짜 수정
 * DB에 저장된 작업을 JSON데이터로 가져와 Ajax처리
 * button Box를 만들어 수정/등록/삭제 아이콘을 생성하고 해당 기능을 제공할수있는 lightBox내 section들 정의.
-* 계정(직책)별 접근 권한 제한 (PM -> 가능 / 개발자 -> 기능권한X)
+* 계정(직책)별 접근 권한 제한 (PM -> 기능권한o / 개발자 -> 기능권한X)
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/77144929/115966485-b82beb80-a568-11eb-9dd4-dec8213b6dde.gif)
 
