@@ -50,6 +50,10 @@
 				return false;
 			}else{
 				if (confirm("수정하시겠습니까??")) {
+					if($("[name=j_refno]").val() == 0){
+						alert("최상위 작업 :"+$("[name=j_name]").val()+"은 수정할 수 없습니다.");
+						return false;
+					}
 					$("[name=j_refno]").removeAttr("disabled");
 					$("form").attr("action", "${path}/job.do?method=update");
 					$("[name=proc]").val("update");
@@ -61,6 +65,10 @@
 
 		$("#delBtn").on("click", function() {
 			if (confirm("삭제하시겠습니까??")) {
+				if($("[name=j_refno]").val() == 0){
+					alert("최상위 작업 :"+$("[name=j_name]").val()+"은 삭제할 수 없습니다.");
+					return false;
+				}
 				$("form").attr("action", "${path}/job.do?method=delete");
 				$("[name=proc]").val("delete");
 				$("form").submit();

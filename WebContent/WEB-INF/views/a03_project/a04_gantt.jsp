@@ -126,8 +126,11 @@ html, body {
 	                case "edit":
 	                	var pm = "${project.p_pm}";
 	            		var user = "${sesMem.u_id}";
+	            		var first_job = "${job.get(0).id}";
 	            		if(pm != user){
 	            			alert("작업 수정 권한이 없습니다.");
+	            		}else if(id == first_job){
+	            			alert("최상위 작업은 수정할 수 없습니다.")
 	            		}else{
 	            			gantt.showLightbox(id);	
 	            		}
@@ -147,8 +150,12 @@ html, body {
 	                case "delete":
 	                	var pm = "${project.p_pm}";
 	            		var user = "${sesMem.u_id}";
+	            		var first_job = "${job.get(0).id}";
+	            		console.log(first_job);
 	            		if(pm != user){
 	            			alert("작업 삭제 권한이 없습니다.");
+	            		}else if(id == first_job){
+	            			alert("최상위 작업은 삭제할 수 없습니다.")
 	            		}else{
 	            			gantt.locale.labels.confirm_deleting= "하위 작업도 삭제됩니다. <br>삭제 하시겠습니까?";
 		                    gantt.confirm({

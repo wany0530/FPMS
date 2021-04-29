@@ -76,6 +76,7 @@ public class A03_JobController {
 	public String job(Model m, @SessionAttribute("p_no") int p_no) {		
 		m.addAttribute("project", service.projectGet(p_no)); // 특정 프로젝트 정보 데이터 (PM인지 예외처리할때 사용, 프로젝트명 select을 위해 사용)
 		m.addAttribute("people", service.jobPeople(p_no)); // 특정 프로젝트에 참여한 참여인원들의 정보[담당자 select할때 사용(번호,이름)]
+		m.addAttribute("job", service.jobList(p_no)); // 최상위 작업 데이터를 불러오기 위해 (삭제, 수정 방지)
 		return "a03_project/a04_Job";
 	}
 
@@ -151,6 +152,7 @@ public class A03_JobController {
 		service.jobUpdate2(g);
 		service.TopjobcomR(g.getParent());
 		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	// Gantt 삭제
@@ -163,6 +165,7 @@ public class A03_JobController {
 		service.jobDelete(g.getId()); // 작업 데이터 삭제 처리
 		service.TopjobcomR(ptnj_refno);
 		d.addAttribute("success","Y");
+		d.addAttribute("job", service.jobList(p_no));
 		return "pageJsonReport";
 	}
 	
