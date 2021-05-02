@@ -247,6 +247,7 @@ html, body {
 				  if(data.success=="Y"){
 					  alert("수정 완료");  
 					  console.log(data.gantt);
+					  location.href="${path}/job.do?method=job";
 				  }
 			  },
 			  error:function(err){
@@ -292,6 +293,7 @@ html, body {
 				  if(data.success=="Y"){
 					  alert("삭제 완료");  
 					  console.log(data.gantt);
+					  location.href="${path}/job.do?method=job";
 				  }
 			  },
 			  error:function(err){
